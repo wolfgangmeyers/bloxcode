@@ -82,6 +82,7 @@
     </category>
     <category name="Part">
       <block type="part_set_brickcolor"></block>
+      <block type="part_event_connect"></block>
     </category>
   </xml>
 
@@ -227,6 +228,32 @@
       var value_name = Blockly.Lua.valueToCode(block, 'NAME', Blockly.Lua.ORDER_ATOMIC);
       var number_timeout = block.getFieldValue('TIMEOUT');
       var code = `${variable_instance}:WaitForChild(${value_name}, ${number_timeout})\n`;
+      return code;
+    };
+
+    Blockly.Blocks['part_event_connect'] = {
+      init: function () {
+        this.appendDummyInput()
+          .appendField("part connect event")
+          .appendField(new Blockly.FieldVariable("item"), "INSTANCE")
+          .appendField(new Blockly.FieldDropdown([["Touched", "Touched"]]), "EVENT");
+        this.appendStatementInput("NAME")
+          .setCheck(null);
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+      }
+    };
+
+    Blockly.Lua['part_event_connect'] = function (block) {
+      var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
+      var dropdown_event = block.getFieldValue('EVENT');
+      var statements_name = Blockly.Lua.statementToCode(block, 'NAME');
+      var code = `${variable_instance}.${dropdown_event}:Connect(function()
+  ${statements_name}
+end)\n`;
       return code;
     };
 
