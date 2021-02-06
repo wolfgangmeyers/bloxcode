@@ -65,5 +65,6 @@ func main() {
 		})
 	})
 	r.Static("/ui", "./static")
+	r.Static("/media", "./media")
 	http.ListenAndServe(":9080", r)
 }

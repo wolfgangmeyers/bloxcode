@@ -121,7 +121,6 @@ function killPreviousPlugin()
 		}))
 		success = true
 	end)
-	print(success)
 	if not success then
 		return success
 	end
