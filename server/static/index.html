@@ -74,10 +74,8 @@
     <category name="Control">
       <block type="wait"></block>
     </category>
-    <category name="Workspace">
-      <block type="workspace_find_first_child"></block>
-    </category>
     <category name="Instance">
+      <block type="instance_find_first_child"></block>
       <block type="instance_destroy"></block>
       <block type="instance_is_a_part"></block>
     </category>
@@ -96,11 +94,12 @@
     //                            demoWorkspace);
 
     // define custom blocks
-    Blockly.Blocks['workspace_find_first_child'] = {
+    Blockly.Blocks['instance_find_first_child'] = {
       init: function () {
         this.appendDummyInput()
-          .appendField("workspace:FindFirstChild")
-          .appendField(new Blockly.FieldTextInput("<name>"), "name");
+          .appendField("find first child")
+          .appendField(new Blockly.FieldVariable("workspace"), "INSTANCE")
+          .appendField(new Blockly.FieldTextInput("<name>"), "NAME");
         this.setOutput(true, "Instance");
         this.setColour(230);
         this.setTooltip("");
@@ -108,34 +107,20 @@
       }
     };
 
-    Blockly.Lua['workspace_find_first_child'] = function (block) {
-      var text_name = block.getFieldValue('name');
+    Blockly.Lua['instance_find_first_child'] = function (block) {
+      var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
+      var text_name = block.getFieldValue('NAME');
       // TODO: Assemble Lua into code variable.
-      var code = `workspace:FindFirstChild("` + text_name + `")`;
+      var code = `${variable_instance}:FindFirstChild("${text_name}")`;
       // TODO: Change ORDER_NONE to the correct strength.
       return [code, Blockly.Lua.ORDER_NONE];
-    };
-
-    Blockly.Blocks['instance_destroy'] = {
-      init: function () {
-        this.appendDummyInput()
-          .appendField("Instance:destroy");
-        this.appendValueInput("INSTANCE")
-          .setCheck("Instance")
-          .appendField("instance");
-        this.setPreviousStatement(true, null);
-        this.setNextStatement(true, null);
-        this.setColour(230);
-        this.setTooltip("");
-        this.setHelpUrl("");
-      }
     };
 
     Blockly.Blocks['instance_is_a_part'] = {
       init: function () {
         this.appendDummyInput()
           .appendField("is a Part")
-          .appendField(new Blockly.FieldVariable("item"), "INSTANCE");
+          .appendField(new Blockly.FieldVariable("workspace"), "INSTANCE");
         this.setOutput(true, "Boolean");
         this.setColour(230);
         this.setTooltip("");
@@ -198,20 +183,22 @@
       return code;
     };
 
-    /*
-     *Blockly.Python['variables_get'] = function(block) {
-  // Variable getter.
-  var code = Blockly.Python.variableDB_.getName(block.getFieldValue('VAR'),
-      Blockly.Variables.NAME_TYPE);
-  return [code, Blockly.Python.ORDER_ATOMIC];
-}; 
-     */
+    Blockly.Blocks['instance_destroy'] = {
+      init: function () {
+        this.appendDummyInput()
+          .appendField("Instance:destroy")
+          .appendField(new Blockly.FieldVariable("item"), "INSTANCE");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+      }
+    }
 
-    Blockly.Lua['instance_destroy'] = function (block) {
-      var value_instance = Blockly.Lua.valueToCode(block, 'INSTANCE', Blockly.Lua.ORDER_ATOMIC);
-      console.log(value_instance)
-      // TODO: Assemble Lua into code variable.
-      var code = `${value_instance}:Destroy()\n`
+    Blockly.Lua['instance_destroy'] = function(block) {
+      var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
+      var code = `${variable_instance}:Destroy()\n`
       return code;
     };
 
