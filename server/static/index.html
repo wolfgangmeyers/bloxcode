@@ -76,6 +76,7 @@
     </category>
     <category name="Instance">
       <block type="instance_find_first_child"></block>
+      <block type="instance_wait_for_child"></block>
       <block type="instance_destroy"></block>
       <block type="instance_is_a_part"></block>
     </category>
@@ -196,9 +197,36 @@
       }
     }
 
-    Blockly.Lua['instance_destroy'] = function(block) {
+    Blockly.Lua['instance_destroy'] = function (block) {
       var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
       var code = `${variable_instance}:Destroy()\n`
+      return code;
+    };
+
+    Blockly.Blocks['instance_wait_for_child'] = {
+      init: function () {
+        this.appendDummyInput()
+          .appendField("wait for child")
+          .appendField(new Blockly.FieldVariable("workspace"), "INSTANCE");
+        this.appendValueInput("NAME")
+          .setCheck("String")
+          .appendField("name");
+        this.appendDummyInput()
+          .appendField("timeout")
+          .appendField(new Blockly.FieldNumber(1), "TIMEOUT");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+      }
+    };
+
+    Blockly.Lua['instance_wait_for_child'] = function (block) {
+      var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
+      var value_name = Blockly.Lua.valueToCode(block, 'NAME', Blockly.Lua.ORDER_ATOMIC);
+      var number_timeout = block.getFieldValue('TIMEOUT');
+      var code = `${variable_instance}:WaitForChild(${value_name}, ${number_timeout})\n`;
       return code;
     };
 
