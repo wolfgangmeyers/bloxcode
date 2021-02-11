@@ -28,3 +28,9 @@ type Message struct {
 	EventData map[string]interface{} `json:"event_data"`
 	ExpiresAt int64                  `json:"expires_at,omitempty"`
 }
+
+// CreateMessageInput is the input payload to create a new message
+type CreateMessageInput struct {
+	EventType string                 `json:"event_type"`
+	EventData map[string]interface{} `json:"event_data"`
+}

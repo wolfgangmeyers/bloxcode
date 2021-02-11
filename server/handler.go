@@ -59,22 +59,174 @@ func init() {
 	r.POST("/codes", createCodeHandler)
 	r.PUT("/codes/:code", renewCodeHandler)
 	// TODO: get code handler
-	r.POST("/messages/:queue", postMessageHandler)
-	r.GET("/messages/:queue", getMessagesHandler)
+	r.POST("/messages/:queue", queueAuthorizationMiddleware(http.StatusNoContent, nil), postMessageHandler)
+	r.GET("/messages/:queue", queueAuthorizationMiddleware(http.StatusOK, map[string]interface{}{
+		"messages": []Message{},
+	}), getMessagesHandler)
 	ginLambda = ginadapter.New(r)
 }
 
+func isUUID(item string) bool {
+	_, err := uuid.Parse(item)
+	return err == nil
+}
+
+func queueAuthorizationMiddleware(defaultStatus int, defaultResponse interface{}) func(c *gin.Context) {
+
+	var returnDefaultResult = func(c *gin.Context) {
+		if defaultResponse != nil {
+			c.JSON(defaultStatus, defaultResponse)
+		} else {
+			c.Status(defaultStatus)
+		}
+	}
+
+	return func(c *gin.Context) {
+		queue := c.Param("queue")
+		if !isUUID(queue) {
+			log.Printf("Not a valid queue id: %v", queue)
+			returnDefaultResult(c)
+			return
+		}
+		item, err := getQueue(queue)
+		if err != nil {
+			log.Printf("Error getting queue %v for authorization: %v", queue, err.Error())
+			returnDefaultResult(c)
+			return
+		}
+		if item == nil {
+			log.Printf("Authorization failed, queue %v not found", queue)
+			returnDefaultResult(c)
+			return
+		}
+		authCode := c.GetHeader("authcode")
+		if item.AuthCode != authCode {
+			log.Printf("Authorization failed, authcode mismatch. Expected %v, received %v", item.AuthCode, authCode)
+			returnDefaultResult(c)
+			return
+		}
+		// authorization succeeded
+		c.Next()
+	}
+}
+
+func saveMessage(message *Message) error {
+	av, err := dynamodbattribute.MarshalMap(message)
+	if err != nil {
+		return fmt.Errorf("Error marshalling message: %v", err.Error())
+	}
+	_, err = dynamoClient.PutItem(&dynamodb.PutItemInput{
+		TableName: aws.String(messagesTable),
+		Item:      av,
+	})
+	if err != nil {
+		return fmt.Errorf("Error saving message: %v", err.Error())
+	}
+	return nil
+}
+
 func postMessageHandler(c *gin.Context) {
-	// TODO: post if authorized and valid
-	// TODO: renew queue
+	queue := c.Param("queue")
+	var input CreateMessageInput
+	if err := c.BindJSON(&input); err != nil || len(input.EventType) == 0 {
+		log.Printf("Error parsing message post: %v", err.Error())
+		c.Status(http.StatusBadRequest)
+		return
+	}
+	message := &Message{
+		ID:        uuid.NewString(),
+		Queue:     queue,
+		EventType: input.EventType,
+		EventData: input.EventData,
+		ExpiresAt: time.Now().Unix() + 60,
+	}
+	if err := saveMessage(message); err != nil {
+		log.Println(err.Error())
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+	if err := renewQueue(queue); err != nil {
+		log.Println(err.Error())
+		c.Status(http.StatusInternalServerError)
+		return
+	}
 	c.Status(http.StatusNoContent)
 }
 
+func renewQueue(queue string) error {
+	queueItem, err := getQueue(queue)
+	if err != nil {
+		return fmt.Errorf("Error getting queue: %v", err.Error())
+	}
+	if queueItem != nil {
+		queueItem.ExpiresAt = time.Now().Unix() + 60
+		if err = saveQueue(queueItem); err != nil {
+			return fmt.Errorf("Error renewing queue: %v", err.Error())
+		}
+	}
+	return nil
+}
+
+func listMessages(queue string) ([]*Message, error) {
+	resp, err := dynamoClient.Query(&dynamodb.QueryInput{
+		TableName:              aws.String(messagesTable),
+		KeyConditionExpression: aws.String("queue = :queue"),
+		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
+			"queue": {
+				S: aws.String(queue),
+			},
+		},
+	})
+	if err != nil {
+		return nil, fmt.Errorf("Error listing messages: %v", err.Error())
+	}
+	result := make([]*Message, len(resp.Items))
+	for i := 0; i < len(result); i++ {
+		message := &Message{}
+		if err = dynamodbattribute.UnmarshalMap(resp.Items[i], message); err != nil {
+			return nil, fmt.Errorf("Error unmarshaling message: %v", err.Error())
+		}
+		result[i] = message
+	}
+	return result, nil
+}
+
+func deleteMessage(id string) error {
+	_, err := dynamoClient.DeleteItem(&dynamodb.DeleteItemInput{
+		TableName: aws.String(messagesTable),
+		Key: map[string]*dynamodb.AttributeValue{
+			"id": {
+				S: aws.String(id),
+			},
+		},
+	})
+	if err != nil {
+		return fmt.Errorf("Error deleting message: %v", err.Error())
+	}
+	return nil
+}
+
 func getMessagesHandler(c *gin.Context) {
-	messages := []Message{}
-	// TODO: look up if authorized and valid
-	// TODO: omit expiration of messages outbound
-	// TODO: renew queue
+	queue := c.Param("queue")
+	messages, err := listMessages(queue)
+	for _, message := range messages {
+		message.ExpiresAt = 0
+		if err := deleteMessage(message.ID); err != nil {
+			log.Println(err.Error())
+			c.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
+	}
+	if err != nil {
+		log.Println(err.Error())
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+	if err := renewQueue(queue); err != nil {
+		log.Println(err.Error())
+		c.Status(http.StatusInternalServerError)
+		return
+	}
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"messages": messages,
 	})
