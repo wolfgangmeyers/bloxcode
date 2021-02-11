@@ -1,5 +1,5 @@
 resource "aws_dynamodb_table" "messages" {
-  name = "${var.env_prefix}messages"
+  name = "broker_messages"
   attribute {
     name = "id"
     type = "S"

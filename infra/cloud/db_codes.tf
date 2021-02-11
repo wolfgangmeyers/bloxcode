@@ -1,5 +1,5 @@
 resource "aws_dynamodb_table" "codes" {
-  name = "${var.env_prefix}codes"
+  name = "broker_codes"
   attribute {
     name = "code"
     type = "S"

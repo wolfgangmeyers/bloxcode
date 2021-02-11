@@ -1,5 +1,5 @@
 resource "aws_dynamodb_table" "queues" {
-  name = "${var.env_prefix}queues"
+  name = "broker_queues"
   attribute {
     name = "id"
     type = "S"

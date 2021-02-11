@@ -1,6 +1,6 @@
 
 resource "aws_api_gateway_rest_api" "broker_api" {
-  name        = "${var.env_prefix}broker_api"
+  name        = "broker_broker_api"
   description = "broker REST API"
 }
 

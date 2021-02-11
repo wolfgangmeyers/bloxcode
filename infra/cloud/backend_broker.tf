@@ -1,5 +1,5 @@
 resource "aws_iam_role" "broker_access" {
-  name = "${var.env_prefix}broker_access"
+  name = "broker_broker_access"
 
   assume_role_policy = <<EOF
 {
@@ -24,7 +24,7 @@ resource "aws_iam_role_policy_attachment" "broker_logs" {
 
 
 resource "aws_iam_policy" "broker_dynamo_access" {
-  name        = "${var.env_prefix}broker_dynamo_access"
+  name        = "broker_broker_dynamo_access"
   description = "IAM policy for DynamoDB access to broker lambda"
   policy      = <<EOF
 {
@@ -63,7 +63,7 @@ resource "aws_iam_role_policy_attachment" "broker_dynamo_access" {
 
 resource "aws_lambda_function" "broker" {
   filename         = "/tmp/broker.zip"
-  function_name    = "${var.env_prefix}broker"
+  function_name    = "broker_broker"
   role             = aws_iam_role.broker_access.arn
   handler          = "broker"
   source_code_hash = filebase64sha256("/tmp/broker.zip")
