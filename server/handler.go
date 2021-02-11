@@ -58,12 +58,15 @@ func init() {
 
 	r.POST("/codes", createCodeHandler)
 	r.PUT("/codes/:code", renewCodeHandler)
+	// TODO: get code handler
 	r.POST("/messages/:queue", postMessageHandler)
+	r.GET("/messages/:queue", getMessagesHandler)
 	ginLambda = ginadapter.New(r)
 }
 
 func postMessageHandler(c *gin.Context) {
 	// TODO: post if authorized and valid
+	// TODO: renew queue
 	c.Status(http.StatusNoContent)
 }
 
@@ -71,6 +74,7 @@ func getMessagesHandler(c *gin.Context) {
 	messages := []Message{}
 	// TODO: look up if authorized and valid
 	// TODO: omit expiration of messages outbound
+	// TODO: renew queue
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"messages": messages,
 	})
@@ -124,6 +128,18 @@ func createCodeHandler(c *gin.Context) {
 	return
 }
 
+func deleteQueue(queue string) error {
+	_, err := dynamoClient.DeleteItem(&dynamodb.DeleteItemInput{
+		TableName: aws.String(queuesTable),
+		Key: map[string]*dynamodb.AttributeValue{
+			"id": {
+				S: aws.String(queue),
+			},
+		},
+	})
+	return err
+}
+
 func getQueue(queue string) (*Queue, error) {
 	resp, err := dynamoClient.GetItem(&dynamodb.GetItemInput{
 		TableName: aws.String(queuesTable),
@@ -142,7 +158,13 @@ func getQueue(queue string) (*Queue, error) {
 		return nil, fmt.Errorf("Error unmarshaling queue '%v': %v", queue, err.Error())
 	}
 	if len(item.ID) > 0 {
-		// TODO: delete if expired
+		// Delete queue if expired and return nil
+		if item.ExpiresAt <= time.Now().Unix() {
+			if err := deleteQueue(queue); err != nil {
+				return nil, err
+			}
+			return nil, nil
+		}
 		return &item, nil
 	}
 	return nil, nil
@@ -178,6 +200,18 @@ func saveCode(code *Code) error {
 	return nil
 }
 
+func deleteCode(code string) error {
+	_, err := dynamoClient.DeleteItem(&dynamodb.DeleteItemInput{
+		TableName: aws.String(codesTable),
+		Key: map[string]*dynamodb.AttributeValue{
+			"code": {
+				S: aws.String(code),
+			},
+		},
+	})
+	return err
+}
+
 func getCode(code string) (*Code, error) {
 	resp, err := dynamoClient.GetItem(&dynamodb.GetItemInput{
 		TableName: aws.String(codesTable),
@@ -196,7 +230,13 @@ func getCode(code string) (*Code, error) {
 		return nil, fmt.Errorf("Error unmarshaling code '%v': %v", code, err.Error())
 	}
 	if len(item.Code) == 6 {
-		// TODO: delete if expired
+		// Delete item if expired and return nil
+		if item.ExpiresAt <= time.Now().Unix() {
+			if err := deleteCode(code); err != nil {
+				return nil, fmt.Errorf("Error deleting code '%v': %v", code, err.Error())
+			}
+			return nil, nil
+		}
 		return &item, nil
 	}
 	return nil, nil
