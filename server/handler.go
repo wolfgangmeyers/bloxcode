@@ -58,7 +58,7 @@ func init() {
 
 	r.POST("/codes", createCodeHandler)
 	r.PUT("/codes/:code", renewCodeHandler)
-	// TODO: get code handler
+	r.GET("/codes/:code", getCodeHandler)
 	r.POST("/messages/:queue", queueAuthorizationMiddleware(http.StatusNoContent, nil), postMessageHandler)
 	r.GET("/messages/:queue", queueAuthorizationMiddleware(http.StatusOK, map[string]interface{}{
 		"messages": []Message{},
@@ -69,6 +69,27 @@ func init() {
 func isUUID(item string) bool {
 	_, err := uuid.Parse(item)
 	return err == nil
+}
+
+func getCodeHandler(c *gin.Context) {
+	code := c.Param("code")
+	if !codePattern.MatchString(code) {
+		log.Printf("Invalid code: %v", code)
+		c.Status(http.StatusNotFound)
+		return
+	}
+	codeItem, err := getCode(code)
+	if err != nil {
+		log.Printf("Error getting code %v: %v", code, err.Error())
+		c.Status(http.StatusNotFound)
+		return
+	}
+	if codeItem == nil {
+		log.Printf("Code %v not found", code)
+		c.Status(http.StatusNotFound)
+		return
+	}
+	c.JSON(http.StatusOK, codeItem)
 }
 
 func queueAuthorizationMiddleware(defaultStatus int, defaultResponse interface{}) func(c *gin.Context) {
