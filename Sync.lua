@@ -124,12 +124,30 @@ function killPreviousPlugin()
 	if not success then
 		return success
 	end
-	
+
 	wait(5)
 	-- drain the queue if no previous plugin was running
 	local resp = HttpService:GetAsync("http://localhost:9080/messages/studio")
 	print(resp)
 	return success
+end
+
+function GetConnectionInfo()
+	local serverStorage = game:GetService("ServerStorage")
+	local connectionString: StringValue = serverStorage:FindFirstChild("connection.info")
+	if connectionString == nil then
+		return nil
+	end
+	return HttpService:JSONDecode(connectionString.Value)
+end
+
+function SaveConnectionInfo(connectionInfo)
+	local serverStorage = game:GetService("ServerStorage")
+	local connectionString: StringValue = serverStorage:FindFirstChild("connection.info")
+	if connectionString == nil then
+		connectionString = Instance.new("StringValue", serverStorage)
+	end
+	connectionString.Value = HttpService:JSONEncode(connectionInfo)
 end
 
 function Sync()
