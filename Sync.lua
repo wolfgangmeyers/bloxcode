@@ -235,20 +235,19 @@ function SetupGui()
 	-- Show prompt when connection info is present and last update is 0
 	local replicatedStorage = game:GetService("ReplicatedStorage")
 	local lastUpdate: NumberValue = replicatedStorage:WaitForChild("lastBloxUpdate")
+	local connectionInfo: StringValue = replicatedStorage:WaitForChild("connection.info")
 
 	function UpdatePrompt()
-		label.Visible = lastUpdate.Value > 0
+		label.Visible = lastUpdate.Value == 0
 		if label.Visible then
-			local connectionInfo = replicatedStorage:WaitForChild("connection.info", 10)
-			if connectionInfo == nil then
-				return
-			end
-			label.Text = "BloxCode Studio\nPlease navigate to www.bloxcode.studio and enter this code:\n" .. connectionInfo.code
+			local info = HttpService:JSONDecode(connectionInfo.Value)
+			label.Text = "BloxCode Studio\nPlease navigate to www.bloxcode.studio and enter this code:\n" .. info.code
 		end
 	end
 	UpdatePrompt()
 
 	lastUpdate.Changed:Connect(UpdatePrompt)
+	connectionInfo.Changed:Connect(UpdatePrompt)
 
 	print("GUI updated")
 end
@@ -278,6 +277,9 @@ function Sync()
 		-- local response
 		local data
 		pcall(function ()
+
+			-- // TODO: renew connection if client hasn't connected yet
+
 			-- response = HttpService:GetAsync("http://localhost:9080/messages/studio")
 			-- data = HttpService:JSONDecode(response)
 			data = GetMessages("studio")
@@ -334,5 +336,5 @@ end
 
 if killPreviousPlugin() then
 	spawn(Sync)
-	-- SetupGui()
+	SetupGui()
 end
