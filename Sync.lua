@@ -220,8 +220,8 @@ end
 function RenewConnectionInfo(code: string)
 	pcall(function()
 		HttpService:RequestAsync({
-			url=backend_url .. "/codes/" .. code,
-			method="PUT"
+			Url=backend_url .. "/codes/" .. code,
+			Method="PUT"
 		})
 	end)
 end
