@@ -202,6 +202,7 @@ function ClearLastBloxUpdate()
 	local lastUpdateValue: NumberValue = serverStorage:FindFirstChild("lastBloxUpdate")
 	if lastUpdateValue == nil then
 		lastUpdateValue = Instance.new("NumberValue", serverStorage)
+		lastUpdateValue.Name = "lastBloxUpdate"
 	end
 	lastUpdateValue.Value = 0
 end
