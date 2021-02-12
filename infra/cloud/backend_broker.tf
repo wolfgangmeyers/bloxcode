@@ -68,6 +68,11 @@ resource "aws_lambda_function" "broker" {
   handler          = "server"
   source_code_hash = filebase64sha256("/tmp/server.zip")
   runtime          = "go1.x"
+  environment {
+    variables = {
+      CLOUD = true
+    }
+  }
 }
 
 resource "aws_iam_policy" "lambda_logs_access" {
