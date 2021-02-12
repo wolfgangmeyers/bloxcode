@@ -45,7 +45,7 @@ resource "aws_iam_policy" "broker_dynamo_access" {
 
 
         "${aws_dynamodb_table.codes.arn}",
-        "${aws_dynamodb_table.codes.arn}/*",
+        "${aws_dynamodb_table.codes.arn}/*"
 
             ],
             "Effect": "Allow"
@@ -62,18 +62,32 @@ resource "aws_iam_role_policy_attachment" "broker_dynamo_access" {
 
 
 resource "aws_lambda_function" "broker" {
-  filename         = "/tmp/broker.zip"
-  function_name    = "broker_broker"
+  filename         = "/tmp/server.zip"
+  function_name    = "broker_backend"
   role             = aws_iam_role.broker_access.arn
-  handler          = "broker"
-  source_code_hash = filebase64sha256("/tmp/broker.zip")
+  handler          = "server"
+  source_code_hash = filebase64sha256("/tmp/server.zip")
   runtime          = "go1.x"
-  environment {
-        variables = {
-            queuesTable = var.queuesTable
-            messagesTable = var.messagesTable
-            codesTable = var.codesTable
-        }
-    }
+}
 
+resource "aws_iam_policy" "lambda_logs_access" {
+  name        = "broker_usermigration_access"
+  description = "IAM policy for logging from lambda"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents",
+        "logs:CreateLogGroup"
+      ],
+      "Resource": "arn:aws:logs:*:*:*",
+      "Effect": "Allow"
+    }
+  ]
+}
+EOF
 }

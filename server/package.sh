@@ -1,3 +1,3 @@
-go build -o broker .
-zip -r broker.zip .
-mv broker.zip /tmp/
+go build -o server .
+zip -r server.zip server
+mv server.zip /tmp/
