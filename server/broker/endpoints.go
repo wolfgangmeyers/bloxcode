@@ -15,7 +15,7 @@ import (
 
 var codePattern = regexp.MustCompile("[A-Z0-9]{6}")
 
-var codeDigits = []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+var codeDigits = []byte("ABCDEFGHIJKLMNPQRSTUVWXYZ123456789")
 
 func isUUID(item string) bool {
 	_, err := uuid.Parse(item)
