@@ -217,6 +217,15 @@ function CreateConnectionInfo()
 	return HttpService:JSONDecode(response)
 end
 
+function RenewConnectionInfo(code: string)
+	pcall(function()
+		HttpService:RequestAsync({
+			url=backend_url .. "/codes/" .. code,
+			method="PUT"
+		})
+	end)
+end
+
 function SetupGui()
 	local starterGui = game:GetService("StarterGui")
 	local screen = starterGui:FindFirstChild("screen")
@@ -278,8 +287,11 @@ function Sync()
 		local data
 		pcall(function ()
 
-			-- // TODO: renew connection if client hasn't connected yet
-
+			-- renew connection if client hasn't connected yet
+			lastBloxUpdate = GetLastBloxUpdate()
+			if lastBloxUpdate == 0 then
+				RenewConnectionInfo(connectionInfo.code)
+			end
 			-- response = HttpService:GetAsync("http://localhost:9080/messages/studio")
 			-- data = HttpService:JSONDecode(response)
 			data = GetMessages("studio")
