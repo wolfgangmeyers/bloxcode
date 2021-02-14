@@ -108,6 +108,24 @@ Blockly.Lua['part_set_brickcolor'] = function (block) {
     return code;
 };
 
+Blockly.Blocks['part_get_position'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("get position of")
+            .appendField(new Blockly.FieldVariable("part"), "PART");
+        this.setOutput(true, "Vector3");
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['part_get_position'] = function (block) {
+    var variable_part = Blockly.Lua.variableDB_.getName(block.getFieldValue('PART'), Blockly.Variables.NAME_TYPE);
+    var code = `${variable_part}.Position`;
+    return [code, Blockly.Lua.ORDER_NONE];
+};
+
 Blockly.Blocks['wait'] = {
     init: function () {
         this.appendDummyInput()
