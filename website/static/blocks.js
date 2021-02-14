@@ -24,7 +24,7 @@ Blockly.Blocks['instance_is_a'] = {
     init: function () {
         this.appendDummyInput()
             .appendField("is")
-            .appendField(new Blockly.FieldVariable("item"), "INSTANCE")
+            .appendField(new Blockly.FieldVariable("instance"), "INSTANCE")
             .appendField("a")
             .appendField(new Blockly.FieldDropdown([["Part", "Part"], ["Humanoid", "Humanoid"]]), "TYPE");
         this.setOutput(true, "Boolean");
@@ -91,15 +91,15 @@ Blockly.Lua['wait'] = function (block) {
 Blockly.Blocks['instance_destroy'] = {
     init: function () {
         this.appendDummyInput()
-            .appendField("Instance:destroy")
-            .appendField(new Blockly.FieldVariable("item"), "INSTANCE");
+            .appendField("destroy")
+            .appendField(new Blockly.FieldVariable("instance"), "INSTANCE");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
     }
-}
+};
 
 Blockly.Lua['instance_destroy'] = function (block) {
     var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
@@ -114,7 +114,7 @@ Blockly.Blocks['instance_wait_for_child'] = {
             .appendField(new Blockly.FieldVariable("workspace"), "INSTANCE");
         this.appendValueInput("NAME")
             .setCheck("String")
-            .appendField("name");
+            .appendField("named");
         this.appendDummyInput()
             .appendField("timeout")
             .appendField(new Blockly.FieldNumber(1), "TIMEOUT");
@@ -124,7 +124,7 @@ Blockly.Blocks['instance_wait_for_child'] = {
         this.setTooltip("");
         this.setHelpUrl("");
     }
-};
+}
 
 Blockly.Lua['instance_wait_for_child'] = function (block) {
     var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
@@ -152,6 +152,29 @@ Blockly.Lua['instance_get_parent'] = function (block) {
     var code = `${variable_instance}.Parent`;
     // TODO: Change ORDER_NONE to the correct strength.
     return [code, Blockly.Lua.ORDER_NONE];
+};
+
+Blockly.Blocks['instance_set_parent'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("set parent of")
+            .appendField(new Blockly.FieldVariable("instance"), "INSTANCE")
+            .appendField("to")
+            .appendField(new Blockly.FieldVariable("item"), "ITEM");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['instance_set_parent'] = function (block) {
+    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
+    var variable_item = Blockly.Lua.variableDB_.getName(block.getFieldValue('ITEM'), Blockly.Variables.NAME_TYPE);
+    // TODO: Assemble Lua into code variable.
+    var code = `${variable_instance}.Parent = ${variable_item}\n`;
+    return code;
 };
 
 Blockly.Blocks['part_event_connect'] = {
