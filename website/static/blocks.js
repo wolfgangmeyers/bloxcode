@@ -26,7 +26,7 @@ Blockly.Blocks['instance_is_a'] = {
             .appendField("is")
             .appendField(new Blockly.FieldVariable("item"), "INSTANCE")
             .appendField("a")
-            .appendField(new Blockly.FieldTextInput("Part"), "TYPE");
+            .appendField(new Blockly.FieldDropdown([["Part", "Part"], ["Humanoid", "Humanoid"]]), "TYPE");
         this.setOutput(true, "Boolean");
         this.setColour(230);
         this.setTooltip("");
@@ -34,20 +34,10 @@ Blockly.Blocks['instance_is_a'] = {
     }
 };
 
-Blockly.Lua['instance_is_a_part'] = function (block) {
-    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
-    // TODO: Assemble Lua into code variable.
-    var code = `${variable_instance}:isA("Part")`;
-    // TODO: Change ORDER_NONE to the correct strength.
-    return [code, Blockly.Lua.ORDER_NONE];
-};
-
 Blockly.Lua['instance_is_a'] = function (block) {
     var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
-    var text_type = block.getFieldValue('TYPE');
-    // TODO: Assemble Lua into code variable.
-    var code = `${variable_instance}:isA("${text_type}")`;
-    // TODO: Change ORDER_NONE to the correct strength.
+    var dropdown_type = block.getFieldValue('TYPE');
+    var code = `${variable_instance}:isA("${dropdown_type}")`;
     return [code, Blockly.Lua.ORDER_NONE];
 };
 
@@ -215,4 +205,51 @@ Blockly.Lua['set_local_variable'] = function (block) {
     var value_value = Blockly.Lua.valueToCode(block, 'VALUE', Blockly.Lua.ORDER_ATOMIC);
     var code = `local ${variable_variable} = ${value_value}\n`;
     return code;
+};
+
+Blockly.Blocks['humanoid_set_scale'] = {
+    init: function () {
+        this.appendValueInput("NAME")
+            .setCheck("Number")
+            .appendField("set")
+            .appendField(new Blockly.FieldDropdown([["head", "Head"], ["body width", "BodyWidth"], ["body height", "BodyHeight"], ["body_depth", "BodyDepth"]]), "BODYPART")
+            .appendField("scale of")
+            .appendField(new Blockly.FieldVariable("humanoid"), "HUMANOID")
+            .appendField("to");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+
+Blockly.Lua['humanoid_set_scale'] = function (block) {
+    var dropdown_bodypart = block.getFieldValue('BODYPART');
+    var variable_humanoid = Blockly.Lua.variableDB_.getName(block.getFieldValue('HUMANOID'), Blockly.Variables.NAME_TYPE);
+    var value_name = Blockly.Lua.valueToCode(block, 'NAME', Blockly.Lua.ORDER_ATOMIC);
+    var code = `${variable_humanoid}.${dropdown_bodypart}Scale.Value = ${value_name}\n`
+    return code;
+};
+
+Blockly.Blocks['humanoid_get_scale'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("get")
+            .appendField(new Blockly.FieldDropdown([["head", "Head"], ["body width", "BodyWidth"], ["body height", "BodyHeight"], ["body depth", "BodyDepth"]]), "BODYPART")
+            .appendField("scale of")
+            .appendField(new Blockly.FieldVariable("humanoid"), "HUMANOID");
+        this.setOutput(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['humanoid_get_scale'] = function (block) {
+    var dropdown_bodypart = block.getFieldValue('BODYPART');
+    var variable_humanoid = Blockly.Lua.variableDB_.getName(block.getFieldValue('HUMANOID'), Blockly.Variables.NAME_TYPE);
+    var code = `${variable_humanoid}.${dropdown_bodypart}Scale.Value`;
+    return [code, Blockly.Lua.ORDER_NONE];
 };
