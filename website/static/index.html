@@ -14,7 +14,7 @@
             color: #fff;
             font-family: sans-serif;
         }
-        
+
         h1 {
             font-weight: normal;
             font-size: 140%;
@@ -23,7 +23,8 @@
 </head>
 
 <body>
-    <img src="bloxcode-logo-truncated.png" style="margin-bottom: 30px; display: block; margin-left: auto; margin-right: auto" />
+    <img src="bloxcode-logo-truncated.png"
+        style="margin-bottom: 30px; display: block; margin-left: auto; margin-right: auto" />
     <div id="connect_container">
         <label>
             Code:
@@ -78,41 +79,41 @@
         <category name="Math" colour="%{BKY_MATH_HUE}">
             <block type="math_number">
                 <field name="NUM">123</field>
-              </block>
-              <block type="math_arithmetic"></block>
-              <block type="math_single"></block>
-              <block type="math_trig"></block>
-              <block type="math_constant"></block>
-              <block type="math_number_property"></block>
-              <block type="math_round"></block>
-              <block type="math_on_list"></block>
-              <block type="math_modulo"></block>
-              <block type="math_constrain">
+            </block>
+            <block type="math_arithmetic"></block>
+            <block type="math_single"></block>
+            <block type="math_trig"></block>
+            <block type="math_constant"></block>
+            <block type="math_number_property"></block>
+            <block type="math_round"></block>
+            <block type="math_on_list"></block>
+            <block type="math_modulo"></block>
+            <block type="math_constrain">
                 <value name="LOW">
-                  <block type="math_number">
-                    <field name="NUM">1</field>
-                  </block>
+                    <block type="math_number">
+                        <field name="NUM">1</field>
+                    </block>
                 </value>
                 <value name="HIGH">
-                  <block type="math_number">
-                    <field name="NUM">100</field>
-                  </block>
+                    <block type="math_number">
+                        <field name="NUM">100</field>
+                    </block>
                 </value>
-              </block>
-              <block type="math_random_int">
+            </block>
+            <block type="math_random_int">
                 <value name="FROM">
-                  <block type="math_number">
-                    <field name="NUM">1</field>
-                  </block>
+                    <block type="math_number">
+                        <field name="NUM">1</field>
+                    </block>
                 </value>
                 <value name="TO">
-                  <block type="math_number">
-                    <field name="NUM">100</field>
-                  </block>
+                    <block type="math_number">
+                        <field name="NUM">100</field>
+                    </block>
                 </value>
-              </block>
-              <block type="math_random_float"></block>
-              <block type="math_atan2"></block>
+            </block>
+            <block type="math_random_float"></block>
+            <block type="math_atan2"></block>
         </category>
         <category name="Text" colour="%{BKY_TEXTS_HUE}">
             <block type="text"></block>
@@ -207,13 +208,37 @@
                         <field name="NUM">1.0</field>
                     </block>
                 </value>
-               
+
             </block>
             <block type="humanoid_get_scale"></block>
         </category>
         <category name="Body Movers">
             <category name="BodyPosition">
-
+                <block type="part_get_position">
+                    <field name="PART">pos</field>
+                </block>
+                <block type="part_set_position">
+                    <field name="PART">pos</field>
+                    <value name="POSITION">
+                        <block type="vector3_new">
+                            <value name="X">
+                                <block type="math_number">
+                                    <field name="NUM">0</field>
+                                </block>
+                            </value>
+                            <value name="Y">
+                                <block type="math_number">
+                                    <field name="NUM">0</field>
+                                </block>
+                            </value>
+                            <value name="Z">
+                                <block type="math_number">
+                                    <field name="NUM">0</field>
+                                </block>
+                            </value>
+                        </block>
+                    </value>
+                </block>
             </category>
         </category>
     </xml>
