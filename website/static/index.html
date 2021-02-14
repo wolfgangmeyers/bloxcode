@@ -76,9 +76,6 @@
             <block type="controls_whileUntil"></block>
         </category>
         <category name="Math" colour="%{BKY_MATH_HUE}">
-            <block type="math_number">
-                <field name="NUM">123</field>
-            </block>
             <block type="math_arithmetic"></block>
             <block type="math_single"></block>
         </category>
@@ -99,6 +96,9 @@
             <block type="wait"></block>
         </category>
         <category name="Data">
+            <block type="math_number">
+                <field name="NUM">123</field>
+            </block>
             <block type="vector3_new"></block>
         </category>
         <category name="Instance">
@@ -118,6 +118,12 @@
         <category name="Humanoid">
             <block type="humanoid_set_scale"></block>
             <block type="humanoid_get_scale"></block>
+        </category>
+        <category name="Body Movers">
+            <block type="instance_new"></block>
+            <category name="BodyPosition">
+                <block type="instance_new_with_parent"></block>
+            </category>
         </category>
     </xml>
 
