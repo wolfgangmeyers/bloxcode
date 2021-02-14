@@ -23,18 +23,26 @@
 </head>
 
 <body>
-    <h1>Roblox Block Coding Prototype</h1>
-    <select id="codefile" onchange="onCodefileChanged()">
-    <option value="">Select a file</option>
-  </select>
-    <button id="connect" onclick="onConnect()">Connect to Roblox Studio</button>
-    <p id="controls" style="display: none">
-        <button onclick="showCode()">Show Lua</button>
+    <img src="bloxcode-logo.png" style="margin-bottom: 30px" />
+    <div id="connect_container">
+        <label>
+            Code:
+        </label>
+        <input type="text" id="code" placeholder="ABC123" />
+        <button id="connect" onclick="onConnect()">Connect to Roblox Studio</button>
+    </div>
+
+    <div id="controls" style="display: none">
+        <select id="codefile" onchange="onCodefileChanged()">
+            <option value="">Select a file</option>
+        </select>
+
         <button onclick="saveToRoblox()">Save to Roblox Studio</button>
         <button onclick="newBloxScript()">New Blox Script</button>
         <button onclick="deleteBloxScript()">Delete Blox Script</button>
         <button onclick="refresh()">Refresh</button>
-    </p>
+        <button onclick="showCode()">Show Lua</button>
+    </div>
     <hr />
 
     <div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
@@ -42,7 +50,7 @@
     <script type="text/javascript">
         const onResize = () => {
             const div = document.getElementById("blocklyDiv")
-            div.style = `width: ${window.innerWidth - 10}px; height: ${window.innerHeight - 110}px;`
+            div.style = `width: ${window.innerWidth - 10}px; height: ${window.innerHeight - 140}px;`
         }
         window.addEventListener("resize", onResize);
         onResize()

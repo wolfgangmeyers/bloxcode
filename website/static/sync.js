@@ -146,16 +146,24 @@ async function getConnectionInfo(code) {
 
 
 async function onConnect() {
-    let code;
-    while (!connectionInfo) {
-        code = prompt("Please enter the code from roblox studio:");
-        if (!code) {
-            return;
-        }
+    let btnConnect = document.getElementById("connect");
+    btnConnect.innerHTML = "connecting..."
+    btnConnect.enabled = false
+    let code = document.getElementById("code").value
+    try {
         connectionInfo = await getConnectionInfo(code)
+        btnConnect.innerHTML = "Connect to Roblox Studio"
+        btnConnect.enabled = true
+    } catch (err) {
+        btnConnect.innerHTML = "Connect to Roblox Studio"
+        btnConnect.enabled = true
+        console.error(err)
+        return
     }
+
+
     document.getElementById("controls").style = "display: block";
-    document.getElementById("connect").style = "display: none"
+    document.getElementById("connect_container").style = "display: none"
     refresh()
 
     let i = 0
