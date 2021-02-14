@@ -272,7 +272,7 @@ function Sync()
 	print(connectionInfo)
 	local lastBloxUpdate = GetLastBloxUpdate()
 	print(lastBloxUpdate)
-	if connectionInfo == nil or os.time() - lastBloxUpdate > 50 then
+	if connectionInfo == nil or os.time() - lastBloxUpdate > 20 then
 		ClearLastBloxUpdate()
 		connectionInfo = CreateConnectionInfo()
 		print("Created connection info:")
@@ -291,7 +291,7 @@ function Sync()
 			lastBloxUpdate = GetLastBloxUpdate()
 			if lastBloxUpdate == 0 then
 				RenewConnectionInfo(connectionInfo.code)
-			elseif os.time() - lastBloxUpdate > 50 then
+			elseif os.time() - lastBloxUpdate > 20 then
 				print("Client disconnected")
 				connectionInfo = CreateConnectionInfo()
 				SaveConnectionInfo(connectionInfo)
