@@ -167,11 +167,11 @@ Blockly.Lua['instance_get_parent'] = function (block) {
 Blockly.Blocks['part_event_connect'] = {
     init: function () {
         this.appendDummyInput()
-            .appendField("part connect event")
+            .appendField("on event")
+            .appendField(new Blockly.FieldDropdown([["Touched", "Touched"]]), "EVENT")
+            .appendField("of")
             .appendField(new Blockly.FieldVariable("item"), "INSTANCE")
-            .appendField(new Blockly.FieldDropdown([
-                ["Touched", "Touched"]
-            ]), "EVENT")
+            .appendField("with")
             .appendField(new Blockly.FieldVariable("arg"), "ARG");
         this.appendStatementInput("NAME")
             .setCheck(null);
