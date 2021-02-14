@@ -41,6 +41,45 @@ Blockly.Lua['instance_is_a'] = function (block) {
     return [code, Blockly.Lua.ORDER_NONE];
 };
 
+Blockly.Blocks['instance_new'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("create new instance of type")
+            .appendField(new Blockly.FieldDropdown([["BodyGyro", "BodyGyro"], ["BodyPosition", "BodyPosition"]]), "TYPE");
+        this.setOutput(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['instance_new'] = function (block) {
+    var dropdown_type = block.getFieldValue('TYPE');
+    var code = `Instance.new("${dropdown_type}")`;
+    return [code, Blockly.Lua.ORDER_NONE];
+};
+
+Blockly.Blocks['instance_new_with_parent'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("create new instance of type")
+            .appendField(new Blockly.FieldDropdown([["BodyGyro", "BodyGyro"], ["BodyPosition", "BodyPosition"]]), "TYPE")
+            .appendField("with parent")
+            .appendField(new Blockly.FieldVariable("instance"), "INSTANCE");
+        this.setOutput(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['instance_new_with_parent'] = function (block) {
+    var dropdown_type = block.getFieldValue('TYPE');
+    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
+    var code = `Instance.new("${dropdown_type}", ${variable_instance})`;
+    return [code, Blockly.Lua.ORDER_NONE];
+};
+
 Blockly.Blocks['part_set_brickcolor'] = {
     init: function () {
         this.appendDummyInput()
@@ -274,5 +313,36 @@ Blockly.Lua['humanoid_get_scale'] = function (block) {
     var dropdown_bodypart = block.getFieldValue('BODYPART');
     var variable_humanoid = Blockly.Lua.variableDB_.getName(block.getFieldValue('HUMANOID'), Blockly.Variables.NAME_TYPE);
     var code = `${variable_humanoid}.${dropdown_bodypart}Scale.Value`;
+    return [code, Blockly.Lua.ORDER_NONE];
+};
+
+Blockly.Blocks['vector3_new'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("new vector3");
+        this.appendValueInput("X")
+            .setCheck("Number")
+            .appendField("x");
+        this.appendValueInput("Y")
+            .setCheck("Number")
+            .appendField("y");
+        this.appendValueInput("Z")
+            .setCheck("Number")
+            .appendField("z");
+        this.setInputsInline(true);
+        this.setOutput(true, "Vector3");
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['vector3_new'] = function (block) {
+    var value_x = Blockly.Lua.valueToCode(block, 'X', Blockly.Lua.ORDER_ATOMIC);
+    var value_y = Blockly.Lua.valueToCode(block, 'Y', Blockly.Lua.ORDER_ATOMIC);
+    var value_z = Blockly.Lua.valueToCode(block, 'Z', Blockly.Lua.ORDER_ATOMIC);
+    // TODO: Assemble Lua into code variable.
+    var code = `Vector3.new(${value_x}, ${value_y}, ${value_z})`;
+    // TODO: Change ORDER_NONE to the correct strength.
     return [code, Blockly.Lua.ORDER_NONE];
 };
