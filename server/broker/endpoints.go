@@ -36,7 +36,7 @@ func ConfigureRoutes() *gin.Engine {
 
 	r.Use(cors.New(cors.Config{
 		AllowOrigins: []string{"*"}, // TODO: limit to https://www.roblox.studio
-		AllowMethods: []string{"POST"},
+		AllowMethods: []string{"POST", "GET", "PUT"},
 		AllowHeaders: []string{"*"},
 	}))
 
@@ -86,23 +86,27 @@ func queueAuthorizationMiddleware(defaultStatus int, defaultResponse interface{}
 		if !isUUID(queue) {
 			log.Printf("Not a valid queue id: %v", queue)
 			returnDefaultResult(c)
+			c.Abort()
 			return
 		}
 		item, err := GetQueue(queue)
 		if err != nil {
 			log.Printf("Error getting queue %v for authorization: %v", queue, err.Error())
 			returnDefaultResult(c)
+			c.Abort()
 			return
 		}
 		if item == nil {
 			log.Printf("Authorization failed, queue %v not found", queue)
 			returnDefaultResult(c)
+			c.Abort()
 			return
 		}
 		authCode := c.GetHeader("authcode")
 		if item.AuthCode != authCode {
 			log.Printf("Authorization failed, authcode mismatch. Expected %v, received %v", item.AuthCode, authCode)
 			returnDefaultResult(c)
+			c.Abort()
 			return
 		}
 		// authorization succeeded
