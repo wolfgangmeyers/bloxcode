@@ -1,10 +1,11 @@
 // define custom blocks
 Blockly.Blocks['instance_find_first_child'] = {
     init: function () {
-        this.appendDummyInput()
-            .appendField("find first child")
+        this.appendValueInput("NAME")
+            .setCheck("String")
+            .appendField("find first child of")
             .appendField(new Blockly.FieldVariable("workspace"), "INSTANCE")
-            .appendField(new Blockly.FieldTextInput("<name>"), "NAME");
+            .appendField("named");
         this.setOutput(true, "Instance");
         this.setColour(230);
         this.setTooltip("");
@@ -14,10 +15,8 @@ Blockly.Blocks['instance_find_first_child'] = {
 
 Blockly.Lua['instance_find_first_child'] = function (block) {
     var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
-    var text_name = block.getFieldValue('NAME');
-    // TODO: Assemble Lua into code variable.
-    var code = `${variable_instance}:FindFirstChild("${text_name}")`;
-    // TODO: Change ORDER_NONE to the correct strength.
+    var value_name = Blockly.Lua.valueToCode(block, 'NAME', Blockly.Lua.ORDER_ATOMIC);
+    var code = `${variable_instance}:FindFirstChild(${value_name})`;
     return [code, Blockly.Lua.ORDER_NONE];
 };
 
