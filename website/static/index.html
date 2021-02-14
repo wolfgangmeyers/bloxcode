@@ -23,13 +23,14 @@
 </head>
 
 <body>
-    <img src="bloxcode-logo.png" style="margin-bottom: 30px" />
+    <img src="bloxcode-logo-truncated.png" style="margin-bottom: 30px; display: block; margin-left: auto; margin-right: auto" />
     <div id="connect_container">
         <label>
             Code:
         </label>
         <input type="text" id="code" placeholder="ABC123" />
         <button id="connect" onclick="onConnect()">Connect to Roblox Studio</button>
+        <button onclick="showCode()">Show Lua</button>
     </div>
 
     <div id="controls" style="display: none">

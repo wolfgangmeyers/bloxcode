@@ -238,8 +238,8 @@ function SetupGui()
 	label.Name = "prompt"
 	label.Text = ""
 	label.Visible = false
-	label.Position = UDim2.new(0.25, 0, 0.25, 0)
-	label.Size = UDim2.new(0.5, 0, 0.5, 0)
+	label.Position = UDim2.new(0.2, 0, 0.25, 0)
+	label.Size = UDim2.new(0.6, 0, 0.5, 0)
 
 	-- Show prompt when connection info is present and last update is 0
 	local replicatedStorage = game:GetService("ReplicatedStorage")
@@ -250,7 +250,7 @@ function SetupGui()
 		label.Visible = lastUpdate.Value == 0
 		if label.Visible then
 			local info = HttpService:JSONDecode(connectionInfo.Value)
-			label.Text = "BloxCode Studio\nPlease navigate to www.bloxcode.studio and enter this code:\n" .. info.code
+			label.Text = "BloxCode\nPlease navigate to www.bloxcode.studio and enter this code:\n" .. info.code
 		end
 	end
 	UpdatePrompt()

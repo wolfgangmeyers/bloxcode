@@ -13,9 +13,9 @@ import (
 	"github.com/google/uuid"
 )
 
-var codePattern = regexp.MustCompile("[A-Z0-9]{6}")
+var codePattern = regexp.MustCompile("[A-Z0]{6}")
 
-var codeDigits = []byte("ABCDEFGHIJKLMNPQRSTUVWXYZ123456789")
+var codeDigits = []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 func isUUID(item string) bool {
 	_, err := uuid.Parse(item)
