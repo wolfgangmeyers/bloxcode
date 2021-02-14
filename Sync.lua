@@ -291,6 +291,11 @@ function Sync()
 			lastBloxUpdate = GetLastBloxUpdate()
 			if lastBloxUpdate == 0 then
 				RenewConnectionInfo(connectionInfo.code)
+			elseif os.time() - lastBloxUpdate > 50 then
+				print("Client disconnected")
+				connectionInfo = CreateConnectionInfo()
+				SaveConnectionInfo(connectionInfo)
+				ClearLastBloxUpdate()
 			end
 			-- response = HttpService:GetAsync("http://localhost:9080/messages/studio")
 			-- data = HttpService:JSONDecode(response)
