@@ -271,7 +271,7 @@ end)\n`;
         }
 
         async function sendMessage(message) {
-            await fetch(`${backendUrl}/messages/${connectionInfo.queues.blox}`, {
+            await fetch(`${backendUrl}/messages/${connectionInfo.queues.studio}`, {
                 method: "POST",
                 body: JSON.stringify(message),
                 headers: {
@@ -419,7 +419,15 @@ end)\n`;
             document.getElementById("connect").style = "display: none"
             refresh()
 
+            let i = 0
             window.setInterval(async() => {
+                i = i + 1
+                if (i >= 10) {
+                    i = 0
+                    sendMessage({
+                        event_type: "ping"
+                    })
+                }
                 // TODO: figure out how to pass authcode
                 let resp = await fetch(`${backendUrl}/messages/${connectionInfo.queues.blox}`, {
                     headers: {
@@ -427,7 +435,9 @@ end)\n`;
                     }
                 });
                 const result = await resp.json()
+                console.log(result)
                 if (result.messages.length > 0) {
+                    console.log("Got a message!", result)
                     for (let message of result.messages) {
                         console.log(message);
                         switch (message.event_type) {
