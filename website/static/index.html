@@ -99,13 +99,41 @@
             <block type="math_number">
                 <field name="NUM">123</field>
             </block>
-            <block type="vector3_new"></block>
+            <block type="vector3_new">
+                <value name="X">
+                    <block type="math_number">
+                        <field name="NUM">0</field>
+                    </block>
+                </value>
+                <value name="Y">
+                    <block type="math_number">
+                        <field name="NUM">0</field>
+                    </block>
+                </value>
+                <value name="Z">
+                    <block type="math_number">
+                        <field name="NUM">0</field>
+                    </block>
+                </value>
+            </block>
         </category>
         <category name="Instance">
             <block type="instance_new"></block>
             <block type="instance_new_with_parent"></block>
-            <block type="instance_find_first_child"></block>
-            <block type="instance_wait_for_child"></block>
+            <block type="instance_find_first_child">
+                <value name="NAME">
+                    <block type="text">
+                        <field name="TEXT">Child</field>
+                    </block>
+                </value>
+            </block>
+            <block type="instance_wait_for_child">
+                <value name="NAME">
+                    <block type="text">
+                        <field name="TEXT">Child</field>
+                    </block>
+                </value>
+            </block>
             <block type="instance_destroy"></block>
             <block type="instance_is_a"></block>
             <block type="instance_get_parent"></block>
@@ -116,13 +144,19 @@
             <block type="part_event_connect"></block>
         </category>
         <category name="Humanoid">
-            <block type="humanoid_set_scale"></block>
+            <block type="humanoid_set_scale">
+                <value name="NAME">
+                    <block type="math_number">
+                        <field name="NUM">1.0</field>
+                    </block>
+                </value>
+               
+            </block>
             <block type="humanoid_get_scale"></block>
         </category>
         <category name="Body Movers">
-            <block type="instance_new"></block>
             <category name="BodyPosition">
-                <block type="instance_new_with_parent"></block>
+
             </category>
         </category>
     </xml>
