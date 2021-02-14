@@ -9,7 +9,6 @@ import (
 func main() {
 	// push to and fetch from queues
 	r := gin.New()
-	r.Static("/ui", "./static")
-	r.Static("/media", "./media")
+	r.Static("/", "./static")
 	http.ListenAndServe(":9080", r)
 }

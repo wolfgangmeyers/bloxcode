@@ -141,7 +141,8 @@ Blockly.Blocks['part_event_connect'] = {
             .appendField(new Blockly.FieldVariable("item"), "INSTANCE")
             .appendField(new Blockly.FieldDropdown([
                 ["Touched", "Touched"]
-            ]), "EVENT");
+            ]), "EVENT")
+            .appendField(new Blockly.FieldVariable("arg"), "ARG");
         this.appendStatementInput("NAME")
             .setCheck(null);
         this.setPreviousStatement(true, null);
@@ -155,9 +156,33 @@ Blockly.Blocks['part_event_connect'] = {
 Blockly.Lua['part_event_connect'] = function(block) {
     var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
     var dropdown_event = block.getFieldValue('EVENT');
+    var variable_arg = Blockly.Lua.variableDB_.getName(block.getFieldValue('ARG'), Blockly.Variables.NAME_TYPE);
     var statements_name = Blockly.Lua.statementToCode(block, 'NAME');
-    var code = `${variable_instance}.${dropdown_event}:Connect(function()
+    // TODO: Assemble JavaScript into code variable.
+    var code = `${variable_instance}.${dropdown_event}:Connect(function(${variable_arg})
 ${statements_name}
 end)\n`;
+    return code;
+};
+
+Blockly.Blocks['set_local_variable'] = {
+    init: function() {
+        this.appendValueInput("VALUE")
+            .setCheck(null)
+            .appendField("set local")
+            .appendField(new Blockly.FieldVariable("item"), "VARIABLE")
+            .appendField("to");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['set_local_variable'] = function(block) {
+    var variable_variable = Blockly.Lua.variableDB_.getName(block.getFieldValue('VARIABLE'), Blockly.Variables.NAME_TYPE);
+    var value_value = Blockly.Lua.valueToCode(block, 'VALUE', Blockly.Lua.ORDER_ATOMIC);
+    var code = `local ${variable_variable} = ${value_value}\n`;
     return code;
 };
