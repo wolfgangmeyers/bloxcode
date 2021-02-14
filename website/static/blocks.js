@@ -126,6 +126,28 @@ Blockly.Lua['part_get_position'] = function (block) {
     return [code, Blockly.Lua.ORDER_NONE];
 };
 
+Blockly.Blocks['part_set_position'] = {
+    init: function () {
+        this.appendValueInput("POSITION")
+            .setCheck("Vector3")
+            .appendField("set position of")
+            .appendField(new Blockly.FieldVariable("part"), "PART")
+            .appendField("to");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['part_set_position'] = function (block) {
+    var variable_part = Blockly.Lua.variableDB_.getName(block.getFieldValue('PART'), Blockly.Variables.NAME_TYPE);
+    var value_position = Blockly.Lua.valueToCode(block, 'POSITION', Blockly.Lua.ORDER_ATOMIC);
+    var code = `${variable_part}.Position = ${value_position}\n`;
+    return code;
+};
+
 Blockly.Blocks['wait'] = {
     init: function () {
         this.appendDummyInput()
