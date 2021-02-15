@@ -200,6 +200,8 @@
                     </block>
                 </value>
             </block>
+            <block type="part_get_cframe"></block>
+            <block type="part_set_cframe"></block>
         </category>
         <category name="Humanoid">
             <block type="humanoid_set_scale">
@@ -238,6 +240,21 @@
                             </value>
                         </block>
                     </value>
+                </block>
+                <block type="bodyposition_set_p">
+                    <value name="NAME">
+                        <block type="math_number">
+                            <field name="NUM">10000</field>
+                        </block>
+                    </value>
+                </block>
+            </category>
+            <category name="BodyGyro">
+                <block type="part_get_cframe">
+                    <field name="PART">rot</field>
+                </block>
+                <block type="part_set_cframe">
+                    <field name="PART">rot</field>
                 </block>
             </category>
         </category>

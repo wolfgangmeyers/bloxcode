@@ -148,6 +148,68 @@ Blockly.Lua['part_set_position'] = function (block) {
     return code;
 };
 
+Blockly.Blocks['part_get_cframe'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("get CFrame of")
+            .appendField(new Blockly.FieldVariable("part"), "PART");
+        this.setOutput(true, "CFrame");
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['part_get_cframe'] = function (block) {
+    var variable_part = Blockly.Lua.variableDB_.getName(block.getFieldValue('PART'), Blockly.Variables.NAME_TYPE);
+    var code = `${variable_part}.CFrame`;
+    return [code, Blockly.Lua.ORDER_NONE];
+};
+
+Blockly.Blocks['part_set_cframe'] = {
+    init: function () {
+        this.appendValueInput("VALUE")
+            .setCheck("CFrame")
+            .appendField("set CFrame of")
+            .appendField(new Blockly.FieldVariable("part"), "PART")
+            .appendField("to");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['part_set_cframe'] = function (block) {
+    var variable_part = Blockly.Lua.variableDB_.getName(block.getFieldValue('PART'), Blockly.Variables.NAME_TYPE);
+    var value_value = Blockly.Lua.valueToCode(block, 'VALUE', Blockly.Lua.ORDER_ATOMIC);
+    var code = `${variable_part}.CFrame = ${value_value}\n`;
+    return code;
+};
+
+Blockly.Blocks['bodyposition_set_p'] = {
+    init: function () {
+        this.appendValueInput("NAME")
+            .setCheck("Number")
+            .appendField("set P of")
+            .appendField(new Blockly.FieldVariable("pos"), "POS")
+            .appendField("to");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['bodyposition_set_p'] = function (block) {
+    var variable_pos = Blockly.Lua.variableDB_.getName(block.getFieldValue('POS'), Blockly.Variables.NAME_TYPE);
+    var value_name = Blockly.Lua.valueToCode(block, 'NAME', Blockly.Lua.ORDER_ATOMIC);
+    var code = `${variable_pos}.P = ${value_name}\n`;
+    return code;
+};
+
 Blockly.Blocks['wait'] = {
     init: function () {
         this.appendDummyInput()
