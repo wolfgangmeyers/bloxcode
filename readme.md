@@ -43,3 +43,19 @@ enter the name of the script in the prompt. This will create two children in the
 
 Once connected to roblox studio, select existing scripts from the dropdown to the left.
 After a second or two the Bloxcode script should load.
+
+## Limitations
+
+* Only server scripts are supported, no local scripts
+* All scripts are saved in ServerStorageService
+* Only a tiny subset of the roblox api is currently implemented
+
+## Can I help make Bloxcode better?
+
+Yes, please! If there are any features you would like to see implemented, or any bugs you
+find, head over to the [github issues](https://github.com/wolfgangmeyers/bloxcode/issues) list for the project and see if someone has already filed an issue. If you find someone
+has already filed an issue, add a thumbs-up to the issue to upvote. If not, please file
+an issue and include details on what you would like changed.
+
+Help is also wanted in implementing new blocks that expose the Roblox API. If you would
+like to help with adding new blocks, check out the existing [block definitions](./docs/blocks.js) and [toolbox definition](./docs/index.html).
