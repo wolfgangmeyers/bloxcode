@@ -229,6 +229,28 @@ Blockly.Lua['wait'] = function (block) {
     return code;
 };
 
+Blockly.Blocks['spawn_thread'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("spawn thread");
+        this.appendStatementInput("FUNCTION")
+            .setCheck(null);
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['spawn_thread'] = function (block) {
+    var statements_function = Blockly.Lua.statementToCode(block, 'FUNCTION');
+    var code = `spawn(function()
+    ${statements_function}
+    end)\n`;
+    return code;
+};
+
 Blockly.Blocks['instance_destroy'] = {
     init: function () {
         this.appendDummyInput()
