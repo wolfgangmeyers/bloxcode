@@ -1,4 +1,4 @@
-![Bloxcode](https://www.bloxcode.studio/bloxcode-logo-truncated.png)
+![Bloxcode](https://www.bloxcode.studio/bloxcode-logo-inverted.png)
 
 Welcome to Bloxcode!
 
