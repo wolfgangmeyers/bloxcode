@@ -318,6 +318,67 @@ Blockly.Lua['instance_set_parent'] = function (block) {
     return code;
 };
 
+Blockly.Blocks['instance_clone'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("make a clone of")
+            .appendField(new Blockly.FieldVariable("instance"), "INSTANCE");
+        this.setOutput(true, "Instance");
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['instance_clone'] = function (block) {
+    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
+    var code = `${variable_instance}:Clone()`;
+    return [code, Blockly.Lua.ORDER_NONE];
+};
+
+Blockly.Blocks['instance_get_archivable'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("is")
+            .appendField(new Blockly.FieldVariable("instance"), "INSTANCE")
+            .appendField("archivable");
+        this.setOutput(true, "Boolean");
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['instance_get_archivable'] = function (block) {
+    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
+    var code = `${variable_instance}.Archivable`;
+    return [code, Blockly.Lua.ORDER_NONE];
+};
+
+Blockly.Blocks['instance_set_archivable'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("set")
+            .appendField(new Blockly.FieldVariable("instance"), "INSTANCE")
+            .appendField("archivable to");
+        this.appendValueInput("VALUE")
+            .setCheck("Boolean");
+        this.setInputsInline(true);
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['instance_set_archivable'] = function (block) {
+    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
+    var value_value = Blockly.Lua.valueToCode(block, 'VALUE', Blockly.Lua.ORDER_ATOMIC);
+    var code = `${variable_instance}.Archivable = ${value_value}\n`;
+    return code;
+};
+
 Blockly.Blocks['part_event_connect'] = {
     init: function () {
         this.appendDummyInput()
