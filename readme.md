@@ -26,6 +26,24 @@ and it establishes communication with the plugin, the popup will disappear and s
 can be managed from the Bloxcode UI. If the connection fails for some reason, the plugin
 will prompt the user again with a new code to connect.
 
+Installation:
+
+Eventually this will be published as an official plugin. Until then, you can install
+the plugin into Roblox Studio manually:
+
+* Create a new server Script in ServerStorage
+* Paste the contents of [Sync.lua](./docs/Sync.lua) into the script
+* Right click the script and select Save Local Plugin
+
+Once the plugin is active, you should be prompted to navigate to www.bloxcode.studio with
+a code to enter in the website.
+
+Removal:
+
+Navigate to the Plugins tab in Roblox Studio and click on the Plugins Folder. Delete the
+script that was saved earlier and restart Roblox Studio.
+
+
 ### Bloxcode website
 
 The Bloxcode website hosted at https://www.bloxcode.studio provides a Blockly interface
