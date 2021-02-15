@@ -501,6 +501,46 @@ Blockly.Lua['humanoid_get_scale'] = function (block) {
     return [code, Blockly.Lua.ORDER_NONE];
 };
 
+Blockly.Blocks['humanoid_get_walkspeed'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("get walkspeed of")
+            .appendField(new Blockly.FieldVariable("humanoid"), "HUMANOID");
+        this.setOutput(true, "Number");
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['humanoid_get_walkspeed'] = function (block) {
+    var variable_humanoid = Blockly.Lua.variableDB_.getName(block.getFieldValue('HUMANOID'), Blockly.Variables.NAME_TYPE);
+    var code = `${variable_humanoid}.WalkSpeed`;
+    return [code, Blockly.Lua.ORDER_NONE];
+};
+
+Blockly.Blocks['humanoid_set_walkspeed'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("set walk speed of")
+            .appendField(new Blockly.FieldVariable("humanoid"), "HUMANOID")
+            .appendField("to");
+        this.appendValueInput("VALUE")
+            .setCheck("Number");
+        this.setInputsInline(true);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['humanoid_set_walkspeed'] = function (block) {
+    var variable_humanoid = Blockly.Lua.variableDB_.getName(block.getFieldValue('HUMANOID'), Blockly.Variables.NAME_TYPE);
+    var value_value = Blockly.Lua.valueToCode(block, 'VALUE', Blockly.Lua.ORDER_ATOMIC);
+    var code = `${variable_humanoid}.WalkSpeed = ${value_value}\n`;
+    return code;
+};
+
 Blockly.Blocks['vector3_new'] = {
     init: function () {
         this.appendDummyInput()
