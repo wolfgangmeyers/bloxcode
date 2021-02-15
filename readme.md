@@ -58,4 +58,14 @@ has already filed an issue, add a thumbs-up to the issue to upvote. If not, plea
 an issue and include details on what you would like changed.
 
 Help is also wanted in implementing new blocks that expose the Roblox API. If you would
-like to help with adding new blocks, check out the existing [block definitions](./docs/blocks.js) and [toolbox definition](./docs/index.html).
+like to help with adding new blocks, check out the existing [block definitions](./docs/blocks.js) and [toolbox definition](./docs/index.html). The general workflow for
+implementing a new block:
+
+* Fork your own version of this repository
+* Define a new block using [Block Factory](https://blockly-demo.appspot.com/static/demos/blockfactory/index.html) (TODO: add a guide on how to use this)
+* Copy over the block definition (javascript) and Lua generator stub into the [block definitions file](./docs/blocks.js).
+* Add the lua code to the generator stub
+* Test out your changes locally (TODO: add a guide on how to do this)
+* Submit a pull request
+
+
