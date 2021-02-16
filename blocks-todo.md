@@ -1,6 +1,17 @@
 # List of Roblox APIs to implement
 
-## Instance
+## Legend:
+:x: Not done yet
+:heavy_minus_sign: Not applicable
+:hourglass: Work in Progress
+:heavy_check_mark: Done
+
+<details>
+<summary>
+Instance :hourglass:
+</summary>
+
+### Instance
 
 ### Fields
 
@@ -16,3 +27,4 @@
 | Function | Implemented |
 |----------|-------------|
 | ClearAllChildren | :x: |
+<details>
