@@ -75,6 +75,8 @@ find, head over to the [github issues](https://github.com/wolfgangmeyers/bloxcod
 has already filed an issue, add a thumbs-up to the issue to upvote. If not, please file
 an issue and include details on what you would like changed.
 
+Also feel free to browse through [discussions](https://github.com/wolfgangmeyers/bloxcode/discussions) or start your own.
+
 Help is also wanted in implementing new blocks that expose the Roblox API. If you would
 like to help with adding new blocks, check out the existing [block definitions](./docs/blocks.js) and [toolbox definition](./docs/index.html). The general workflow for
 implementing a new block:
