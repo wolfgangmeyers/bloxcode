@@ -7,12 +7,12 @@
 | Field | Read | Write |
 |------------|--------------------|--------------------|
 | Archivable | :heavy_check_mark: | :heavy_check_mark: |
-| ClassName  | :X:                | :heavy_minus_sign: |
-| Name       | :X:                | :X:                |
+| ClassName  | :x:                | :heavy_minus_sign: |
+| Name       | :x:                | :x:                |
 | Parent     | :heavy_check_mark: | :heavy_check_mark: |
 
 ### Functions
 
 | Function | Implemented |
 |----------|-------------|
-| ClearAllChildren | :X: |
+| ClearAllChildren | :x: |
