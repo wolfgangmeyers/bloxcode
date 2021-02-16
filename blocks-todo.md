@@ -27,4 +27,4 @@ Instance :hourglass:
 | Function | Implemented |
 |----------|-------------|
 | ClearAllChildren | :x: |
-<details>
+</details>
