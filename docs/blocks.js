@@ -296,11 +296,12 @@ Blockly.Lua['instance_wait_for_child'] = function (block) {
     var code = `${variable_instance}:WaitForChild(${value_name}, ${number_timeout})\n`;
     return code;
 };
-
-Blockly.Blocks['instance_get_parent'] = {
+Blockly.Blocks['instance_get_attribute'] = {
     init: function () {
         this.appendDummyInput()
-            .appendField("get parent of")
+            .appendField("get")
+            .appendField(new Blockly.FieldDropdown([["Parent", "Parent"], ["Name", "Name"], ["Archivable", "Archivable"]]), "ATTRIBUTE")
+            .appendField("of")
             .appendField(new Blockly.FieldVariable("instance"), "INSTANCE");
         this.setOutput(true, null);
         this.setColour(230);
@@ -309,21 +310,22 @@ Blockly.Blocks['instance_get_parent'] = {
     }
 };
 
-Blockly.Lua['instance_get_parent'] = function (block) {
+Blockly.Lua['instance_get_attribute'] = function (block) {
+    var dropdown_attribute = block.getFieldValue('ATTRIBUTE');
     var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
-    // TODO: Assemble Lua into code variable.
-    var code = `${variable_instance}.Parent`;
-    // TODO: Change ORDER_NONE to the correct strength.
+    var code = `${variable_instance}.${dropdown_attribute}`;
     return [code, Blockly.Lua.ORDER_NONE];
 };
 
-Blockly.Blocks['instance_set_parent'] = {
+Blockly.Blocks['instance_set_attribute'] = {
     init: function () {
-        this.appendDummyInput()
-            .appendField("set parent of")
+        this.appendValueInput("VALUE")
+            .setCheck(null)
+            .appendField("set")
+            .appendField(new Blockly.FieldDropdown([["Parent", "Parent"], ["Name", "Name"], ["Archivable", "Archivable"]]), "ATTRIBUTE")
+            .appendField("of")
             .appendField(new Blockly.FieldVariable("instance"), "INSTANCE")
-            .appendField("to")
-            .appendField(new Blockly.FieldVariable("item"), "ITEM");
+            .appendField("to");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour(230);
@@ -332,11 +334,11 @@ Blockly.Blocks['instance_set_parent'] = {
     }
 };
 
-Blockly.Lua['instance_set_parent'] = function (block) {
+Blockly.Lua['instance_set_attribute'] = function (block) {
+    var dropdown_attribute = block.getFieldValue('ATTRIBUTE');
     var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
-    var variable_item = Blockly.Lua.variableDB_.getName(block.getFieldValue('ITEM'), Blockly.Variables.NAME_TYPE);
-    // TODO: Assemble Lua into code variable.
-    var code = `${variable_instance}.Parent = ${variable_item}\n`;
+    var value_value = Blockly.Lua.valueToCode(block, 'VALUE', Blockly.Lua.ORDER_ATOMIC);
+    var code = `${variable_instance}.${dropdown_attribute} = ${value_value}\n`;
     return code;
 };
 
@@ -501,43 +503,50 @@ Blockly.Lua['humanoid_get_scale'] = function (block) {
     return [code, Blockly.Lua.ORDER_NONE];
 };
 
-Blockly.Blocks['humanoid_get_walkspeed'] = {
+
+Blockly.Blocks['humanoid_get_attribute'] = {
     init: function () {
         this.appendDummyInput()
-            .appendField("get walkspeed of")
+            .appendField("get")
+            .appendField(new Blockly.FieldDropdown([["AutoJumpEnabled", "AutoJumpEnabled"], ["AutoRotate", "AutoRotate"], ["AutomaticScalingEnabled", "AutomaticScalingEnabled"], ["BreakJointsOnDeath", "BreakJointsOnDeath"], ["CameraOffset", "CameraOffset"], ["CollisionType", "CollisionType"], ["DisplayDistanceType", "DisplayDistanceType"], ["DisplayName", "DisplayName"], ["FloorMaterial", "FloorMaterial"], ["Health", "Health"], ["HealthDisplayDistance", "HealthDisplayDistance"], ["HealthDisplayType", "HealthDisplayType"], ["HipHeight", "HipHeight"], ["Jump", "Jump"], ["JumpHeight", "JumpHeight"], ["JumpPower", "JumpPower"], ["MaxHealth", "MaxHealth"], ["MaxSlopeAngle", "MaxSlopeAngle"], ["MoveDirection", "MoveDirection"], ["NameDisplayDistance", "NameDisplayDistance"], ["NameOcclusion", "NameOcclusion"], ["PlatformStand", "PlatformStand"], ["RequiresNeck", "RequiresNeck"], ["RigType", "RigType"], ["RootPart", "RootPart"], ["SeatPart", "SeatPart"], ["Sit", "Sit"], ["TargetPoint", "TargetPoint"], ["UseJumpPower", "UseJumpPower"], ["TargetPoint", "TargetPoint"], ["WalkSpeed", "WalkSpeed"], ["WalkToPoint", "WalkToPoint"]]), "ATTRIBUTE")
+            .appendField("of")
             .appendField(new Blockly.FieldVariable("humanoid"), "HUMANOID");
-        this.setOutput(true, "Number");
+        this.setOutput(true, null);
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
     }
 };
 
-Blockly.Lua['humanoid_get_walkspeed'] = function (block) {
+Blockly.Lua['humanoid_get_attribute'] = function (block) {
+    var dropdown_attribute = block.getFieldValue('ATTRIBUTE');
     var variable_humanoid = Blockly.Lua.variableDB_.getName(block.getFieldValue('HUMANOID'), Blockly.Variables.NAME_TYPE);
-    var code = `${variable_humanoid}.WalkSpeed`;
+    var code = `${variable_humanoid}.${dropdown_attribute}`;
     return [code, Blockly.Lua.ORDER_NONE];
 };
 
-Blockly.Blocks['humanoid_set_walkspeed'] = {
+Blockly.Blocks['humanoid_set_attribute'] = {
     init: function () {
-        this.appendDummyInput()
-            .appendField("set walk speed of")
+        this.appendValueInput("NAME")
+            .setCheck(null)
+            .appendField("set")
+            .appendField(new Blockly.FieldDropdown([["AutoJumpEnabled", "AutoJumpEnabled"], ["AutoRotate", "AutoRotate"], ["AutomaticScalingEnabled", "AutomaticScalingEnabled"], ["BreakJointsOnDeath", "BreakJointsOnDeath"], ["CameraOffset", "CameraOffset"], ["CollisionType", "CollisionType"], ["DisplayDistanceType", "DisplayDistanceType"], ["DisplayName", "DisplayName"], ["Health", "Health"], ["HealthDisplayDistance", "HealthDisplayDistance"], ["HealthDisplayType", "HealthDisplayType"], ["HipHeight", "HipHeight"], ["Jump", "Jump"], ["JumpHeight", "JumpHeight"], ["JumpPower", "JumpPower"], ["MaxHealth", "MaxHealth"], ["MaxSlopeAngle", "MaxSlopeAngle"], ["NameDisplayDistance", "NameDisplayDistance"], ["NameOcclusion", "NameOcclusion"], ["PlatformStand", "PlatformStand"], ["RequiresNeck", "RequiresNeck"], ["RigType", "RigType"], ["Sit", "Sit"], ["TargetPoint", "TargetPoint"], ["UseJumpPower", "UseJumpPower"], ["TargetPoint", "TargetPoint"], ["WalkSpeed", "WalkSpeed"], ["WalkToPoint", "WalkToPoint"]]), "ATTRIBUTE")
+            .appendField("of")
             .appendField(new Blockly.FieldVariable("humanoid"), "HUMANOID")
             .appendField("to");
-        this.appendValueInput("VALUE")
-            .setCheck("Number");
-        this.setInputsInline(true);
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
     }
 };
 
-Blockly.Lua['humanoid_set_walkspeed'] = function (block) {
+Blockly.Lua['humanoid_set_attribute'] = function (block) {
+    var dropdown_attribute = block.getFieldValue('ATTRIBUTE');
     var variable_humanoid = Blockly.Lua.variableDB_.getName(block.getFieldValue('HUMANOID'), Blockly.Variables.NAME_TYPE);
-    var value_value = Blockly.Lua.valueToCode(block, 'VALUE', Blockly.Lua.ORDER_ATOMIC);
-    var code = `${variable_humanoid}.WalkSpeed = ${value_value}\n`;
+    var value_name = Blockly.Lua.valueToCode(block, 'NAME', Blockly.Lua.ORDER_ATOMIC);
+    var code = `${variable_humanoid}.${dropdown_attribute} = ${value_name}\n`
     return code;
 };
 
@@ -570,4 +579,29 @@ Blockly.Lua['vector3_new'] = function (block) {
     var code = `Vector3.new(${value_x}, ${value_y}, ${value_z})`;
     // TODO: Change ORDER_NONE to the correct strength.
     return [code, Blockly.Lua.ORDER_NONE];
+};
+
+Blockly.Blocks['players_player_added'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("when")
+            .appendField(new Blockly.FieldVariable("player"), "PLAYER")
+            .appendField("is added to the game do");
+        this.appendStatementInput("HANDLER")
+            .setCheck(null);
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['players_player_added'] = function (block) {
+    var variable_player = Blockly.Lua.variableDB_.getName(block.getFieldValue('PLAYER'), Blockly.Variables.NAME_TYPE);
+    var statements_handler = Blockly.Lua.statementToCode(block, 'HANDLER')
+    var code = `game:GetService("Players").PlayerAdded:Connect(function(${variable_player})
+        ${statements_handler}
+    end)\n`;
+    return code;
 };

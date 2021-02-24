@@ -1,0 +1,14 @@
+{
+  "name": "bloxcode",
+  "version": "1.0.0",
+  "description": "",
+  "main": "blockly_compressed.js",
+  "scripts": {
+    "start": "live-server ."
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "live-server": "^1.2.1"
+  }
+}

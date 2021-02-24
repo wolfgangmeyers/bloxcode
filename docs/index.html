@@ -178,16 +178,8 @@
             </block>
             <block type="instance_destroy"></block>
             <block type="instance_is_a"></block>
-            <block type="instance_get_parent"></block>
-            <block type="instance_set_parent"></block>
-            <block type="instance_get_archivable"></block>
-            <block type="instance_set_archivable">
-                <value name="VALUE">
-                    <block type="logic_boolean">
-                        <field name="BOOL">TRUE</field>
-                    </block>
-                </value>
-            </block>
+            <block type="instance_get_attribute"></block>
+            <block type="instance_set_attribute"></block>
             <block type="instance_clone"></block>
         </category>
         <category name="Part">
@@ -228,7 +220,8 @@
 
             </block>
             <block type="humanoid_get_scale"></block>
-            <block type="humanoid_get_walkspeed"></block>
+            <block type="humanoid_get_attribute"></block>
+            <block type="humanoid_set_attribute"></block>
         </category>
         <category name="Body Movers">
             <category name="BodyPosition">
@@ -272,6 +265,11 @@
                 <block type="part_set_cframe">
                     <field name="PART">rot</field>
                 </block>
+            </category>
+        </category>
+        <category name="Services">
+            <category name="Players">
+                <block type="players_player_added"></block>
             </category>
         </category>
     </xml>

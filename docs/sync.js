@@ -143,23 +143,58 @@ async function getConnectionInfo(code) {
     return await resp.json()
 }
 
+function saveLastUpdate(lastUpdate) {
+    localStorage.setItem("LAST_UPDATE", JSON.stringify(lastUpdate))
+}
 
+function loadLastUpdate() {
+    const data = localStorage.getItem("LAST_UPDATE")
+    if (data) {
+        return JSON.parse(data)
+    }
+}
 
-async function onConnect() {
-    let btnConnect = document.getElementById("connect");
-    btnConnect.innerHTML = "connecting..."
-    btnConnect.enabled = false
-    let code = document.getElementById("code").value
-    try {
-        connectionInfo = await getConnectionInfo(code)
-        btnConnect.innerHTML = "Connect to Roblox Studio"
-        btnConnect.enabled = true
-    } catch (err) {
-        btnConnect.innerHTML = "Connect to Roblox Studio"
-        btnConnect.enabled = true
-        console.error(err)
+function saveConnectionInfo(info) {
+    localStorage.setItem("CONNECTION_INFO", JSON.stringify(info))
+}
+
+function loadConnectionInfo() {
+    const lastUpdate = loadLastUpdate()
+    if (!lastUpdate) {
         return
     }
+    const now = new Date().getTime()
+    if (now - lastUpdate > 20 * 1000) {
+        return
+    }
+    let data = localStorage.getItem("CONNECTION_INFO")
+    if (data) {
+        return JSON.parse(data)
+    }
+}
+
+async function onConnect(info) {
+    if (info) {
+        connectionInfo = info
+    } else {
+        let btnConnect = document.getElementById("connect");
+        btnConnect.innerHTML = "connecting..."
+        btnConnect.enabled = false
+        let code = document.getElementById("code").value
+        
+        try {
+            connectionInfo = await getConnectionInfo(code)
+            btnConnect.innerHTML = "Connect to Roblox Studio"
+            btnConnect.enabled = true
+        } catch (err) {
+            btnConnect.innerHTML = "Connect to Roblox Studio"
+            btnConnect.enabled = true
+            console.error(err)
+            return
+        }
+        saveConnectionInfo(connectionInfo)
+    }
+   
 
 
     document.getElementById("controls").style = "display: block";
@@ -184,6 +219,7 @@ async function onConnect() {
         const result = await resp.json()
         console.log(result)
         if (result.messages.length > 0) {
+            saveLastUpdate(new Date().getTime())
             console.log("Got a message!", result)
             for (let message of result.messages) {
                 console.log(message);
@@ -204,7 +240,11 @@ async function onConnect() {
             }
         }
     }, 1000);
+}
 
+let info = loadConnectionInfo()
+if (info) {
+    onConnect(info)
 }
 
 document.getElementById("connect").addEventListener("click", onConnect)
