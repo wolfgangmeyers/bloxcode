@@ -36,8 +36,36 @@ function ListGlobalBloxScripts()
 	}
 end
 
+local max_depth = 3
+
+function RecursiveListEverything(children: Array, instance: Instance, depth: number)
+	if depth > max_depth then
+		return
+	end
+	for _, child: Instance in ipairs(instance:GetChildren()) do
+		local child_node = {
+			text=child.Name,
+			type=instance.ClassName
+		}
+		local grand_children = child:GetChildren()
+		if #grand_children > 0 then
+			child_node.children = {}
+			RecursiveListEverything(child_node.children, child, depth + 1)
+		end
+		table.insert(children, child_node)
+	end
+end
+
 function ListEverything()
-	-- TODO: recursive tree build...
+	local workspace_children = {}
+	RecursiveListEverything(workspace_children, game.Workspace, 1)
+	return {
+		workspace={
+			text="Workspace",
+			type=game.Workspace.ClassName,
+			children=workspace_children
+		}
+	}
 end
 
 function GetGlobalBloxScript(name: string)
@@ -346,6 +374,9 @@ function Sync()
 					if message.event_data and message.event_data.name then
 						DeleteGlobalLuaScript(message.event_data.name)
 					end
+				elseif message.event_type == "ListEverything" then
+					local result = ListEverything()
+					SendMessage("blox", "ListEverythingResult", result)
 				end
 			end
 		end)
