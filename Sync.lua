@@ -36,6 +36,10 @@ function ListGlobalBloxScripts()
 	}
 end
 
+function ListEverything()
+	-- TODO: recursive tree build...
+end
+
 function GetGlobalBloxScript(name: string)
 	local result = ""
 	if is_blox_script(name) then
@@ -297,8 +301,6 @@ function Sync()
 				SaveConnectionInfo(connectionInfo)
 				ClearLastBloxUpdate()
 			end
-			-- response = HttpService:GetAsync("http://localhost:9080/messages/studio")
-			-- data = HttpService:JSONDecode(response)
 			data = GetMessages("studio")
 			for _, message in ipairs(data.messages) do
 				SaveLastBloxUpdate()
