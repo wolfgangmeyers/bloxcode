@@ -4,13 +4,16 @@
 <head>
     <meta charset="utf-8">
     <title>Roblox Block Coding Prototype</title>
+    <link rel="stylesheet" href="./dark-filetree/style.css" />
+    <script src="./jquery-3.5.1.min.js"></script>
+    <script src="./jstree.min.js"></script>
     <script src="./blockly_compressed.js"></script>
     <script src="./blocks_compressed.js"></script>
     <script src="./lua_compressed.js"></script>
     <script src="./en.js"></script>
     <style>
         body {
-            background-color: #303030;
+            background-color: #181818;
             color: #fff;
             font-family: sans-serif;
         }
@@ -18,6 +21,28 @@
         h1 {
             font-weight: normal;
             font-size: 140%;
+        }
+        
+        button,
+        .btn {
+            background-color: #2B4764;
+            color: white;
+            border: none;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        
+        button:hover,
+        .btn:hover {
+            background-color: #35587c;
+        }
+        
+        #blocklyDiv {
+            position: absolute;
+        }
+        
+        #browser {
+            position: absolute;
         }
     </style>
 </head>
@@ -28,7 +53,7 @@
         <label>
             Code:
         </label>
-        <input type="text" id="code" placeholder="ABC123" />
+        <input class="form-control" style="display: inline; width: 200px" type="text" id="code" placeholder="ABC123" />
         <button id="connect" onclick="onConnect()">Connect to Roblox Studio</button>
         <button onclick="showCode()">Show Lua</button>
         <a href="https://github.com/wolfgangmeyers/roblox-blockly">
@@ -40,28 +65,21 @@
         <select id="codefile" onchange="onCodefileChanged()">
             <option value="">Select a file</option>
         </select>
-
         <button onclick="saveToRoblox()">Save to Roblox Studio</button>
         <button onclick="newBloxScript()">New Blox Script</button>
         <button onclick="deleteBloxScript()">Delete Blox Script</button>
         <button onclick="refresh()">Refresh</button>
         <button onclick="showCode()">Show Lua</button>
-        <a href="https://github.com/wolfgangmeyers/roblox-blockly">
+        <a class="btn" href="https://github.com/wolfgangmeyers/roblox-blockly">
             <button>Documentation</button>
         </a>
     </div>
     <hr />
 
-    <div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
+    <div id="browser" style="width: 200px; height: 480px;">
 
-    <script type="text/javascript">
-        const onResize = () => {
-            const div = document.getElementById("blocklyDiv")
-            div.style = `width: ${window.innerWidth - 10}px; height: ${window.innerHeight - 140}px;`
-        }
-        window.addEventListener("resize", onResize);
-        onResize()
-    </script>
+    </div>
+    <div id="blocklyDiv" style="left: 200px; height: 480px; width: 600px;"></div>
 
     <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
         <category name="Logic" colour="%{BKY_LOGIC_HUE}">
@@ -273,7 +291,14 @@
             </category>
         </category>
     </xml>
-
+    <script type="text/javascript">
+        const onResize = () => {
+            const div = document.getElementById("blocklyDiv")
+            div.style = `left: 200px; width: ${window.innerWidth - 210}px; height: ${window.innerHeight - 140}px;`
+        }
+        window.addEventListener("resize", onResize);
+        onResize()
+    </script>
     <script>
         var demoWorkspace = Blockly.inject('blocklyDiv', {
             media: '../../media/',
@@ -285,7 +310,36 @@
     </script>
     <script src="blocks.js"></script>
     <script src="sync.js"></script>
-
+    <script>
+        (function($) {
+            $("#browser").jstree({
+                core: {
+                    "themes": {
+                        "stripes": true
+                    },
+                    data: [{
+                        text: "Workspace",
+                        icon: "/icons/workspace.png",
+                        children: [{
+                            text: "house",
+                            icon: "/icons/instance.png",
+                            children: [{
+                                text: "house script",
+                                icon: "/icons/script.png"
+                            }]
+                        }]
+                    }, {
+                        text: "ServerScriptService",
+                        icon: "/icons/instance.png",
+                        children: [{
+                            text: "game",
+                            icon: "/icons/script.png"
+                        }]
+                    }]
+                },
+            })
+        }(jQuery))
+    </script>
 </body>
 
 </html>

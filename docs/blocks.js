@@ -1,6 +1,6 @@
 // define custom blocks
 Blockly.Blocks['instance_find_first_child'] = {
-    init: function () {
+    init: function() {
         this.appendValueInput("NAME")
             .setCheck("String")
             .appendField("find first child of")
@@ -13,7 +13,7 @@ Blockly.Blocks['instance_find_first_child'] = {
     }
 };
 
-Blockly.Lua['instance_find_first_child'] = function (block) {
+Blockly.Lua['instance_find_first_child'] = function(block) {
     var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
     var value_name = Blockly.Lua.valueToCode(block, 'NAME', Blockly.Lua.ORDER_ATOMIC);
     var code = `${variable_instance}:FindFirstChild(${value_name})`;
@@ -21,12 +21,15 @@ Blockly.Lua['instance_find_first_child'] = function (block) {
 };
 
 Blockly.Blocks['instance_is_a'] = {
-    init: function () {
+    init: function() {
         this.appendDummyInput()
             .appendField("is")
             .appendField(new Blockly.FieldVariable("instance"), "INSTANCE")
             .appendField("a")
-            .appendField(new Blockly.FieldDropdown([["Part", "Part"], ["Humanoid", "Humanoid"]]), "TYPE");
+            .appendField(new Blockly.FieldDropdown([
+                ["Part", "Part"],
+                ["Humanoid", "Humanoid"]
+            ]), "TYPE");
         this.setOutput(true, "Boolean");
         this.setColour(230);
         this.setTooltip("");
@@ -34,7 +37,7 @@ Blockly.Blocks['instance_is_a'] = {
     }
 };
 
-Blockly.Lua['instance_is_a'] = function (block) {
+Blockly.Lua['instance_is_a'] = function(block) {
     var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
     var dropdown_type = block.getFieldValue('TYPE');
     var code = `${variable_instance}:isA("${dropdown_type}")`;
@@ -42,10 +45,13 @@ Blockly.Lua['instance_is_a'] = function (block) {
 };
 
 Blockly.Blocks['instance_new'] = {
-    init: function () {
+    init: function() {
         this.appendDummyInput()
             .appendField("create new instance of type")
-            .appendField(new Blockly.FieldDropdown([["BodyGyro", "BodyGyro"], ["BodyPosition", "BodyPosition"]]), "TYPE");
+            .appendField(new Blockly.FieldDropdown([
+                ["BodyGyro", "BodyGyro"],
+                ["BodyPosition", "BodyPosition"]
+            ]), "TYPE");
         this.setOutput(true, null);
         this.setColour(230);
         this.setTooltip("");
@@ -53,17 +59,20 @@ Blockly.Blocks['instance_new'] = {
     }
 };
 
-Blockly.Lua['instance_new'] = function (block) {
+Blockly.Lua['instance_new'] = function(block) {
     var dropdown_type = block.getFieldValue('TYPE');
     var code = `Instance.new("${dropdown_type}")`;
     return [code, Blockly.Lua.ORDER_NONE];
 };
 
 Blockly.Blocks['instance_new_with_parent'] = {
-    init: function () {
+    init: function() {
         this.appendDummyInput()
             .appendField("create new instance of type")
-            .appendField(new Blockly.FieldDropdown([["BodyGyro", "BodyGyro"], ["BodyPosition", "BodyPosition"]]), "TYPE")
+            .appendField(new Blockly.FieldDropdown([
+                ["BodyGyro", "BodyGyro"],
+                ["BodyPosition", "BodyPosition"]
+            ]), "TYPE")
             .appendField("with parent")
             .appendField(new Blockly.FieldVariable("instance"), "INSTANCE");
         this.setOutput(true, null);
@@ -73,7 +82,7 @@ Blockly.Blocks['instance_new_with_parent'] = {
     }
 };
 
-Blockly.Lua['instance_new_with_parent'] = function (block) {
+Blockly.Lua['instance_new_with_parent'] = function(block) {
     var dropdown_type = block.getFieldValue('TYPE');
     var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
     var code = `Instance.new("${dropdown_type}", ${variable_instance})`;
@@ -81,7 +90,7 @@ Blockly.Lua['instance_new_with_parent'] = function (block) {
 };
 
 Blockly.Blocks['part_set_brickcolor'] = {
-    init: function () {
+    init: function() {
         this.appendDummyInput()
             .appendField("set brick color")
             .appendField(new Blockly.FieldVariable("item"), "INSTANCE")
@@ -99,7 +108,7 @@ Blockly.Blocks['part_set_brickcolor'] = {
     }
 };
 
-Blockly.Lua['part_set_brickcolor'] = function (block) {
+Blockly.Lua['part_set_brickcolor'] = function(block) {
     var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
     var number_r = block.getFieldValue('R');
     var number_g = block.getFieldValue('G');
@@ -109,7 +118,7 @@ Blockly.Lua['part_set_brickcolor'] = function (block) {
 };
 
 Blockly.Blocks['part_get_position'] = {
-    init: function () {
+    init: function() {
         this.appendDummyInput()
             .appendField("get position of")
             .appendField(new Blockly.FieldVariable("part"), "PART");
@@ -120,14 +129,14 @@ Blockly.Blocks['part_get_position'] = {
     }
 };
 
-Blockly.Lua['part_get_position'] = function (block) {
+Blockly.Lua['part_get_position'] = function(block) {
     var variable_part = Blockly.Lua.variableDB_.getName(block.getFieldValue('PART'), Blockly.Variables.NAME_TYPE);
     var code = `${variable_part}.Position`;
     return [code, Blockly.Lua.ORDER_NONE];
 };
 
 Blockly.Blocks['part_set_position'] = {
-    init: function () {
+    init: function() {
         this.appendValueInput("POSITION")
             .setCheck("Vector3")
             .appendField("set position of")
@@ -141,7 +150,7 @@ Blockly.Blocks['part_set_position'] = {
     }
 };
 
-Blockly.Lua['part_set_position'] = function (block) {
+Blockly.Lua['part_set_position'] = function(block) {
     var variable_part = Blockly.Lua.variableDB_.getName(block.getFieldValue('PART'), Blockly.Variables.NAME_TYPE);
     var value_position = Blockly.Lua.valueToCode(block, 'POSITION', Blockly.Lua.ORDER_ATOMIC);
     var code = `${variable_part}.Position = ${value_position}\n`;
@@ -149,7 +158,7 @@ Blockly.Lua['part_set_position'] = function (block) {
 };
 
 Blockly.Blocks['part_get_cframe'] = {
-    init: function () {
+    init: function() {
         this.appendDummyInput()
             .appendField("get CFrame of")
             .appendField(new Blockly.FieldVariable("part"), "PART");
@@ -160,14 +169,14 @@ Blockly.Blocks['part_get_cframe'] = {
     }
 };
 
-Blockly.Lua['part_get_cframe'] = function (block) {
+Blockly.Lua['part_get_cframe'] = function(block) {
     var variable_part = Blockly.Lua.variableDB_.getName(block.getFieldValue('PART'), Blockly.Variables.NAME_TYPE);
     var code = `${variable_part}.CFrame`;
     return [code, Blockly.Lua.ORDER_NONE];
 };
 
 Blockly.Blocks['part_set_cframe'] = {
-    init: function () {
+    init: function() {
         this.appendValueInput("VALUE")
             .setCheck("CFrame")
             .appendField("set CFrame of")
@@ -181,7 +190,7 @@ Blockly.Blocks['part_set_cframe'] = {
     }
 };
 
-Blockly.Lua['part_set_cframe'] = function (block) {
+Blockly.Lua['part_set_cframe'] = function(block) {
     var variable_part = Blockly.Lua.variableDB_.getName(block.getFieldValue('PART'), Blockly.Variables.NAME_TYPE);
     var value_value = Blockly.Lua.valueToCode(block, 'VALUE', Blockly.Lua.ORDER_ATOMIC);
     var code = `${variable_part}.CFrame = ${value_value}\n`;
@@ -189,7 +198,7 @@ Blockly.Lua['part_set_cframe'] = function (block) {
 };
 
 Blockly.Blocks['bodyposition_set_p'] = {
-    init: function () {
+    init: function() {
         this.appendValueInput("NAME")
             .setCheck("Number")
             .appendField("set P of")
@@ -203,7 +212,7 @@ Blockly.Blocks['bodyposition_set_p'] = {
     }
 };
 
-Blockly.Lua['bodyposition_set_p'] = function (block) {
+Blockly.Lua['bodyposition_set_p'] = function(block) {
     var variable_pos = Blockly.Lua.variableDB_.getName(block.getFieldValue('POS'), Blockly.Variables.NAME_TYPE);
     var value_name = Blockly.Lua.valueToCode(block, 'NAME', Blockly.Lua.ORDER_ATOMIC);
     var code = `${variable_pos}.P = ${value_name}\n`;
@@ -211,7 +220,7 @@ Blockly.Lua['bodyposition_set_p'] = function (block) {
 };
 
 Blockly.Blocks['wait'] = {
-    init: function () {
+    init: function() {
         this.appendDummyInput()
             .appendField("wait")
             .appendField(new Blockly.FieldNumber(0, 0), "AMOUNT");
@@ -223,14 +232,14 @@ Blockly.Blocks['wait'] = {
     }
 };
 
-Blockly.Lua['wait'] = function (block) {
+Blockly.Lua['wait'] = function(block) {
     var number_amount = block.getFieldValue('AMOUNT');
     var code = `wait(${number_amount})\n`;
     return code;
 };
 
 Blockly.Blocks['spawn_thread'] = {
-    init: function () {
+    init: function() {
         this.appendDummyInput()
             .appendField("spawn thread");
         this.appendStatementInput("FUNCTION")
@@ -243,7 +252,7 @@ Blockly.Blocks['spawn_thread'] = {
     }
 };
 
-Blockly.Lua['spawn_thread'] = function (block) {
+Blockly.Lua['spawn_thread'] = function(block) {
     var statements_function = Blockly.Lua.statementToCode(block, 'FUNCTION');
     var code = `spawn(function()
     ${statements_function}
@@ -252,7 +261,7 @@ Blockly.Lua['spawn_thread'] = function (block) {
 };
 
 Blockly.Blocks['instance_destroy'] = {
-    init: function () {
+    init: function() {
         this.appendDummyInput()
             .appendField("destroy")
             .appendField(new Blockly.FieldVariable("instance"), "INSTANCE");
@@ -264,14 +273,14 @@ Blockly.Blocks['instance_destroy'] = {
     }
 };
 
-Blockly.Lua['instance_destroy'] = function (block) {
+Blockly.Lua['instance_destroy'] = function(block) {
     var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
     var code = `${variable_instance}:Destroy()\n`
     return code;
 };
 
 Blockly.Blocks['instance_wait_for_child'] = {
-    init: function () {
+    init: function() {
         this.appendDummyInput()
             .appendField("wait for child")
             .appendField(new Blockly.FieldVariable("workspace"), "INSTANCE");
@@ -289,7 +298,7 @@ Blockly.Blocks['instance_wait_for_child'] = {
     }
 }
 
-Blockly.Lua['instance_wait_for_child'] = function (block) {
+Blockly.Lua['instance_wait_for_child'] = function(block) {
     var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
     var value_name = Blockly.Lua.valueToCode(block, 'NAME', Blockly.Lua.ORDER_ATOMIC);
     var number_timeout = block.getFieldValue('TIMEOUT');
@@ -297,10 +306,14 @@ Blockly.Lua['instance_wait_for_child'] = function (block) {
     return code;
 };
 Blockly.Blocks['instance_get_attribute'] = {
-    init: function () {
+    init: function() {
         this.appendDummyInput()
             .appendField("get")
-            .appendField(new Blockly.FieldDropdown([["Parent", "Parent"], ["Name", "Name"], ["Archivable", "Archivable"]]), "ATTRIBUTE")
+            .appendField(new Blockly.FieldDropdown([
+                ["Parent", "Parent"],
+                ["Name", "Name"],
+                ["Archivable", "Archivable"]
+            ]), "ATTRIBUTE")
             .appendField("of")
             .appendField(new Blockly.FieldVariable("instance"), "INSTANCE");
         this.setOutput(true, null);
@@ -310,7 +323,7 @@ Blockly.Blocks['instance_get_attribute'] = {
     }
 };
 
-Blockly.Lua['instance_get_attribute'] = function (block) {
+Blockly.Lua['instance_get_attribute'] = function(block) {
     var dropdown_attribute = block.getFieldValue('ATTRIBUTE');
     var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
     var code = `${variable_instance}.${dropdown_attribute}`;
@@ -318,11 +331,15 @@ Blockly.Lua['instance_get_attribute'] = function (block) {
 };
 
 Blockly.Blocks['instance_set_attribute'] = {
-    init: function () {
+    init: function() {
         this.appendValueInput("VALUE")
             .setCheck(null)
             .appendField("set")
-            .appendField(new Blockly.FieldDropdown([["Parent", "Parent"], ["Name", "Name"], ["Archivable", "Archivable"]]), "ATTRIBUTE")
+            .appendField(new Blockly.FieldDropdown([
+                ["Parent", "Parent"],
+                ["Name", "Name"],
+                ["Archivable", "Archivable"]
+            ]), "ATTRIBUTE")
             .appendField("of")
             .appendField(new Blockly.FieldVariable("instance"), "INSTANCE")
             .appendField("to");
@@ -334,7 +351,7 @@ Blockly.Blocks['instance_set_attribute'] = {
     }
 };
 
-Blockly.Lua['instance_set_attribute'] = function (block) {
+Blockly.Lua['instance_set_attribute'] = function(block) {
     var dropdown_attribute = block.getFieldValue('ATTRIBUTE');
     var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
     var value_value = Blockly.Lua.valueToCode(block, 'VALUE', Blockly.Lua.ORDER_ATOMIC);
@@ -343,7 +360,7 @@ Blockly.Lua['instance_set_attribute'] = function (block) {
 };
 
 Blockly.Blocks['instance_clone'] = {
-    init: function () {
+    init: function() {
         this.appendDummyInput()
             .appendField("make a clone of")
             .appendField(new Blockly.FieldVariable("instance"), "INSTANCE");
@@ -354,14 +371,14 @@ Blockly.Blocks['instance_clone'] = {
     }
 };
 
-Blockly.Lua['instance_clone'] = function (block) {
+Blockly.Lua['instance_clone'] = function(block) {
     var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
     var code = `${variable_instance}:Clone()`;
     return [code, Blockly.Lua.ORDER_NONE];
 };
 
 Blockly.Blocks['instance_get_archivable'] = {
-    init: function () {
+    init: function() {
         this.appendDummyInput()
             .appendField("is")
             .appendField(new Blockly.FieldVariable("instance"), "INSTANCE")
@@ -373,14 +390,14 @@ Blockly.Blocks['instance_get_archivable'] = {
     }
 };
 
-Blockly.Lua['instance_get_archivable'] = function (block) {
+Blockly.Lua['instance_get_archivable'] = function(block) {
     var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
     var code = `${variable_instance}.Archivable`;
     return [code, Blockly.Lua.ORDER_NONE];
 };
 
 Blockly.Blocks['instance_set_archivable'] = {
-    init: function () {
+    init: function() {
         this.appendDummyInput()
             .appendField("set")
             .appendField(new Blockly.FieldVariable("instance"), "INSTANCE")
@@ -396,7 +413,7 @@ Blockly.Blocks['instance_set_archivable'] = {
     }
 };
 
-Blockly.Lua['instance_set_archivable'] = function (block) {
+Blockly.Lua['instance_set_archivable'] = function(block) {
     var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
     var value_value = Blockly.Lua.valueToCode(block, 'VALUE', Blockly.Lua.ORDER_ATOMIC);
     var code = `${variable_instance}.Archivable = ${value_value}\n`;
@@ -404,10 +421,12 @@ Blockly.Lua['instance_set_archivable'] = function (block) {
 };
 
 Blockly.Blocks['part_event_connect'] = {
-    init: function () {
+    init: function() {
         this.appendDummyInput()
             .appendField("on event")
-            .appendField(new Blockly.FieldDropdown([["Touched", "Touched"]]), "EVENT")
+            .appendField(new Blockly.FieldDropdown([
+                ["Touched", "Touched"]
+            ]), "EVENT")
             .appendField("of")
             .appendField(new Blockly.FieldVariable("item"), "INSTANCE")
             .appendField("with")
@@ -422,12 +441,11 @@ Blockly.Blocks['part_event_connect'] = {
     }
 };
 
-Blockly.Lua['part_event_connect'] = function (block) {
+Blockly.Lua['part_event_connect'] = function(block) {
     var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
     var dropdown_event = block.getFieldValue('EVENT');
     var variable_arg = Blockly.Lua.variableDB_.getName(block.getFieldValue('ARG'), Blockly.Variables.NAME_TYPE);
     var statements_name = Blockly.Lua.statementToCode(block, 'NAME');
-    // TODO: Assemble JavaScript into code variable.
     var code = `${variable_instance}.${dropdown_event}:Connect(function(${variable_arg})
 ${statements_name}
 end)\n`;
@@ -435,7 +453,7 @@ end)\n`;
 };
 
 Blockly.Blocks['set_local_variable'] = {
-    init: function () {
+    init: function() {
         this.appendValueInput("VALUE")
             .setCheck(null)
             .appendField("set local")
@@ -449,7 +467,7 @@ Blockly.Blocks['set_local_variable'] = {
     }
 };
 
-Blockly.Lua['set_local_variable'] = function (block) {
+Blockly.Lua['set_local_variable'] = function(block) {
     var variable_variable = Blockly.Lua.variableDB_.getName(block.getFieldValue('VARIABLE'), Blockly.Variables.NAME_TYPE);
     var value_value = Blockly.Lua.valueToCode(block, 'VALUE', Blockly.Lua.ORDER_ATOMIC);
     var code = `local ${variable_variable} = ${value_value}\n`;
@@ -457,11 +475,16 @@ Blockly.Lua['set_local_variable'] = function (block) {
 };
 
 Blockly.Blocks['humanoid_set_scale'] = {
-    init: function () {
+    init: function() {
         this.appendValueInput("NAME")
             .setCheck("Number")
             .appendField("set")
-            .appendField(new Blockly.FieldDropdown([["head", "Head"], ["body width", "BodyWidth"], ["body height", "BodyHeight"], ["body_depth", "BodyDepth"]]), "BODYPART")
+            .appendField(new Blockly.FieldDropdown([
+                ["head", "Head"],
+                ["body width", "BodyWidth"],
+                ["body height", "BodyHeight"],
+                ["body_depth", "BodyDepth"]
+            ]), "BODYPART")
             .appendField("scale of")
             .appendField(new Blockly.FieldVariable("humanoid"), "HUMANOID")
             .appendField("to");
@@ -474,7 +497,7 @@ Blockly.Blocks['humanoid_set_scale'] = {
 };
 
 
-Blockly.Lua['humanoid_set_scale'] = function (block) {
+Blockly.Lua['humanoid_set_scale'] = function(block) {
     var dropdown_bodypart = block.getFieldValue('BODYPART');
     var variable_humanoid = Blockly.Lua.variableDB_.getName(block.getFieldValue('HUMANOID'), Blockly.Variables.NAME_TYPE);
     var value_name = Blockly.Lua.valueToCode(block, 'NAME', Blockly.Lua.ORDER_ATOMIC);
@@ -483,10 +506,15 @@ Blockly.Lua['humanoid_set_scale'] = function (block) {
 };
 
 Blockly.Blocks['humanoid_get_scale'] = {
-    init: function () {
+    init: function() {
         this.appendDummyInput()
             .appendField("get")
-            .appendField(new Blockly.FieldDropdown([["head", "Head"], ["body width", "BodyWidth"], ["body height", "BodyHeight"], ["body depth", "BodyDepth"]]), "BODYPART")
+            .appendField(new Blockly.FieldDropdown([
+                ["head", "Head"],
+                ["body width", "BodyWidth"],
+                ["body height", "BodyHeight"],
+                ["body depth", "BodyDepth"]
+            ]), "BODYPART")
             .appendField("scale of")
             .appendField(new Blockly.FieldVariable("humanoid"), "HUMANOID");
         this.setOutput(true, null);
@@ -496,7 +524,7 @@ Blockly.Blocks['humanoid_get_scale'] = {
     }
 };
 
-Blockly.Lua['humanoid_get_scale'] = function (block) {
+Blockly.Lua['humanoid_get_scale'] = function(block) {
     var dropdown_bodypart = block.getFieldValue('BODYPART');
     var variable_humanoid = Blockly.Lua.variableDB_.getName(block.getFieldValue('HUMANOID'), Blockly.Variables.NAME_TYPE);
     var code = `${variable_humanoid}.${dropdown_bodypart}Scale.Value`;
@@ -505,10 +533,43 @@ Blockly.Lua['humanoid_get_scale'] = function (block) {
 
 
 Blockly.Blocks['humanoid_get_attribute'] = {
-    init: function () {
+    init: function() {
         this.appendDummyInput()
             .appendField("get")
-            .appendField(new Blockly.FieldDropdown([["AutoJumpEnabled", "AutoJumpEnabled"], ["AutoRotate", "AutoRotate"], ["AutomaticScalingEnabled", "AutomaticScalingEnabled"], ["BreakJointsOnDeath", "BreakJointsOnDeath"], ["CameraOffset", "CameraOffset"], ["CollisionType", "CollisionType"], ["DisplayDistanceType", "DisplayDistanceType"], ["DisplayName", "DisplayName"], ["FloorMaterial", "FloorMaterial"], ["Health", "Health"], ["HealthDisplayDistance", "HealthDisplayDistance"], ["HealthDisplayType", "HealthDisplayType"], ["HipHeight", "HipHeight"], ["Jump", "Jump"], ["JumpHeight", "JumpHeight"], ["JumpPower", "JumpPower"], ["MaxHealth", "MaxHealth"], ["MaxSlopeAngle", "MaxSlopeAngle"], ["MoveDirection", "MoveDirection"], ["NameDisplayDistance", "NameDisplayDistance"], ["NameOcclusion", "NameOcclusion"], ["PlatformStand", "PlatformStand"], ["RequiresNeck", "RequiresNeck"], ["RigType", "RigType"], ["RootPart", "RootPart"], ["SeatPart", "SeatPart"], ["Sit", "Sit"], ["TargetPoint", "TargetPoint"], ["UseJumpPower", "UseJumpPower"], ["TargetPoint", "TargetPoint"], ["WalkSpeed", "WalkSpeed"], ["WalkToPoint", "WalkToPoint"]]), "ATTRIBUTE")
+            .appendField(new Blockly.FieldDropdown([
+                ["AutoJumpEnabled", "AutoJumpEnabled"],
+                ["AutoRotate", "AutoRotate"],
+                ["AutomaticScalingEnabled", "AutomaticScalingEnabled"],
+                ["BreakJointsOnDeath", "BreakJointsOnDeath"],
+                ["CameraOffset", "CameraOffset"],
+                ["CollisionType", "CollisionType"],
+                ["DisplayDistanceType", "DisplayDistanceType"],
+                ["DisplayName", "DisplayName"],
+                ["FloorMaterial", "FloorMaterial"],
+                ["Health", "Health"],
+                ["HealthDisplayDistance", "HealthDisplayDistance"],
+                ["HealthDisplayType", "HealthDisplayType"],
+                ["HipHeight", "HipHeight"],
+                ["Jump", "Jump"],
+                ["JumpHeight", "JumpHeight"],
+                ["JumpPower", "JumpPower"],
+                ["MaxHealth", "MaxHealth"],
+                ["MaxSlopeAngle", "MaxSlopeAngle"],
+                ["MoveDirection", "MoveDirection"],
+                ["NameDisplayDistance", "NameDisplayDistance"],
+                ["NameOcclusion", "NameOcclusion"],
+                ["PlatformStand", "PlatformStand"],
+                ["RequiresNeck", "RequiresNeck"],
+                ["RigType", "RigType"],
+                ["RootPart", "RootPart"],
+                ["SeatPart", "SeatPart"],
+                ["Sit", "Sit"],
+                ["TargetPoint", "TargetPoint"],
+                ["UseJumpPower", "UseJumpPower"],
+                ["TargetPoint", "TargetPoint"],
+                ["WalkSpeed", "WalkSpeed"],
+                ["WalkToPoint", "WalkToPoint"]
+            ]), "ATTRIBUTE")
             .appendField("of")
             .appendField(new Blockly.FieldVariable("humanoid"), "HUMANOID");
         this.setOutput(true, null);
@@ -518,7 +579,7 @@ Blockly.Blocks['humanoid_get_attribute'] = {
     }
 };
 
-Blockly.Lua['humanoid_get_attribute'] = function (block) {
+Blockly.Lua['humanoid_get_attribute'] = function(block) {
     var dropdown_attribute = block.getFieldValue('ATTRIBUTE');
     var variable_humanoid = Blockly.Lua.variableDB_.getName(block.getFieldValue('HUMANOID'), Blockly.Variables.NAME_TYPE);
     var code = `${variable_humanoid}.${dropdown_attribute}`;
@@ -526,11 +587,40 @@ Blockly.Lua['humanoid_get_attribute'] = function (block) {
 };
 
 Blockly.Blocks['humanoid_set_attribute'] = {
-    init: function () {
+    init: function() {
         this.appendValueInput("NAME")
             .setCheck(null)
             .appendField("set")
-            .appendField(new Blockly.FieldDropdown([["AutoJumpEnabled", "AutoJumpEnabled"], ["AutoRotate", "AutoRotate"], ["AutomaticScalingEnabled", "AutomaticScalingEnabled"], ["BreakJointsOnDeath", "BreakJointsOnDeath"], ["CameraOffset", "CameraOffset"], ["CollisionType", "CollisionType"], ["DisplayDistanceType", "DisplayDistanceType"], ["DisplayName", "DisplayName"], ["Health", "Health"], ["HealthDisplayDistance", "HealthDisplayDistance"], ["HealthDisplayType", "HealthDisplayType"], ["HipHeight", "HipHeight"], ["Jump", "Jump"], ["JumpHeight", "JumpHeight"], ["JumpPower", "JumpPower"], ["MaxHealth", "MaxHealth"], ["MaxSlopeAngle", "MaxSlopeAngle"], ["NameDisplayDistance", "NameDisplayDistance"], ["NameOcclusion", "NameOcclusion"], ["PlatformStand", "PlatformStand"], ["RequiresNeck", "RequiresNeck"], ["RigType", "RigType"], ["Sit", "Sit"], ["TargetPoint", "TargetPoint"], ["UseJumpPower", "UseJumpPower"], ["TargetPoint", "TargetPoint"], ["WalkSpeed", "WalkSpeed"], ["WalkToPoint", "WalkToPoint"]]), "ATTRIBUTE")
+            .appendField(new Blockly.FieldDropdown([
+                ["AutoJumpEnabled", "AutoJumpEnabled"],
+                ["AutoRotate", "AutoRotate"],
+                ["AutomaticScalingEnabled", "AutomaticScalingEnabled"],
+                ["BreakJointsOnDeath", "BreakJointsOnDeath"],
+                ["CameraOffset", "CameraOffset"],
+                ["CollisionType", "CollisionType"],
+                ["DisplayDistanceType", "DisplayDistanceType"],
+                ["DisplayName", "DisplayName"],
+                ["Health", "Health"],
+                ["HealthDisplayDistance", "HealthDisplayDistance"],
+                ["HealthDisplayType", "HealthDisplayType"],
+                ["HipHeight", "HipHeight"],
+                ["Jump", "Jump"],
+                ["JumpHeight", "JumpHeight"],
+                ["JumpPower", "JumpPower"],
+                ["MaxHealth", "MaxHealth"],
+                ["MaxSlopeAngle", "MaxSlopeAngle"],
+                ["NameDisplayDistance", "NameDisplayDistance"],
+                ["NameOcclusion", "NameOcclusion"],
+                ["PlatformStand", "PlatformStand"],
+                ["RequiresNeck", "RequiresNeck"],
+                ["RigType", "RigType"],
+                ["Sit", "Sit"],
+                ["TargetPoint", "TargetPoint"],
+                ["UseJumpPower", "UseJumpPower"],
+                ["TargetPoint", "TargetPoint"],
+                ["WalkSpeed", "WalkSpeed"],
+                ["WalkToPoint", "WalkToPoint"]
+            ]), "ATTRIBUTE")
             .appendField("of")
             .appendField(new Blockly.FieldVariable("humanoid"), "HUMANOID")
             .appendField("to");
@@ -542,7 +632,7 @@ Blockly.Blocks['humanoid_set_attribute'] = {
     }
 };
 
-Blockly.Lua['humanoid_set_attribute'] = function (block) {
+Blockly.Lua['humanoid_set_attribute'] = function(block) {
     var dropdown_attribute = block.getFieldValue('ATTRIBUTE');
     var variable_humanoid = Blockly.Lua.variableDB_.getName(block.getFieldValue('HUMANOID'), Blockly.Variables.NAME_TYPE);
     var value_name = Blockly.Lua.valueToCode(block, 'NAME', Blockly.Lua.ORDER_ATOMIC);
@@ -551,7 +641,7 @@ Blockly.Lua['humanoid_set_attribute'] = function (block) {
 };
 
 Blockly.Blocks['vector3_new'] = {
-    init: function () {
+    init: function() {
         this.appendDummyInput()
             .appendField("new vector3");
         this.appendValueInput("X")
@@ -571,7 +661,7 @@ Blockly.Blocks['vector3_new'] = {
     }
 };
 
-Blockly.Lua['vector3_new'] = function (block) {
+Blockly.Lua['vector3_new'] = function(block) {
     var value_x = Blockly.Lua.valueToCode(block, 'X', Blockly.Lua.ORDER_ATOMIC);
     var value_y = Blockly.Lua.valueToCode(block, 'Y', Blockly.Lua.ORDER_ATOMIC);
     var value_z = Blockly.Lua.valueToCode(block, 'Z', Blockly.Lua.ORDER_ATOMIC);
@@ -582,7 +672,7 @@ Blockly.Lua['vector3_new'] = function (block) {
 };
 
 Blockly.Blocks['players_player_added'] = {
-    init: function () {
+    init: function() {
         this.appendDummyInput()
             .appendField("when")
             .appendField(new Blockly.FieldVariable("player"), "PLAYER")
@@ -597,7 +687,7 @@ Blockly.Blocks['players_player_added'] = {
     }
 };
 
-Blockly.Lua['players_player_added'] = function (block) {
+Blockly.Lua['players_player_added'] = function(block) {
     var variable_player = Blockly.Lua.variableDB_.getName(block.getFieldValue('PLAYER'), Blockly.Variables.NAME_TYPE);
     var statements_handler = Blockly.Lua.statementToCode(block, 'HANDLER')
     var code = `game:GetService("Players").PlayerAdded:Connect(function(${variable_player})
