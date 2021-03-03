@@ -11,17 +11,6 @@ local function is_blox_script(filename)
 	return ends_with(filename, ".blox")
 end
 
-function ListWorkspace()
-	local items = {}
-	local children = workspace:GetChildren()
-	for i, child: Instance in ipairs(children) do
-		items[i] = child.Name
-	end
-	return {
-		items=items
-	}
-end
-
 function ListGlobalBloxScripts()
 	local result = {}
 	local script_service = game:GetService("ServerScriptService")
@@ -36,7 +25,7 @@ function ListGlobalBloxScripts()
 	}
 end
 
-local max_depth = 3
+local max_depth = 2
 
 function RecursiveListEverything(children: Array, instance: Instance, depth: number)
 	if depth > max_depth then
@@ -45,7 +34,7 @@ function RecursiveListEverything(children: Array, instance: Instance, depth: num
 	for _, child: Instance in ipairs(instance:GetChildren()) do
 		local child_node = {
 			text=child.Name,
-			type=instance.ClassName
+			type=child.ClassName
 		}
 		local grand_children = child:GetChildren()
 		if #grand_children > 0 then
@@ -57,14 +46,16 @@ function RecursiveListEverything(children: Array, instance: Instance, depth: num
 end
 
 function ListEverything()
+	local everything = {}
 	local workspace_children = {}
 	RecursiveListEverything(workspace_children, game.Workspace, 1)
+	table.insert(everything, {
+		text="Workspace",
+		type=game.Workspace.ClassName,
+		children=workspace_children
+	})
 	return {
-		workspace={
-			text="Workspace",
-			type=game.Workspace.ClassName,
-			children=workspace_children
-		}
+		items=everything
 	}
 end
 
@@ -340,9 +331,6 @@ function Sync()
 				elseif message.event_type == "kill" then
 					print("Sync script shutting down")
 					running = 0
-				elseif message.event_type == "ListWorkspace" then
-					local resp = ListWorkspace()
-					SendMessage("blox", "Workspace", resp)
 				elseif message.event_type == "ListGlobalBloxScripts" then
 					local resp = ListGlobalBloxScripts()
 					SendMessage("blox", "GlobalBloxScripts", resp)
@@ -377,6 +365,7 @@ function Sync()
 				elseif message.event_type == "ListEverything" then
 					local result = ListEverything()
 					SendMessage("blox", "ListEverythingResult", result)
+					print("Replied with ListEverythingResult")
 				end
 			end
 		end)

@@ -79,7 +79,8 @@ function onCodefileReturned(event_data) {
 
 async function refresh() {
     await sendMessage({
-        event_type: "ListGlobalBloxScripts"
+        // event_type: "ListGlobalBloxScripts"
+        event_type: "ListEverything"
     })
 }
 
@@ -173,6 +174,33 @@ function loadConnectionInfo() {
     }
 }
 
+function updateTreeIcons(items) {
+    for (let item of items) {
+        switch (item.type) {
+            case "Folder":
+                break
+            case "Workspace":
+                item.icon = "/icons/workspace.png"
+                break
+            default:
+                item.icon = "/icons/model.png"
+                break
+        }
+        if (item.children) {
+            updateTreeIcons(item.children)
+        }
+    }
+}
+
+function updateTreeview(data) {
+    updateTreeIcons(data.items)
+    (function($) {
+        // $('#treeId').jstree(true).settings.core.data = newData;
+        $("#browser").jstree(true).settings.core.data = data.items
+        $("#browser").jstree("refresh")
+    }(jQuery))
+}
+
 async function onConnect(info) {
     if (info) {
         connectionInfo = info
@@ -235,6 +263,9 @@ async function onConnect(info) {
                         break;
                     case "GlobalBloxScript":
                         onCodefileReturned(message.event_data)
+                        break
+                    case "ListEverythingResult":
+                        updateTreeview(message.event_data)
                         break
                 }
             }
