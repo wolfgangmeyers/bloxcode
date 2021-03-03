@@ -33,13 +33,11 @@ function updateSelectedNode(node) {
         $("#new-local-script-button").show()
         $("#new-script-button").show()
 
-        $("delete-script-button").hide()
-        $("save-script-button").hide()
+        $("#delete-script-button").hide()
+        $("#save-script-button").hide()
 
         demoWorkspace.clear()
     }
-    // TODO: if script selected..
-    // TODO: if non-script selected
 }
 
 function showCode() {

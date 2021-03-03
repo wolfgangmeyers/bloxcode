@@ -67,9 +67,6 @@
     </div>
 
     <div id="controls" style="display: none">
-        <select id="codefile" onchange="onCodefileChanged()">
-            <option value="">Select a file</option>
-        </select>
         <button id="save-script-button" style="display: none" onclick="saveScript()">Save</button>
         <button id="delete-script-button" style="display: none" onclick="deleteScript()">Delete</button>
         <button id="new-local-script-button" onclick="newLocalScript()" style="display: none">New LocalScript</button>
@@ -206,6 +203,7 @@
             <block type="instance_get_attribute"></block>
             <block type="instance_set_attribute"></block>
             <block type="instance_clone"></block>
+            <block type="script_get_parent"></block>
         </category>
         <category name="Part">
             <block type="part_set_brickcolor"></block>
@@ -296,6 +294,9 @@
             <category name="Players">
                 <block type="players_player_added"></block>
             </category>
+        </category>
+        <category name="Tool">
+            <block type="tool_activated"></block>
         </category>
     </xml>
     <script type="text/javascript">
