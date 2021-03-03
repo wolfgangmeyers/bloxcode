@@ -11,20 +11,6 @@ local function is_blox_script(filename)
 	return ends_with(filename, ".blox")
 end
 
--- function ListGlobalBloxScripts()
--- 	local result = {}
--- 	local script_service = game:GetService("ServerScriptService")
--- 	local children = script_service:GetChildren()
--- 	for _, child: Instance in ipairs(children) do
--- 		if is_blox_script(child.Name) then
--- 			table.insert(result, child.Name)
--- 		end
--- 	end
--- 	return {
--- 		items=result
--- 	}
--- end
-
 local max_depth = 2
 
 function RecursiveListEverything(children: Array, instance: Instance, depth: number, path: string)
@@ -97,37 +83,6 @@ function ListEverything()
 		items=everything
 	}
 end
-
--- function GetGlobalBloxScript(name: string)
--- 	local result = ""
--- 	if is_blox_script(name) then
--- 		local script_service = game:GetService("ServerScriptService")
--- 		local script = script_service:FindFirstChild(name)
--- 		if script:IsA("StringValue") then
--- 			result = script.Value
--- 		end
--- 	end
--- 	return {
--- 		result=result,
--- 		name=name,
--- 	}
--- end
-
--- function SetGlobalBloxScript(name: string, value: string)
--- 	if is_blox_script(name) then
--- 		print("Setting global blox script " .. name)
--- 		local script_service = game:GetService("ServerScriptService")
--- 		local script = script_service:FindFirstChild(name)
--- 		if not script then
--- 			script = Instance.new("StringValue", script_service)
--- 			script.Name = name
--- 		elseif not script:IsA("StringValue") then
--- 			script:Destroy()
--- 			script = Instance.new("StringValue", script_service)
--- 		end
--- 		script.Value = value
--- 	end
--- end
 
 function PopPath(path: string): (string, string)
 	local i = path:find("/")
@@ -257,46 +212,6 @@ function DeleteLuaScript(name: string, path: string)
 	lua_script:Destroy()
 	SendMessage("blox", "LuaScriptDeleted", {name=name, path=path})
 end
-
--- function DeleteGlobalBloxScript(name: string)
--- 	if not is_blox_script(name) then
--- 		return
--- 	end
--- 	print("DeleteGlobalBloxScript " .. name)
--- 	local script_service = game:GetService("ServerScriptService")
--- 	local blox_script = script_service:FindFirstChild(name)
--- 	blox_script:Destroy()
-
--- 	SendMessage("blox", "GlobalBloxScriptDeleted", {name=name})
--- end
-
--- function DeleteGlobalLuaScript(name: string)
--- 	if is_blox_script(name) then
--- 		return
--- 	end
--- 	print("DeleteGlobalLuaScript " .. name)
--- 	local script_service = game:GetService("ServerScriptService")
--- 	local lua_script = script_service:FindFirstChild(name)
--- 	lua_script:Destroy()
--- end
-
--- function SetGlobalLuaScript(name: string, value: string)
--- 	if is_blox_script(name) then
--- 		return
--- 	end
--- 	print("Setting global lua script " .. name)
--- 	local script_service = game:GetService("ServerScriptService")
--- 	local script = script_service:FindFirstChild(name)
--- 	if not script then
--- 		script = Instance.new("Script", script_service)
--- 		script.Name = name
--- 	elseif not script:IsA("Script") then
--- 		script:Destroy()
--- 		script = Instance.new("Script", script_service)
--- 		script.Name = name
--- 	end
--- 	script.Source = value
--- end
 
 function SendMessage(queueName: string, event_type: string, event_data: any)
 	local connectionInfo = GetConnectionInfo()
