@@ -70,11 +70,11 @@
         <select id="codefile" onchange="onCodefileChanged()">
             <option value="">Select a file</option>
         </select>
-        <button id="save-script-button" disabled onclick="saveScript()">Save</button>
-        <!-- <button onclick="newBloxScript()">New Blox Script</button> -->
-        <button id="new-local-script-button" onclick="newLocalScript()" disabled>New LocalScript</button>
-        <button id="new-script-button" onclick="newScript()" disabled>New Script</button>
-        <button id="delete-script-button" disabled onclick="deleteScript()">Delete</button>
+        <button id="save-script-button" style="display: none" onclick="saveScript()">Save</button>
+        <button id="delete-script-button" style="display: none" onclick="deleteScript()">Delete</button>
+        <button id="new-local-script-button" onclick="newLocalScript()" style="display: none">New LocalScript</button>
+        <button id="new-script-button" onclick="newScript()" style="display: none">New Script</button>
+        
         <button onclick="refresh()">Refresh</button>
         <button onclick="showCode()">Show Lua</button>
         <a class="btn" href="https://github.com/wolfgangmeyers/roblox-blockly">

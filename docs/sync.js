@@ -2,6 +2,7 @@ const backendUrl = "https://7iokpqos42.execute-api.us-west-2.amazonaws.com/prod"
 
 let connectionInfo;
 let selectedNode;
+const $ = jQuery
 
 function getParentPath(path) {
     const i = path.lastIndexOf(path)
@@ -13,22 +14,27 @@ function getParentPath(path) {
 
 function updateSelectedNode(node) {
     selectedNode = node
-    console.log(node.path)
-
+    if (!node) {
+        $("#new-local-script-button").hide()
+        $("#new-script-button").hide()
+        $("delete-script-button").hide()
+        $("save-script-button").hide()
+        return
+    }
     if (node.type == "Script" || node.type == "LocalScript") {
-        document.getElementById("new-local-script-button").setAttribute("disabled", "disabled")
-        document.getElementById("new-script-button").setAttribute("disabled", "disabled")
+        $("#new-local-script-button").hide()
+        $("#new-script-button").hide()
 
-        document.getElementById("delete-script-button").removeAttribute("disabled")
-        document.getElementById("save-script-button").removeAttribute("disabled")
+        $("#delete-script-button").show()
+        $("#save-script-button").show()
 
         loadBloxScript()
     } else {
-        document.getElementById("new-local-script-button").removeAttribute("disabled")
-        document.getElementById("new-script-button").removeAttribute("disabled")
+        $("#new-local-script-button").show()
+        $("#new-script-button").show()
 
-        document.getElementById("delete-script-button").setAttribute("disabled", "disabled")
-        document.getElementById("save-script-button").setAttribute("disabled", "disabled")
+        $("delete-script-button").hide()
+        $("save-script-button").hide()
 
         demoWorkspace.clear()
     }
@@ -57,18 +63,18 @@ async function saveScript() {
     // save blox source
     // const codefile_select = document.getElementById("codefile")
     // const codefile = codefile_select.value
-    const {path, text} = selectedNode
+    const { path, text } = selectedNode
     const parentPath = getParentPath(path)
     const bloxCodeDom = Blockly.Xml.workspaceToDom(demoWorkspace)
     const bloxCode = Blockly.Xml.domToText(bloxCodeDom)
     await sendMessage({
-            event_type: "SaveBloxScript",
-            event_data: {
-                name: text + ".blox",
-                path: parentPath,
-                value: bloxCode
-            }
-        })
+        event_type: "SaveBloxScript",
+        event_data: {
+            name: text + ".blox",
+            path: parentPath,
+            value: bloxCode
+        }
+    })
     // save Lua source
     Blockly.Lua.INFINITE_LOOP_TRAP = null;
     const luaCode = Blockly.Lua.workspaceToCode(demoWorkspace)
@@ -84,7 +90,7 @@ async function saveScript() {
 
 async function loadBloxScript() {
     demoWorkspace.clear()
-    const {text, path} = selectedNode
+    const { text, path } = selectedNode
     await sendMessage({
         event_type: "GetBloxScript",
         event_data: {
@@ -155,7 +161,7 @@ function deleteScript() {
     if (!confirm("Are you sure you want to delete this script?")) {
         return
     }
-    const {path, text} = selectedNode
+    const { path, text } = selectedNode
     sendMessage({
         event_type: "DeleteBloxScript",
         event_data: {
@@ -171,6 +177,7 @@ function deleteScript() {
         }
     })
     demoWorkspace.clear()
+    updateSelectedNode(null)
 }
 
 function onBloxScriptCreated(event_data) {
@@ -264,11 +271,11 @@ function updateTreeIcons(items) {
 
 function updateTreeview(data) {
     updateTreeIcons(data.items)
-    (function($) {
-        // $('#treeId').jstree(true).settings.core.data = newData;
-        $("#browser").jstree(true).settings.core.data = data.items
-        $("#browser").jstree("refresh")
-    }(jQuery))
+        (function ($) {
+            // $('#treeId').jstree(true).settings.core.data = newData;
+            $("#browser").jstree(true).settings.core.data = data.items
+            $("#browser").jstree("refresh")
+        }(jQuery))
 }
 
 async function onConnect(info) {
@@ -279,7 +286,7 @@ async function onConnect(info) {
         btnConnect.innerHTML = "connecting..."
         btnConnect.enabled = false
         let code = document.getElementById("code").value
-        
+
         try {
             connectionInfo = await getConnectionInfo(code)
             btnConnect.innerHTML = "Connect to Roblox Studio"
@@ -292,7 +299,7 @@ async function onConnect(info) {
         }
         saveConnectionInfo(connectionInfo)
     }
-   
+
 
 
     document.getElementById("controls").style = "display: block";
@@ -300,7 +307,7 @@ async function onConnect(info) {
     refresh()
 
     let i = 0
-    window.setInterval(async() => {
+    window.setInterval(async () => {
         i = i + 1
         if (i >= 10) {
             i = 0
@@ -323,6 +330,7 @@ async function onConnect(info) {
                 console.log(message);
                 switch (message.event_type) {
                     case "BloxScriptDeleted":
+                    case "LuaScriptDeleted":
                         onBloxScriptDeleted(message.event_data);
                         break;
                     case "BloxScriptResult":
