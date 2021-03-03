@@ -404,44 +404,48 @@ function Sync()
 			data = GetMessages("studio")
 			for _, message in ipairs(data.messages) do
 				SaveLastBloxUpdate()
-				-- print(start_time)
-				print(message.event_type)
-				if message.event_type == "ping" then
-					-- print("Responding to ping")
-					SendMessage("blox", "pong", nil)
-				elseif message.event_type == "kill" then
-					print("Sync script shutting down")
-					running = 0
-				elseif message.event_type == "GetBloxScript" then
-					if message.event_data and message.event_data.name and message.event_data.path then
-						local resp = GetBloxScript(message.event_data.name, message.event_data.path)
-						SendMessage("blox", "BloxScriptResult", resp)
+				local success, err = pcall(function()
+					-- print(start_time)
+					print(message.event_type)
+					if message.event_type == "ping" then
+						-- print("Responding to ping")
+						SendMessage("blox", "pong", nil)
+					elseif message.event_type == "kill" then
+						print("Sync script shutting down")
+						running = 0
+					elseif message.event_type == "GetBloxScript" then
+						if message.event_data and message.event_data.name and message.event_data.path then
+							local resp = GetBloxScript(message.event_data.name, message.event_data.path)
+							SendMessage("blox", "BloxScriptResult", resp)
+						end
+					elseif message.event_type == "SaveBloxScript" then
+						print(message)
+						if message.event_data and message.event_data.name and message.event_data.value and message.event_data.path then
+							SaveBloxScript(message.event_data.name, message.event_data.value, message.event_data.path)
+						end
+					elseif message.event_type == "SaveScript" then
+						if message.event_data and message.event_data.name and message.event_data.path then
+							SaveScript(message.event_data.name, message.event_data.value or "", message.event_data.path)
+						end
+					elseif message.event_type == "SaveLocalScript" then
+						if message.event_data and message.event_data.name and message.event_data.path then
+							SaveLocalScript(message.event_data.name, message.event_data.value or "", message.event_data.path)
+						end
+					elseif message.event_type == "DeleteBloxScript" then
+						if message.event_data and message.event_data.name and message.event_data.path then
+							DeleteBloxScript(message.event_data.name, message.event_data.path)
+						end
+					elseif message.event_type == "DeleteLuaScript" then
+						if message.event_data and message.event_data.name and message.event_data.path then
+							DeleteLuaScript(message.event_data.name, message.event_data.path)
+						end
+					elseif message.event_type == "ListEverything" then
+						local result = ListEverything()
+						SendMessage("blox", "ListEverythingResult", result)
 					end
-				elseif message.event_type == "SaveBloxScript" then
-					print(message)
-					if message.event_data and message.event_data.name and message.event_data.value and message.event_data.path then
-						SaveBloxScript(message.event_data.name, message.event_data.value, message.event_data.path)
-					end
-				elseif message.event_type == "SaveScript" then
-					if message.event_data and message.event_data.name and message.event_data.path then
-						SaveScript(message.event_data.name, message.event_data.value or "", message.event_data.path)
-					end
-				elseif message.event_type == "SaveLocalScript" then
-					if message.event_data and message.event_data.name and message.event_data.path then
-						SaveLocalScript(message.event_data.name, message.event_data.value or "", message.event_data.path)
-					end
-				elseif message.event_type == "DeleteBloxScript" then
-					if message.event_data and message.event_data.name and message.event_data.path then
-						DeleteBloxScript(message.event_data.name, message.event_data.path)
-					end
-				elseif message.event_type == "DeleteLuaScript" then
-					if message.event_data and message.event_data.name and message.event_data.path then
-						DeleteLuaScript(message.event_data.name, message.event_data.path)
-					end
-				elseif message.event_type == "ListEverything" then
-					local result = ListEverything()
-					SendMessage("blox", "ListEverythingResult", result)
-					print("Replied with ListEverythingResult")
+				end)
+				if not success then
+					print(err)
 				end
 			end
 		end)
