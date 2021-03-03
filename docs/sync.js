@@ -3,6 +3,14 @@ const backendUrl = "https://7iokpqos42.execute-api.us-west-2.amazonaws.com/prod"
 let connectionInfo;
 let selectedNode;
 
+function getParentPath(path) {
+    const i = path.lastIndexOf(path)
+    if (i == -1) {
+        return ""
+    }
+    return path.substring(0, path.lastIndexOf("/"))
+}
+
 function updateSelectedNode(node) {
     selectedNode = node
     console.log(node.path)
@@ -10,9 +18,19 @@ function updateSelectedNode(node) {
     if (node.type == "Script" || node.type == "LocalScript") {
         document.getElementById("new-local-script-button").setAttribute("disabled", "disabled")
         document.getElementById("new-script-button").setAttribute("disabled", "disabled")
+
+        document.getElementById("delete-script-button").removeAttribute("disabled")
+        document.getElementById("save-script-button").removeAttribute("disabled")
+
+        loadBloxScript()
     } else {
         document.getElementById("new-local-script-button").removeAttribute("disabled")
         document.getElementById("new-script-button").removeAttribute("disabled")
+
+        document.getElementById("delete-script-button").setAttribute("disabled", "disabled")
+        document.getElementById("save-script-button").setAttribute("disabled", "disabled")
+
+        demoWorkspace.clear()
     }
     // TODO: if script selected..
     // TODO: if non-script selected
@@ -35,52 +53,48 @@ async function sendMessage(message) {
     })
 }
 
-async function saveToRoblox() {
+async function saveScript() {
     // save blox source
-    const codefile_select = document.getElementById("codefile")
-    const codefile = codefile_select.value
+    // const codefile_select = document.getElementById("codefile")
+    // const codefile = codefile_select.value
+    const {path, text} = selectedNode
+    const parentPath = getParentPath(path)
     const bloxCodeDom = Blockly.Xml.workspaceToDom(demoWorkspace)
     const bloxCode = Blockly.Xml.domToText(bloxCodeDom)
     await sendMessage({
-            event_type: "SetGlobalBloxScript",
+            event_type: "SaveBloxScript",
             event_data: {
-                name: codefile,
+                name: text + ".blox",
+                path: parentPath,
                 value: bloxCode
             }
         })
-        // save Lua source
-    const luafile = codefile.split(".blox")[0]
+    // save Lua source
     Blockly.Lua.INFINITE_LOOP_TRAP = null;
     const luaCode = Blockly.Lua.workspaceToCode(demoWorkspace)
     await sendMessage({
-        event_type: "SetGlobalLuaScript",
+        event_type: selectedNode.type == "LocalScript" ? "SaveLocalScript" : "SaveScript",
         event_data: {
-            name: luafile,
+            name,
+            path: parentPath,
             value: luaCode,
         }
     })
 }
 
-async function loadCodefile(codefile) {
+async function loadBloxScript() {
+    demoWorkspace.clear()
+    const {text, path} = selectedNode
     await sendMessage({
-        event_type: "GetGlobalBloxScript",
+        event_type: "GetBloxScript",
         event_data: {
-            name: codefile
+            name: text + ".blox",
+            path: getParentPath(path)
         }
     })
 }
 
-async function onCodefileChanged() {
-    const codefile_select = document.getElementById("codefile")
-    const codefile = codefile_select.value
-    console.log(`codefile changed: ${codefile}`)
-    if (codefile) {
-        await loadCodefile(codefile)
-    }
-}
-
-function onCodefileReturned(event_data) {
-    // TODO: ensure this is the right file by checking name
+function onBloxScriptResult(event_data) {
     const codefileXml = event_data.result
     demoWorkspace.clear()
     let codefileDom;
@@ -137,28 +151,13 @@ function newScript() {
     }
 }
 
-// TODO: newScript
-// TODO: save and load blox script
-
-function newBloxScript() {
-    const filename = prompt("Enter a name for the new blox script")
-    if (filename) {
-        sendMessage({
-            event_type: "CreateGlobalBloxScript",
-            event_data: {
-                name: filename + ".blox"
-            }
-        })
-    }
-}
-
 function deleteBloxScript() {
     if (!confirm("Are you sure you want to delete this blox code file?")) {
         return
     }
     const codefile_select = document.getElementById("codefile")
     sendMessage({
-        event_type: "DeleteGlobalBloxScript",
+        event_type: "DeleteBloxScript",
         event_data: {
             name: codefile_select.value
         }
@@ -321,17 +320,11 @@ async function onConnect(info) {
             for (let message of result.messages) {
                 console.log(message);
                 switch (message.event_type) {
-                    case "GlobalBloxScriptDeleted":
+                    case "BloxScriptDeleted":
                         onBloxScriptDeleted(message.event_data);
                         break;
-                    case "GlobalBloxScripts":
-                        onRefresh(message.event_data)
-                        break
-                    case "GlobalBloxScriptCreated":
-                        onBloxScriptCreated(message.event_data);
-                        break;
-                    case "GlobalBloxScript":
-                        onCodefileReturned(message.event_data)
+                    case "BloxScriptResult":
+                        onBloxScriptResult(message.event_data)
                         break
                     case "ListEverythingResult":
                         updateTreeview(message.event_data)

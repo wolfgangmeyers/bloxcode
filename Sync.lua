@@ -159,6 +159,7 @@ function FindInstance(path: string): Instance
 end
 
 function SaveBloxScript(name: string, value: string, path: string)
+	print("SaveBloxScript: " .. name .. ", " .. value .. ", " .. path)
 	if is_blox_script(name) then
 		local container = FindInstance(path)
 		local script = container:FindFirstChild(name)
@@ -499,9 +500,10 @@ function Sync()
 				elseif message.event_type == "GetBloxScript" then
 					if message.event_data and message.event_data.name and message.event_data.path then
 						local resp = GetBloxScript(message.event_data.name, message.event_data.path)
-						SendMessage("blox", "GlobalBloxScript", resp)
+						SendMessage("blox", "BloxScriptResult", resp)
 					end
 				elseif message.event_type == "SaveBloxScript" then
+					print(message)
 					if message.event_data and message.event_data.name and message.event_data.value and message.event_data.path then
 						SaveBloxScript(message.event_data.name, message.event_data.value, message.event_data.path)
 					end
