@@ -9,8 +9,10 @@ function updateSelectedNode(node) {
 
     if (node.type == "Script" || node.type == "LocalScript") {
         document.getElementById("new-local-script-button").setAttribute("disabled", "disabled")
+        document.getElementById("new-script-button").setAttribute("disabled", "disabled")
     } else {
         document.getElementById("new-local-script-button").removeAttribute("disabled")
+        document.getElementById("new-script-button").removeAttribute("disabled")
     }
     // TODO: if script selected..
     // TODO: if non-script selected
@@ -137,7 +139,6 @@ function newScript() {
 
 // TODO: newScript
 // TODO: save and load blox script
-
 
 function newBloxScript() {
     const filename = prompt("Enter a name for the new blox script")

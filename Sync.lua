@@ -11,19 +11,19 @@ local function is_blox_script(filename)
 	return ends_with(filename, ".blox")
 end
 
-function ListGlobalBloxScripts()
-	local result = {}
-	local script_service = game:GetService("ServerScriptService")
-	local children = script_service:GetChildren()
-	for _, child: Instance in ipairs(children) do
-		if is_blox_script(child.Name) then
-			table.insert(result, child.Name)
-		end
-	end
-	return {
-		items=result
-	}
-end
+-- function ListGlobalBloxScripts()
+-- 	local result = {}
+-- 	local script_service = game:GetService("ServerScriptService")
+-- 	local children = script_service:GetChildren()
+-- 	for _, child: Instance in ipairs(children) do
+-- 		if is_blox_script(child.Name) then
+-- 			table.insert(result, child.Name)
+-- 		end
+-- 	end
+-- 	return {
+-- 		items=result
+-- 	}
+-- end
 
 local max_depth = 2
 
@@ -98,36 +98,36 @@ function ListEverything()
 	}
 end
 
-function GetGlobalBloxScript(name: string)
-	local result = ""
-	if is_blox_script(name) then
-		local script_service = game:GetService("ServerScriptService")
-		local script = script_service:FindFirstChild(name)
-		if script:IsA("StringValue") then
-			result = script.Value
-		end
-	end
-	return {
-		result=result,
-		name=name,
-	}
-end
+-- function GetGlobalBloxScript(name: string)
+-- 	local result = ""
+-- 	if is_blox_script(name) then
+-- 		local script_service = game:GetService("ServerScriptService")
+-- 		local script = script_service:FindFirstChild(name)
+-- 		if script:IsA("StringValue") then
+-- 			result = script.Value
+-- 		end
+-- 	end
+-- 	return {
+-- 		result=result,
+-- 		name=name,
+-- 	}
+-- end
 
-function SetGlobalBloxScript(name: string, value: string)
-	if is_blox_script(name) then
-		print("Setting global blox script " .. name)
-		local script_service = game:GetService("ServerScriptService")
-		local script = script_service:FindFirstChild(name)
-		if not script then
-			script = Instance.new("StringValue", script_service)
-			script.Name = name
-		elseif not script:IsA("StringValue") then
-			script:Destroy()
-			script = Instance.new("StringValue", script_service)
-		end
-		script.Value = value
-	end
-end
+-- function SetGlobalBloxScript(name: string, value: string)
+-- 	if is_blox_script(name) then
+-- 		print("Setting global blox script " .. name)
+-- 		local script_service = game:GetService("ServerScriptService")
+-- 		local script = script_service:FindFirstChild(name)
+-- 		if not script then
+-- 			script = Instance.new("StringValue", script_service)
+-- 			script.Name = name
+-- 		elseif not script:IsA("StringValue") then
+-- 			script:Destroy()
+-- 			script = Instance.new("StringValue", script_service)
+-- 		end
+-- 		script.Value = value
+-- 	end
+-- end
 
 function PopPath(path: string): (string, string)
 	local i = path:find("/")
@@ -221,45 +221,81 @@ function SaveScript(name: string, value: string, path: string)
 	end
 end
 
-function DeleteGlobalBloxScript(name: string)
+function GetBloxScript(name: string, path: string)
+	local result = ""
+	if is_blox_script(name) then
+		local container = FindInstance(path)
+		local script = container:FindFirstChild(name)
+		if script:IsA("StringValue") then
+			result = script.Value
+		end
+	end
+	return {
+		result=result,
+		name=name,
+		path=path
+	}
+end
+
+function DeleteBloxScript(name: string, path: string)
 	if not is_blox_script(name) then
 		return
 	end
-	print("DeleteGlobalBloxScript " .. name)
-	local script_service = game:GetService("ServerScriptService")
-	local blox_script = script_service:FindFirstChild(name)
+	local container = FindInstance(path)
+	local blox_script = container:FindFirstChild(name)
 	blox_script:Destroy()
-
-	SendMessage("blox", "GlobalBloxScriptDeleted", {name=name})
+	SendMessage("blox", "BloxScriptDeleted", {name=name, path=path})
 end
 
-function DeleteGlobalLuaScript(name: string)
+function DeleteLuaScript(name: string, path: string)
 	if is_blox_script(name) then
 		return
 	end
-	print("DeleteGlobalLuaScript " .. name)
-	local script_service = game:GetService("ServerScriptService")
-	local lua_script = script_service:FindFirstChild(name)
+	local container = FindInstance(path)
+	local lua_script = container:FindFirstChild(name)
 	lua_script:Destroy()
+	SendMessage("blox", "LuaScriptDeleted", {name=name, path=path})
 end
 
-function SetGlobalLuaScript(name: string, value: string)
-	if is_blox_script(name) then
-		return
-	end
-	print("Setting global lua script " .. name)
-	local script_service = game:GetService("ServerScriptService")
-	local script = script_service:FindFirstChild(name)
-	if not script then
-		script = Instance.new("Script", script_service)
-		script.Name = name
-	elseif not script:IsA("Script") then
-		script:Destroy()
-		script = Instance.new("Script", script_service)
-		script.Name = name
-	end
-	script.Source = value
-end
+-- function DeleteGlobalBloxScript(name: string)
+-- 	if not is_blox_script(name) then
+-- 		return
+-- 	end
+-- 	print("DeleteGlobalBloxScript " .. name)
+-- 	local script_service = game:GetService("ServerScriptService")
+-- 	local blox_script = script_service:FindFirstChild(name)
+-- 	blox_script:Destroy()
+
+-- 	SendMessage("blox", "GlobalBloxScriptDeleted", {name=name})
+-- end
+
+-- function DeleteGlobalLuaScript(name: string)
+-- 	if is_blox_script(name) then
+-- 		return
+-- 	end
+-- 	print("DeleteGlobalLuaScript " .. name)
+-- 	local script_service = game:GetService("ServerScriptService")
+-- 	local lua_script = script_service:FindFirstChild(name)
+-- 	lua_script:Destroy()
+-- end
+
+-- function SetGlobalLuaScript(name: string, value: string)
+-- 	if is_blox_script(name) then
+-- 		return
+-- 	end
+-- 	print("Setting global lua script " .. name)
+-- 	local script_service = game:GetService("ServerScriptService")
+-- 	local script = script_service:FindFirstChild(name)
+-- 	if not script then
+-- 		script = Instance.new("Script", script_service)
+-- 		script.Name = name
+-- 	elseif not script:IsA("Script") then
+-- 		script:Destroy()
+-- 		script = Instance.new("Script", script_service)
+-- 		script.Name = name
+-- 	end
+-- 	script.Source = value
+-- end
 
 function SendMessage(queueName: string, event_type: string, event_data: any)
 	local connectionInfo = GetConnectionInfo()
@@ -291,9 +327,7 @@ function killPreviousPlugin()
 	end
 	local success = false
 	pcall(function ()
-		SendMessage("studio", {
-			event_type="kill"
-		})
+		SendMessage("studio","kill")
 		-- HttpService:PostAsync("http://localhost:9080/messages/studio", HttpService:JSONEncode({
 		-- 	event_type="kill",
 		-- }))
@@ -462,21 +496,10 @@ function Sync()
 				elseif message.event_type == "kill" then
 					print("Sync script shutting down")
 					running = 0
-				elseif message.event_type == "ListGlobalBloxScripts" then
-					local resp = ListGlobalBloxScripts()
-					SendMessage("blox", "GlobalBloxScripts", resp)
-				elseif message.event_type == "GetGlobalBloxScript" then
-					if message.event_data and message.event_data.name then
-						local resp = GetGlobalBloxScript(message.event_data.name)
+				elseif message.event_type == "GetBloxScript" then
+					if message.event_data and message.event_data.name and message.event_data.path then
+						local resp = GetBloxScript(message.event_data.name, message.event_data.path)
 						SendMessage("blox", "GlobalBloxScript", resp)
-					end
-				elseif message.event_type == "SetGlobalBloxScript" then
-					if message.event_data and message.event_data.name and message.event_data.value then
-						SetGlobalBloxScript(message.event_data.name, message.event_data.value)
-					end
-				elseif message.event_type == "SetGlobalLuaScript" then
-					if message.event_data and message.event_data.name and message.event_data.value then
-						SetGlobalLuaScript(message.event_data.name, message.event_data.value)
 					end
 				elseif message.event_type == "SaveBloxScript" then
 					if message.event_data and message.event_data.name and message.event_data.value and message.event_data.path then
@@ -490,20 +513,13 @@ function Sync()
 					if message.event_data and message.event_data.name and message.event_data.path then
 						SaveLocalScript(message.event_data.name, message.event_data.value or "", message.event_data.path)
 					end
-				elseif message.event_type == "CreateGlobalBloxScript" then
-					if message.event_data and message.event_data.name then
-						SetGlobalBloxScript(message.event_data.name, "")
-						SendMessage("blox", "GlobalBloxScriptCreated", {
-							name=message.event_data.name
-						})
+				elseif message.event_type == "DeleteBloxScript" then
+					if message.event_data and message.event_data.name and message.event_data.path then
+						DeleteBloxScript(message.event_data.name, message.event_data.path)
 					end
-				elseif message.event_type == "DeleteGlobalBloxScript" then
-					if message.event_data and message.event_data.name then
-						DeleteGlobalBloxScript(message.event_data.name)
-					end
-				elseif message.event_type == "DeleteGlobalLuaScript" then
-					if message.event_data and message.event_data.name then
-						DeleteGlobalLuaScript(message.event_data.name)
+				elseif message.event_type == "DeleteLuaScript" then
+					if message.event_data and message.event_data.name and message.event_data.path then
+						DeleteLuaScript(message.event_data.name, message.event_data.path)
 					end
 				elseif message.event_type == "ListEverything" then
 					local result = ListEverything()
