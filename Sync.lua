@@ -27,19 +27,20 @@ end
 
 local max_depth = 2
 
-function RecursiveListEverything(children: Array, instance: Instance, depth: number)
+function RecursiveListEverything(children: Array, instance: Instance, depth: number, path: string)
 	if depth > max_depth then
 		return
 	end
 	for _, child: Instance in ipairs(instance:GetChildren()) do
 		local child_node = {
 			text=child.Name,
-			type=child.ClassName
+			type=child.ClassName,
+			path=path .. "/" .. child.Name
 		}
 		local grand_children = child:GetChildren()
 		if #grand_children > 0 then
 			child_node.children = {}
-			RecursiveListEverything(child_node.children, child, depth + 1)
+			RecursiveListEverything(child_node.children, child, depth + 1, path .. "/" .. child.Name)
 		end
 		table.insert(children, child_node)
 	end
@@ -48,12 +49,14 @@ end
 function ListEverything()
 	local everything = {}
 	local workspace_children = {}
-	RecursiveListEverything(workspace_children, game.Workspace, 1)
+	RecursiveListEverything(workspace_children, game.Workspace, 1, "Workspace")
 	table.insert(everything, {
 		text="Workspace",
 		type=game.Workspace.ClassName,
-		children=workspace_children
+		children=workspace_children,
+		path="Workspace"
 	})
+
 	return {
 		items=everything
 	}
@@ -308,7 +311,7 @@ function Sync()
 	do
 		-- local response
 		local data
-		pcall(function ()
+		local success, err = pcall(function ()
 
 			-- renew connection if client hasn't connected yet
 			lastBloxUpdate = GetLastBloxUpdate()
@@ -369,6 +372,9 @@ function Sync()
 				end
 			end
 		end)
+		if not success then
+			print(err)
+		end
 		wait(1)
 	end
 end
