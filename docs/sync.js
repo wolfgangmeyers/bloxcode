@@ -75,7 +75,7 @@ async function saveScript() {
     await sendMessage({
         event_type: selectedNode.type == "LocalScript" ? "SaveLocalScript" : "SaveScript",
         event_data: {
-            name,
+            name: text,
             path: parentPath,
             value: luaCode,
         }
