@@ -93,7 +93,6 @@ function onCodefileReturned(event_data) {
 
 async function refresh() {
     await sendMessage({
-        // event_type: "ListGlobalBloxScripts"
         event_type: "ListEverything"
     })
 }
@@ -121,6 +120,10 @@ function newLocalScript() {
         })
     }
 }
+
+// TODO: newScript
+// TODO: save and load blox script
+
 
 function newBloxScript() {
     const filename = prompt("Enter a name for the new blox script")
@@ -229,6 +232,9 @@ function updateTreeIcons(items) {
                 break
             case "ServerScriptService":
                 item.icon = "icons/server-script-service.png"
+                break
+            case "Camera":
+                item.icon = "icons/camera.png"
                 break
             default:
                 item.icon = "/icons/model.png"
