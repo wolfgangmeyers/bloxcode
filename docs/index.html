@@ -17,12 +17,12 @@
             color: #fff;
             font-family: sans-serif;
         }
-        
+
         h1 {
             font-weight: normal;
             font-size: 140%;
         }
-        
+
         button,
         .btn {
             background-color: #2B4764;
@@ -31,16 +31,20 @@
             padding: 5px;
             border-radius: 5px;
         }
-        
+
         button:hover,
         .btn:hover {
             background-color: #35587c;
         }
-        
+
+        button:disabled {
+            background-color: #5f85aa;
+        }
+
         #blocklyDiv {
             position: absolute;
         }
-        
+
         #browser {
             position: absolute;
         }
@@ -48,7 +52,8 @@
 </head>
 
 <body>
-    <img src="bloxcode-logo-truncated.png" style="margin-bottom: 30px; display: block; margin-left: auto; margin-right: auto" />
+    <img src="bloxcode-logo-truncated.png"
+        style="margin-bottom: 30px; display: block; margin-left: auto; margin-right: auto" />
     <div id="connect_container">
         <label>
             Code:
@@ -66,7 +71,8 @@
             <option value="">Select a file</option>
         </select>
         <button onclick="saveToRoblox()">Save to Roblox Studio</button>
-        <button onclick="newBloxScript()">New Blox Script</button>
+        <!-- <button onclick="newBloxScript()">New Blox Script</button> -->
+        <button id="new-local-script-button" onclick="newLocalScript()" disabled>New LocalScript</button>
         <button onclick="deleteBloxScript()">Delete Blox Script</button>
         <button onclick="refresh()">Refresh</button>
         <button onclick="showCode()">Show Lua</button>
@@ -294,7 +300,7 @@
     <script type="text/javascript">
         const onResize = () => {
             const div = document.getElementById("blocklyDiv")
-            div.style = `left: 200px; width: ${window.innerWidth - 210}px; height: ${window.innerHeight - 140}px;`
+            div.style = `left: 300px; width: ${window.innerWidth - 310}px; height: ${window.innerHeight - 140}px;`
         }
         window.addEventListener("resize", onResize);
         onResize()
@@ -311,34 +317,19 @@
     <script src="blocks.js"></script>
     <script src="sync.js"></script>
     <script>
-        (function($) {
-            $("#browser").jstree({
-                core: {
-                    "themes": {
-                        "stripes": true
+            (function ($) {
+                $("#browser").jstree({
+                    core: {
+                        "themes": {
+                            "stripes": true
+                        },
+                        data: []
                     },
-                    data: [{
-                        text: "Workspace",
-                        icon: "/icons/workspace.png",
-                        children: [{
-                            text: "house",
-                            icon: "/icons/instance.png",
-                            children: [{
-                                text: "house script",
-                                icon: "/icons/script.png"
-                            }]
-                        }]
-                    }, {
-                        text: "ServerScriptService",
-                        icon: "/icons/instance.png",
-                        children: [{
-                            text: "game",
-                            icon: "/icons/script.png"
-                        }]
-                    }]
-                },
-            })
-        }(jQuery))
+                }).on("activate_node.jstree", function (evt, node) {
+                    const nodeData = node.node.original
+                    updateSelectedNode(nodeData)
+                })
+            }(jQuery))
     </script>
 </body>
 

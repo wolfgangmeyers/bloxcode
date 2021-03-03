@@ -32,6 +32,12 @@ function RecursiveListEverything(children: Array, instance: Instance, depth: num
 		return
 	end
 	for _, child: Instance in ipairs(instance:GetChildren()) do
+		if child.ClassName == "StringValue" then
+			continue
+		end
+		if depth == max_depth and child.ClassName ~= "Script" and child.ClassName ~= "LocalScript" then
+			continue
+		end
 		local child_node = {
 			text=child.Name,
 			type=child.ClassName,
@@ -55,6 +61,36 @@ function ListEverything()
 		type=game.Workspace.ClassName,
 		children=workspace_children,
 		path="Workspace"
+	})
+
+	local starter_player_children = {}
+	local starter_player = game:GetService("StarterPlayer")
+	RecursiveListEverything(starter_player_children, starter_player, 1, "StarterPlayer")
+	table.insert(everything, {
+		text="StarterPlayer",
+		type=starter_player.ClassName,
+		children=starter_player_children,
+		path="StarterPlayer"
+	})
+
+	local server_storage = game:GetService("ServerStorage")
+	local server_storage_children = {}
+	RecursiveListEverything(server_storage_children, server_storage, 1, "ServerStorage")
+	table.insert(everything, {
+		text="ServerStorage",
+		type=server_storage.ClassName,
+		children=server_storage_children,
+		path="ServerStorage"
+	})
+
+	local server_script_service = game:GetService("ServerScriptService")
+	local server_script_service_children = {}
+	RecursiveListEverything(server_script_service_children, server_script_service, 1, "ServerScriptService")
+	table.insert(everything, {
+		text="ServerScriptService",
+		type=server_script_service.ClassName,
+		children=server_script_service_children,
+		path="ServerScriptService"
 	})
 
 	return {
@@ -90,6 +126,98 @@ function SetGlobalBloxScript(name: string, value: string)
 			script = Instance.new("StringValue", script_service)
 		end
 		script.Value = value
+	end
+end
+
+function PopPath(path: string): (string, string)
+	local i = path:find("/")
+	if not i then
+		return path, ""
+	end
+	return path:sub(0, i - 1), path:sub(i + 1)
+end
+
+function RecursiveFindInstance(path: string, instance: Instance): Instance
+	if path == "" then
+		return instance
+	end
+	local child_name, child_path = PopPath(path)
+	local child = instance:FindFirstChild(child_name)
+	if child then
+		return RecursiveFindInstance(child_path, child)
+	end
+end
+
+function FindInstance(path: string): Instance
+	local root_container, sub_path = PopPath(path)
+	if root_container == "Workspace" then
+		return RecursiveFindInstance(sub_path, game.Workspace)
+	else
+		local service = game:GetService(root_container)
+		return RecursiveFindInstance(sub_path, service)
+	end
+end
+
+function SaveBloxScript(name: string, value: string, path: string)
+	if is_blox_script(name) then
+		local container = FindInstance(path)
+		local script = container:FindFirstChild(name)
+		if not script then
+			script = Instance.new("StringValue", container)
+			script.Name = name
+		elseif not script:IsA("StringValue") then
+			script:Destroy()
+			script = Instance.new("StringValue", container)
+		end
+		script.Value = value
+	end
+end
+
+function SaveLocalScript(name: string, value: string, path: string)
+	if not is_blox_script(name) then
+		local container = FindInstance(path)
+		local script = container:FindFirstChild(name)
+		if not script then
+			script = Instance.new("LocalScript", container)
+			script.Name = name
+			SendMessage("blox", "LocalScriptCreated", {
+				name=name,
+				path=path
+			})
+		elseif not script:IsA("LocalScript") then
+			script:Destroy()
+			script = Instance.new("LocalScript", container)
+			script.Name = name
+			SendMessage("blox", "LocalScriptCreated", {
+				name=name,
+				path=path
+			})
+		end
+		script.Source = value
+	end
+end
+
+function SaveScript(name: string, value: string, path: string)
+	if not is_blox_script(name) then
+		local container = FindInstance(path)
+		local script = container:FindFirstChild(name)
+		if not script then
+			script = Instance.new("Script", container)
+			script.Name = name
+			SendMessage("blox", "ScriptCreated", {
+				name=name,
+				path=path
+			})
+		elseif not script:IsA("Script") then
+			script:Destroy()
+			script = Instance.new("Script", container)
+			script.Name = name
+			SendMessage("blox", "ScriptCreated", {
+				name=name,
+				path=path
+			})
+		end
+		script.Source = value
 	end
 end
 
@@ -349,6 +477,18 @@ function Sync()
 				elseif message.event_type == "SetGlobalLuaScript" then
 					if message.event_data and message.event_data.name and message.event_data.value then
 						SetGlobalLuaScript(message.event_data.name, message.event_data.value)
+					end
+				elseif message.event_type == "SaveBloxScript" then
+					if message.event_data and message.event_data.name and message.event_data.value and message.event_data.path then
+						SaveBloxScript(message.event_data.name, message.event_data.value, message.event_data.path)
+					end
+				elseif message.event_type == "SaveScript" then
+					if message.event_data and message.event_data.name and message.event_data.path then
+						SaveScript(message.event_data.name, message.event_data.value or "", message.event_data.path)
+					end
+				elseif message.event_type == "SaveLocalScript" then
+					if message.event_data and message.event_data.name and message.event_data.path then
+						SaveLocalScript(message.event_data.name, message.event_data.value or "", message.event_data.path)
 					end
 				elseif message.event_type == "CreateGlobalBloxScript" then
 					if message.event_data and message.event_data.name then

@@ -1,6 +1,20 @@
 const backendUrl = "https://7iokpqos42.execute-api.us-west-2.amazonaws.com/prod"
 
 let connectionInfo;
+let selectedNode;
+
+function updateSelectedNode(node) {
+    selectedNode = node
+    console.log(node.path)
+
+    if (node.type == "Script" || node.type == "LocalScript") {
+        document.getElementById("new-local-script-button").setAttribute("disabled", "disabled")
+    } else {
+        document.getElementById("new-local-script-button").removeAttribute("disabled")
+    }
+    // TODO: if script selected..
+    // TODO: if non-script selected
+}
 
 function showCode() {
     // Generate Lua code and display it.
@@ -94,6 +108,20 @@ function onRefresh(event_data) {
     codefile_select.innerHTML = options
 }
 
+function newLocalScript() {
+    const scriptName = prompt("Enter a name for the new LocalScript")
+    if (scriptName) {
+        sendMessage({
+            event_type: "SaveLocalScript",
+            event_data: {
+                name: scriptName,
+                value: "",
+                path: selectedNode.path
+            }
+        })
+    }
+}
+
 function newBloxScript() {
     const filename = prompt("Enter a name for the new blox script")
     if (filename) {
@@ -177,10 +205,30 @@ function loadConnectionInfo() {
 function updateTreeIcons(items) {
     for (let item of items) {
         switch (item.type) {
+            case "StarterPlayerScripts":
+            case "StarterCharacterScripts":
+                item.icon = "/icons/player-scripts.png"
+                break
             case "Folder":
+                item.icon = "/icons/folder.png"
+                break
+            case "StarterPlayer":
+                item.icon = "/icons/starter-player.png"
                 break
             case "Workspace":
                 item.icon = "/icons/workspace.png"
+                break
+            case "Script":
+                item.icon = "icons/script.png"
+                break
+            case "LocalScript":
+                item.icon = "icons/localscript.png"
+                break
+            case "ServerStorage":
+                item.icon = "icons/server-storage.png"
+                break
+            case "ServerScriptService":
+                item.icon = "icons/server-script-service.png"
                 break
             default:
                 item.icon = "/icons/model.png"
@@ -266,6 +314,10 @@ async function onConnect(info) {
                         break
                     case "ListEverythingResult":
                         updateTreeview(message.event_data)
+                        break
+                    case "LocalScriptCreated":
+                    case "ScriptCreated":
+                        refresh()
                         break
                 }
             }
