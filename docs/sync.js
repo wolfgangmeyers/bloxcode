@@ -121,6 +121,20 @@ function newLocalScript() {
     }
 }
 
+function newScript() {
+    const scriptName = prompt("Enter a name for the new Script")
+    if (scriptName) {
+        sendMessage({
+            event_type: "SaveScript",
+            event_data: {
+                name: scriptName,
+                value: "",
+                path: selectedNode.path
+            }
+        })
+    }
+}
+
 // TODO: newScript
 // TODO: save and load blox script
 
