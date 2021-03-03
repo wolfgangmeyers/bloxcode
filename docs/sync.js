@@ -151,24 +151,26 @@ function newScript() {
     }
 }
 
-function deleteBloxScript() {
-    if (!confirm("Are you sure you want to delete this blox code file?")) {
+function deleteScript() {
+    if (!confirm("Are you sure you want to delete this script?")) {
         return
     }
-    const codefile_select = document.getElementById("codefile")
+    const {path, text} = selectedNode
     sendMessage({
         event_type: "DeleteBloxScript",
         event_data: {
-            name: codefile_select.value
+            name: text + ".blox",
+            path: getParentPath(path)
         }
     })
-    const luafile = codefile_select.value.split(".blox")[0]
     sendMessage({
-        event_type: "DeleteGlobalLuaScript",
+        event_type: "DeleteLuaScript",
         event_data: {
-            name: luafile
+            name: text,
+            path: getParentPath(path)
         }
     })
+    demoWorkspace.clear()
 }
 
 function onBloxScriptCreated(event_data) {
