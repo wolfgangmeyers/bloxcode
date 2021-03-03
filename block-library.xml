@@ -1796,4 +1796,98 @@
         <field name="HUE">230</field>
       </block>
     </value>
+  </block><block type="factory_base" id="q-}RSU4V9!YhB:[iBl!C" deletable="false" movable="false" x="10" y="10">
+    <mutation connections="LEFT"></mutation>
+    <field name="NAME">script_get_parent</field>
+    <field name="INLINE">AUTO</field>
+    <field name="CONNECTIONS">LEFT</field>
+    <statement name="INPUTS">
+      <block type="input_dummy" id="OquO/%./QmwXxzkZ6!u]">
+        <field name="ALIGN">LEFT</field>
+        <statement name="FIELDS">
+          <block type="field_static" id="QsZ}8pRuN|bpUARi}tkE">
+            <field name="TEXT">get the parent of this script</field>
+          </block>
+        </statement>
+      </block>
+    </statement>
+    <value name="TOOLTIP">
+      <block type="text" id="Q0dTnpAkWj@1l;GB0oIM" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="HELPURL">
+      <block type="text" id="`EGnwF?,%Rl`Vb|V_%3h" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="OUTPUTTYPE">
+      <shadow type="type_null" id="L;h1{TXH~{Yrc0e3pZGZ"></shadow>
+      <block type="type_other" id="xT!FN6Fthv#!X-x0?Hvd">
+        <field name="TYPE">Instance</field>
+      </block>
+    </value>
+    <value name="COLOUR">
+      <block type="colour_hue" id="{AO.J/mw30R1@|..KC%o">
+        <mutation colour="#5b67a5"></mutation>
+        <field name="HUE">230</field>
+      </block>
+    </value>
+  </block><block type="factory_base" id="D)R(6po6=I6Pa~r0=$%$" deletable="false" movable="false" x="10" y="10">
+    <mutation connections="BOTH"></mutation>
+    <field name="NAME">tool_activated</field>
+    <field name="INLINE">AUTO</field>
+    <field name="CONNECTIONS">BOTH</field>
+    <statement name="INPUTS">
+      <block type="input_dummy" id="YEetXxw9m:(BuY_Ta)%@">
+        <field name="ALIGN">LEFT</field>
+        <statement name="FIELDS">
+          <block type="field_static" id="7osSvhF@OCc9VSxaNz:I">
+            <field name="TEXT">when</field>
+            <next>
+              <block type="field_variable" id="+`U`4e#TwMzXkc|logk~">
+                <field name="TEXT">tool</field>
+                <field name="FIELDNAME">TOOL</field>
+                <next>
+                  <block type="field_static" id="]o%dB?tl{)y1JONha)r?">
+                    <field name="TEXT">is activated do</field>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </statement>
+        <next>
+          <block type="input_statement" id="zJm.L@LJvWS4+u8hLVv.">
+            <field name="INPUTNAME">HANDLER</field>
+            <field name="ALIGN">LEFT</field>
+            <value name="TYPE">
+              <shadow type="type_null" id="nBx=4t_Lu[,mn)Lm3P(U"></shadow>
+            </value>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <value name="TOOLTIP">
+      <block type="text" id="7apw7z4f1ZqhyS9uu%0:" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="HELPURL">
+      <block type="text" id="{Yf%fbb=[pJOh5^H{CtV" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="TOPTYPE">
+      <shadow type="type_null" id="kFu%(mdr}{^Ls4B}N#[Q"></shadow>
+    </value>
+    <value name="BOTTOMTYPE">
+      <shadow type="type_null" id="/Gd2%G-T#vw^#m-=X?t/"></shadow>
+    </value>
+    <value name="COLOUR">
+      <block type="colour_hue" id="Tt~TL3eAX]rZzht9dZi_">
+        <mutation colour="#5b67a5"></mutation>
+        <field name="HUE">230</field>
+      </block>
+    </value>
   </block></xml>
