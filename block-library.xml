@@ -1890,4 +1890,95 @@
         <field name="HUE">230</field>
       </block>
     </value>
+  </block><block type="factory_base" id="#*;)^VYPCqvL$h..J3yV" deletable="false" movable="false" x="10" y="10">
+    <mutation connections="LEFT"></mutation>
+    <field name="NAME">get_local_player</field>
+    <field name="INLINE">AUTO</field>
+    <field name="CONNECTIONS">LEFT</field>
+    <statement name="INPUTS">
+      <block type="input_dummy" id="yx6)G~TfB9oU-IjzZ.Aa">
+        <field name="ALIGN">LEFT</field>
+        <statement name="FIELDS">
+          <block type="field_static" id="9Vj9v1c7:v@V-e~y(}hi">
+            <field name="TEXT">get local player</field>
+          </block>
+        </statement>
+      </block>
+    </statement>
+    <value name="TOOLTIP">
+      <block type="text" id="^h}B6!3,O4kOF9H$yLv3" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="HELPURL">
+      <block type="text" id="eL@Lj@9x/`@i~V?|_Dbi" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="OUTPUTTYPE">
+      <shadow type="type_null" id="r:;mXFLTz=kv#/nd0W4$"></shadow>
+    </value>
+    <value name="COLOUR">
+      <block type="colour_hue" id="ga~_mA;2i%xw^:|dGzWY">
+        <mutation colour="#5b67a5"></mutation>
+        <field name="HUE">230</field>
+      </block>
+    </value>
+  </block><block type="factory_base" id="/S`}MBC4B,IL9=%m/.^U" deletable="false" movable="false" x="10" y="10">
+    <mutation connections="BOTH"></mutation>
+    <field name="NAME">player_character_added</field>
+    <field name="INLINE">AUTO</field>
+    <field name="CONNECTIONS">BOTH</field>
+    <statement name="INPUTS">
+      <block type="input_dummy" id="YsaR5Bq$g`0R}8#Cq3wA">
+        <field name="ALIGN">LEFT</field>
+        <statement name="FIELDS">
+          <block type="field_static" id="aN=NZ4Mtuz:-@gQ4Vn+W">
+            <field name="TEXT">when</field>
+            <next>
+              <block type="field_variable" id="PzxCymrK.LJP)ATHFaRG">
+                <field name="TEXT">player</field>
+                <field name="FIELDNAME">PLAYER</field>
+                <next>
+                  <block type="field_static" id="!?bkXWrk9/4+0-F]qn=7">
+                    <field name="TEXT">character is added do</field>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </statement>
+        <next>
+          <block type="input_statement" id="~TN5Y`mQIIPSKsGMZ^_z">
+            <field name="INPUTNAME">HANDLER</field>
+            <field name="ALIGN">LEFT</field>
+            <value name="TYPE">
+              <shadow type="type_null" id="?)^e-U0(,{hqd,Bxvum("></shadow>
+            </value>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <value name="TOOLTIP">
+      <block type="text" id="kut]{$d3uT6h}%S,4,nj" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="HELPURL">
+      <block type="text" id="i5RV~$9/LQ}E[U{$-uxn" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="TOPTYPE">
+      <shadow type="type_null" id="2}Spsk5v3NHE=#/~@^$["></shadow>
+    </value>
+    <value name="BOTTOMTYPE">
+      <shadow type="type_null" id="vz;epBHn.:h!~1yh}Ydd"></shadow>
+    </value>
+    <value name="COLOUR">
+      <block type="colour_hue" id="#X]oSccCl5Y,XOIw7l+4">
+        <mutation colour="#5b67a5"></mutation>
+        <field name="HUE">230</field>
+      </block>
+    </value>
   </block></xml>
