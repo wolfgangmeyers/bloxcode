@@ -277,6 +277,7 @@ function updateTreeview(data) {
 }
 
 async function onConnect(info) {
+    $("#connect").prop("disabled", true)
     if (info) {
         connectionInfo = info
     } else {
@@ -298,52 +299,59 @@ async function onConnect(info) {
         saveConnectionInfo(connectionInfo)
     }
 
-
-
     document.getElementById("controls").style = "display: block";
     document.getElementById("connect_container").style = "display: none"
     refresh()
 
     let i = 0
+    let lock = false
     window.setInterval(async () => {
-        i = i + 1
-        if (i >= 10) {
-            i = 0
-            sendMessage({
-                event_type: "ping"
-            })
+        if (lock) {
+            return
         }
-        // TODO: figure out how to pass authcode
-        let resp = await fetch(`${backendUrl}/messages/${connectionInfo.queues.blox}`, {
-            headers: {
-                authcode: connectionInfo.auth_code
+        lock = true
+        try {
+            i = i + 1
+            if (i >= 10) {
+                i = 0
+                sendMessage({
+                    event_type: "ping"
+                })
             }
-        });
-        const result = await resp.json()
-        console.log(result)
-        if (result.messages.length > 0) {
-            saveLastUpdate(new Date().getTime())
-            console.log("Got a message!", result)
-            for (let message of result.messages) {
-                console.log(message);
-                switch (message.event_type) {
-                    case "BloxScriptDeleted":
-                    case "LuaScriptDeleted":
-                        onBloxScriptDeleted(message.event_data);
-                        break;
-                    case "BloxScriptResult":
-                        onBloxScriptResult(message.event_data)
-                        break
-                    case "ListEverythingResult":
-                        updateTreeview(message.event_data)
-                        break
-                    case "LocalScriptCreated":
-                    case "ScriptCreated":
-                        refresh()
-                        break
+            let resp = await fetch(`${backendUrl}/messages/${connectionInfo.queues.blox}`, {
+                headers: {
+                    authcode: connectionInfo.auth_code
+                }
+            });
+            const result = await resp.json()
+            console.log(result)
+            if (result.messages.length > 0) {
+                saveLastUpdate(new Date().getTime())
+                console.log("Got a message!", result)
+                for (let message of result.messages) {
+                    console.log(message);
+                    switch (message.event_type) {
+                        case "BloxScriptDeleted":
+                        case "LuaScriptDeleted":
+                            onBloxScriptDeleted(message.event_data);
+                            break;
+                        case "BloxScriptResult":
+                            onBloxScriptResult(message.event_data)
+                            break
+                        case "ListEverythingResult":
+                            updateTreeview(message.event_data)
+                            break
+                        case "LocalScriptCreated":
+                        case "ScriptCreated":
+                            refresh()
+                            break
+                    }
                 }
             }
+        } finally {
+            lock = false
         }
+
     }, 1000);
 }
 
