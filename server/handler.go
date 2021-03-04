@@ -3,7 +3,9 @@ package main
 import (
 	"context"
 	"log"
+	"math/rand"
 	"server/broker"
+	"time"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -15,6 +17,7 @@ var ginLambda *ginadapter.GinLambda
 func init() {
 
 	log.Println("Cold start")
+	rand.Seed(time.Now().UnixNano())
 
 	ginLambda = ginadapter.New(broker.ConfigureRoutes())
 }
