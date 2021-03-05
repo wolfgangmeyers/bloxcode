@@ -263,6 +263,15 @@ function updateTreeIcons(items) {
             case "StarterPack":
                 item.icon = "icons/starter-pack.png"
                 break
+            case "Part":
+                item.icon = "icons/part.png"
+                break
+            case "SpawnLocation":
+                item.icon = "icons/spawn-location.png"
+                break
+            case "Terrain":
+                item.icon = "icons/terrain.png"
+                break
             default:
                 item.icon = "/icons/model.png"
                 break
