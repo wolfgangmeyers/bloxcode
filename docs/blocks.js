@@ -282,29 +282,29 @@ Blockly.Lua['instance_destroy'] = function(block) {
 Blockly.Blocks['instance_wait_for_child'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField("wait for child")
-            .appendField(new Blockly.FieldVariable("workspace"), "INSTANCE");
+            .appendField("wait for child of")
+            .appendField(new Blockly.FieldVariable("instance"), "INSTANCE");
         this.appendValueInput("NAME")
             .setCheck("String")
             .appendField("named");
         this.appendDummyInput()
-            .appendField("timeout")
+            .appendField("with timeout")
             .appendField(new Blockly.FieldNumber(1), "TIMEOUT");
-        this.setPreviousStatement(true, null);
-        this.setNextStatement(true, null);
+        this.setOutput(true, null);
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
     }
-}
+};
 
 Blockly.Lua['instance_wait_for_child'] = function(block) {
     var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
     var value_name = Blockly.Lua.valueToCode(block, 'NAME', Blockly.Lua.ORDER_ATOMIC);
     var number_timeout = block.getFieldValue('TIMEOUT');
-    var code = `${variable_instance}:WaitForChild(${value_name}, ${number_timeout})\n`;
-    return code;
+    var code = `${variable_instance}:WaitForChild(${value_name}, ${number_timeout})`;
+    return [code, Blockly.Lua.ORDER_NONE];
 };
+
 Blockly.Blocks['instance_get_attribute'] = {
     init: function() {
         this.appendDummyInput()
@@ -795,4 +795,25 @@ Blockly.Lua['get_service'] = function(block) {
     var dropdown_service = block.getFieldValue('SERVICE');
     var code = `game:GetService("${dropdown_service}")`;
     return code;
+};
+
+Blockly.Blocks['animator_load_animation'] = {
+    init: function() {
+        this.appendValueInput("ANIMATION")
+            .setCheck(null)
+            .appendField("load")
+            .appendField(new Blockly.FieldVariable("animator"), "ANIMATOR")
+            .appendField("with animation");
+        this.setOutput(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['animator_load_animation'] = function(block) {
+    var variable_animator = Blockly.Lua.variableDB_.getName(block.getFieldValue('ANIMATOR'), Blockly.Variables.NAME_TYPE);
+    var value_animation = Blockly.Lua.valueToCode(block, 'ANIMATION', Blockly.Lua.ORDER_ATOMIC);
+    var code = `${variable_animator}:LoadAnimation(${value_animation})`;
+    return [code, Blockly.Lua.ORDER_ATOMIC];
 };
