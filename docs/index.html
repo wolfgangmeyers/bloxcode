@@ -205,32 +205,9 @@
             <block type="script_get_parent"></block>
         </category>
         <category name="Part">
-            <block type="part_set_brickcolor"></block>
-            <block type="part_event_connect"></block>
-            <block type="part_get_position"></block>
-            <block type="part_set_position">
-                <value name="POSITION">
-                    <block type="vector3_new">
-                        <value name="X">
-                            <block type="math_number">
-                                <field name="NUM">0</field>
-                            </block>
-                        </value>
-                        <value name="Y">
-                            <block type="math_number">
-                                <field name="NUM">0</field>
-                            </block>
-                        </value>
-                        <value name="Z">
-                            <block type="math_number">
-                                <field name="NUM">0</field>
-                            </block>
-                        </value>
-                    </block>
-                </value>
-            </block>
-            <block type="part_get_cframe"></block>
-            <block type="part_set_cframe"></block>
+            <block type="part_on_touched"></block>
+            <block type="part_get_attribute"></block>
+            <block type="part_set_attribute"></block>
         </category>
         <category name="Humanoid">
             <block type="humanoid_set_scale">
@@ -247,31 +224,6 @@
         </category>
         <category name="Body Movers">
             <category name="BodyPosition">
-                <block type="part_get_position">
-                    <field name="PART">pos</field>
-                </block>
-                <block type="part_set_position">
-                    <field name="PART">pos</field>
-                    <value name="POSITION">
-                        <block type="vector3_new">
-                            <value name="X">
-                                <block type="math_number">
-                                    <field name="NUM">0</field>
-                                </block>
-                            </value>
-                            <value name="Y">
-                                <block type="math_number">
-                                    <field name="NUM">0</field>
-                                </block>
-                            </value>
-                            <value name="Z">
-                                <block type="math_number">
-                                    <field name="NUM">0</field>
-                                </block>
-                            </value>
-                        </block>
-                    </value>
-                </block>
                 <block type="bodyposition_set_p">
                     <value name="NAME">
                         <block type="math_number">
