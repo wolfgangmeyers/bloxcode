@@ -696,6 +696,26 @@ Blockly.Lua['players_player_added'] = function(block) {
     return code;
 };
 
+
+Blockly.Blocks['player_character_added_wait'] = {
+    init: function() {
+        this.appendDummyInput()
+            .appendField("wait for")
+            .appendField(new Blockly.FieldVariable("player"), "PLAYER")
+            .appendField("character to be added");
+        this.setOutput(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['player_character_added_wait'] = function(block) {
+    var variable_player = Blockly.Lua.variableDB_.getName(block.getFieldValue('PLAYER'), Blockly.Variables.NAME_TYPE);
+    var code = `${variable_player}.CharacterAdded:Wait()`;
+    return [code, Blockly.Lua.ORDER_ATOMIC];
+};
+
 Blockly.Blocks['script_get_parent'] = {
     init: function() {
         this.appendDummyInput()
@@ -750,7 +770,7 @@ Blockly.Blocks['get_local_player'] = {
 };
 
 Blockly.Lua['get_local_player'] = function(block) {
-    var code = "game.Players.LocalPlayer";
+    var code = `game:GetService("Players").LocalPlayer`;
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
 
