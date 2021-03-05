@@ -59,6 +59,16 @@ function ListEverything()
 		path="StarterPlayer"
 	})
 
+	local starter_pack_children = {}
+	local starter_pack = game:GetService("StarterPack")
+	RecursiveListEverything(starter_pack_children, starter_pack, 1, "StarterPack")
+	table.insert(everything, {
+		text="StarterPack",
+		type=starter_pack.ClassName,
+		children=starter_pack_children,
+		path="StarterPack"
+	})
+
 	local server_storage = game:GetService("ServerStorage")
 	local server_storage_children = {}
 	RecursiveListEverything(server_storage_children, server_storage, 1, "ServerStorage")
