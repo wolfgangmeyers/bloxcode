@@ -257,6 +257,12 @@ function updateTreeIcons(items) {
             case "Camera":
                 item.icon = "icons/camera.png"
                 break
+            case "Tool":
+                item.icon = "icons/tool.png"
+                break
+            case "StarterPack":
+                item.icon = "icons/starter-pack.png"
+                break
             default:
                 item.icon = "/icons/model.png"
                 break
