@@ -360,4 +360,4 @@ if (info) {
     onConnect(info)
 }
 
-document.getElementById("connect").addEventListener("click", onConnect)
+document.getElementById("connect").addEventListener("click", () => onConnect())
