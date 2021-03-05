@@ -17,12 +17,12 @@
             color: #fff;
             font-family: sans-serif;
         }
-
+        
         h1 {
             font-weight: normal;
             font-size: 140%;
         }
-
+        
         button,
         .btn {
             background-color: #2B4764;
@@ -31,20 +31,20 @@
             padding: 5px;
             border-radius: 5px;
         }
-
+        
         button:hover,
         .btn:hover {
             background-color: #35587c;
         }
-
+        
         button:disabled {
             background-color: #5f85aa;
         }
-
+        
         #blocklyDiv {
             position: absolute;
         }
-
+        
         #browser {
             position: absolute;
         }
@@ -52,8 +52,7 @@
 </head>
 
 <body>
-    <img src="bloxcode-logo-truncated.png"
-        style="margin-bottom: 30px; display: block; margin-left: auto; margin-right: auto" />
+    <img src="bloxcode-logo-truncated.png" style="margin-bottom: 30px; display: block; margin-left: auto; margin-right: auto" />
     <div id="connect_container">
         <label>
             Code:
@@ -71,7 +70,7 @@
         <button id="delete-script-button" style="display: none" onclick="deleteScript()">Delete</button>
         <button id="new-local-script-button" onclick="newLocalScript()" style="display: none">New LocalScript</button>
         <button id="new-script-button" onclick="newScript()" style="display: none">New Script</button>
-        
+
         <button onclick="refresh()">Refresh</button>
         <button onclick="showCode()">Show Lua</button>
         <a class="btn" href="https://github.com/wolfgangmeyers/roblox-blockly">
@@ -291,7 +290,7 @@
             </category>
         </category>
         <category name="Services">
-            
+            <block type="get_service"></block>
         </category>
         <category name="Players">
             <block type="players_player_added"></block>
@@ -321,19 +320,19 @@
     <script src="blocks.js"></script>
     <script src="sync.js"></script>
     <script>
-            (function ($) {
-                $("#browser").jstree({
-                    core: {
-                        "themes": {
-                            "stripes": true
-                        },
-                        data: []
+        (function($) {
+            $("#browser").jstree({
+                core: {
+                    "themes": {
+                        "stripes": true
                     },
-                }).on("activate_node.jstree", function (evt, node) {
-                    const nodeData = node.node.original
-                    updateSelectedNode(nodeData)
-                })
-            }(jQuery))
+                    data: []
+                },
+            }).on("activate_node.jstree", function(evt, node) {
+                const nodeData = node.node.original
+                updateSelectedNode(nodeData)
+            })
+        }(jQuery))
     </script>
 </body>
 
