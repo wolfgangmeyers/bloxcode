@@ -331,13 +331,21 @@ function CreateConnectionInfo()
 	return HttpService:JSONDecode(response)
 end
 
-function RenewConnectionInfo(code: string)
-	pcall(function()
+function RenewConnectionInfo()
+	local connectionInfo = GetConnectionInfo()
+	local success = pcall(function()
 		HttpService:RequestAsync({
-			Url=backend_url .. "/codes/" .. code,
+			Url=backend_url .. "/codes/" .. connectionInfo.code,
 			Method="PUT"
 		})
 	end)
+	if not success then
+		local newInfo = CreateConnectionInfo()
+		SaveConnectionInfo(newInfo)
+		ClearLastBloxUpdate()
+		return newInfo
+	end
+	return connectionInfo
 end
 
 function SetupGui()
@@ -404,7 +412,7 @@ function Sync()
 			-- renew connection if client hasn't connected yet
 			lastBloxUpdate = GetLastBloxUpdate()
 			if lastBloxUpdate == 0 then
-				RenewConnectionInfo(connectionInfo.code)
+				connectionInfo = RenewConnectionInfo()
 			elseif os.time() - lastBloxUpdate > 20 then
 				print("Client disconnected")
 				connectionInfo = CreateConnectionInfo()
