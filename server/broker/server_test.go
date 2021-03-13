@@ -74,6 +74,12 @@ func (h *Helper) CreateCode(queueNames []string) (*http.Response, error) {
 	return resp, err
 }
 
+func (h *Helper) RenewCode(code string) (*http.Response, error) {
+	req, _ := http.NewRequest("PUT", fmt.Sprintf(h.url("/codes/%v"), code), nil)
+	resp, err := http.DefaultClient.Do(req)
+	return resp, err
+}
+
 func (h *Helper) StartServer(port int) {
 	r := ConfigureRoutes()
 	h.httpServer = &http.Server{
@@ -121,6 +127,24 @@ func TestServer(tMain *testing.T) {
 		messages, err := h.ReadMessages(resp)
 		require.NoError(t, err)
 		require.Equal(t, 0, len(messages))
+	})
+
+	tMain.Run("Renew a code", func(t *testing.T) {
+		resp, err := h.CreateCode([]string{"foo", "bar"})
+		require.NoError(t, err)
+		var code Code
+		require.NoError(t, h.ReadResponse(resp, &code))
+		require.NotEmpty(t, code.Code)
+
+		resp, err = h.RenewCode(code.Code)
+		require.NoError(t, err)
+		require.Equal(t, http.StatusNoContent, resp.StatusCode)
+	})
+
+	tMain.Run("Renew a nonexistent code", func(t *testing.T) {
+		resp, err := h.RenewCode("ABCDEFG")
+		require.NoError(t, err)
+		require.Equal(t, http.StatusNotFound, resp.StatusCode)
 	})
 
 	tMain.Run("Message workflow", func(t *testing.T) {

@@ -225,28 +225,30 @@ func renewCodeHandler(c *gin.Context) {
 			c.AbortWithStatus(http.StatusInternalServerError)
 			return
 		}
-		if item != nil {
-			item.ExpiresAt = time.Now().Unix() + 10
-			if err := SaveCode(item); err != nil {
+		if item == nil {
+			c.Status(http.StatusNotFound)
+			return
+		}
+		item.ExpiresAt = time.Now().Unix() + 10
+		if err := SaveCode(item); err != nil {
+			log.Println(err.Error())
+			c.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
+		// renew queues
+		for _, queueID := range item.Queues {
+			queue, err := GetQueue(queueID)
+			if err != nil {
 				log.Println(err.Error())
 				c.AbortWithStatus(http.StatusInternalServerError)
 				return
 			}
-			// renew queues
-			for _, queueID := range item.Queues {
-				queue, err := GetQueue(queueID)
-				if err != nil {
+			if queue != nil {
+				queue.ExpiresAt = time.Now().Unix() + 60
+				if err := SaveQueue(queue); err != nil {
 					log.Println(err.Error())
 					c.AbortWithStatus(http.StatusInternalServerError)
 					return
-				}
-				if queue != nil {
-					queue.ExpiresAt = time.Now().Unix() + 60
-					if err := SaveQueue(queue); err != nil {
-						log.Println(err.Error())
-						c.AbortWithStatus(http.StatusInternalServerError)
-						return
-					}
 				}
 			}
 		}
