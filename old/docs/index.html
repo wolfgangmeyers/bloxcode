@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Roblox Block Coding Prototype</title>
+    <link rel="stylesheet" href="./dark-filetree/style.css" />
+    <script src="./jquery-3.5.1.min.js"></script>
+    <script src="./jstree.min.js"></script>
+    <script src="./blockly_compressed.js"></script>
+    <script src="./blocks_compressed.js"></script>
+    <script src="./lua_compressed.js"></script>
+    <script src="./en.js"></script>
+    <style>
+        body {
+            background-color: #181818;
+            color: #fff;
+            font-family: sans-serif;
+        }
+        
+        h1 {
+            font-weight: normal;
+            font-size: 140%;
+        }
+        
+        button,
+        .btn {
+            background-color: #2B4764;
+            color: white;
+            border: none;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        
+        button:hover,
+        .btn:hover {
+            background-color: #35587c;
+        }
+        
+        button:disabled {
+            background-color: #5f85aa;
+        }
+        
+        #blocklyDiv {
+            position: absolute;
+        }
+        
+        #browser {
+            position: absolute;
+        }
+    </style>
+</head>
+
+<body>
+    <img src="bloxcode-logo-truncated.png" style="margin-bottom: 30px; display: block; margin-left: auto; margin-right: auto" />
+    <div id="connect_container">
+        <label>
+            Code:
+        </label>
+        <input class="form-control" style="display: inline; width: 200px" type="text" id="code" placeholder="ABC123" />
+        <button id="connect">Connect to Roblox Studio</button>
+        <button onclick="showCode()">Show Lua</button>
+        <a href="https://github.com/wolfgangmeyers/roblox-blockly">
+            <button>Documentation</button>
+        </a>
+    </div>
+
+    <div id="controls" style="display: none">
+        <button id="save-script-button" style="display: none" onclick="saveScript()">Save</button>
+        <button id="delete-script-button" style="display: none" onclick="deleteScript()">Delete</button>
+        <button id="new-local-script-button" onclick="newLocalScript()" style="display: none">New LocalScript</button>
+        <button id="new-script-button" onclick="newScript()" style="display: none">New Script</button>
+
+        <button onclick="refresh()">Refresh</button>
+        <button onclick="showCode()">Show Lua</button>
+        <a class="btn" href="https://github.com/wolfgangmeyers/roblox-blockly">
+            <button>Documentation</button>
+        </a>
+    </div>
+    <hr />
+
+    <div id="browser" style="width: 200px; height: 480px;">
+
+    </div>
+    <div id="blocklyDiv" style="left: 200px; height: 480px; width: 600px;"></div>
+
+    <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
+        <category name="Logic" colour="%{BKY_LOGIC_HUE}">
+            <block type="controls_if"></block>
+            <block type="logic_compare"></block>
+            <block type="logic_operation"></block>
+            <block type="logic_negate"></block>
+            <block type="logic_boolean"></block>
+        </category>
+        <category name="Loops" colour="%{BKY_LOOPS_HUE}">
+            <block type="controls_repeat_ext">
+                <value name="TIMES">
+                    <block type="math_number">
+                        <field name="NUM">10</field>
+                    </block>
+                </value>
+            </block>
+            <block type="controls_whileUntil"></block>
+        </category>
+        <category name="Math" colour="%{BKY_MATH_HUE}">
+            <block type="math_number">
+                <field name="NUM">123</field>
+            </block>
+            <block type="math_arithmetic"></block>
+            <block type="math_single"></block>
+            <block type="math_trig"></block>
+            <block type="math_constant"></block>
+            <block type="math_number_property"></block>
+            <block type="math_round"></block>
+            <block type="math_on_list"></block>
+            <block type="math_modulo"></block>
+            <block type="math_constrain">
+                <value name="LOW">
+                    <block type="math_number">
+                        <field name="NUM">1</field>
+                    </block>
+                </value>
+                <value name="HIGH">
+                    <block type="math_number">
+                        <field name="NUM">100</field>
+                    </block>
+                </value>
+            </block>
+            <block type="math_random_int">
+                <value name="FROM">
+                    <block type="math_number">
+                        <field name="NUM">1</field>
+                    </block>
+                </value>
+                <value name="TO">
+                    <block type="math_number">
+                        <field name="NUM">100</field>
+                    </block>
+                </value>
+            </block>
+            <block type="math_random_float"></block>
+            <block type="math_atan2"></block>
+        </category>
+        <category name="Text" colour="%{BKY_TEXTS_HUE}">
+            <block type="text"></block>
+            <block type="text_length"></block>
+            <block type="text_print"></block>
+        </category>
+        <category name="Variables" custom="VARIABLE" colour="%{BKY_VARIABLES_HUE}">
+
+        </category>
+        <category name="Local Variables">
+            <block type="set_local_variable"></block>
+        </category>
+        <category name="Functions" custom="PROCEDURE" colour="%{BKY_PROCEDURES_HUE}">
+        </category>
+        <category name="Control">
+            <block type="wait"></block>
+            <block type="spawn_thread"></block>
+        </category>
+        <category name="Data">
+            <block type="math_number">
+                <field name="NUM">123</field>
+            </block>
+            <block type="vector3_new">
+                <value name="X">
+                    <block type="math_number">
+                        <field name="NUM">0</field>
+                    </block>
+                </value>
+                <value name="Y">
+                    <block type="math_number">
+                        <field name="NUM">0</field>
+                    </block>
+                </value>
+                <value name="Z">
+                    <block type="math_number">
+                        <field name="NUM">0</field>
+                    </block>
+                </value>
+            </block>
+        </category>
+        <category name="Instance">
+            <block type="instance_new"></block>
+            <block type="instance_new_with_parent"></block>
+            <block type="instance_find_first_child">
+                <value name="NAME">
+                    <block type="text">
+                        <field name="TEXT">Child</field>
+                    </block>
+                </value>
+            </block>
+            <block type="instance_wait_for_child">
+                <value name="NAME">
+                    <block type="text">
+                        <field name="TEXT">Child</field>
+                    </block>
+                </value>
+            </block>
+            <block type="instance_destroy"></block>
+            <block type="instance_is_a"></block>
+            <block type="instance_get_attribute"></block>
+            <block type="instance_set_attribute"></block>
+            <block type="instance_clone"></block>
+            <block type="script_get_parent"></block>
+        </category>
+        <category name="Part">
+            <block type="part_on_touched"></block>
+            <block type="part_get_attribute"></block>
+            <block type="part_set_attribute"></block>
+        </category>
+        <category name="Humanoid">
+            <block type="humanoid_set_scale">
+                <value name="NAME">
+                    <block type="math_number">
+                        <field name="NUM">1.0</field>
+                    </block>
+                </value>
+
+            </block>
+            <block type="humanoid_get_scale"></block>
+            <block type="humanoid_get_attribute"></block>
+            <block type="humanoid_set_attribute"></block>
+        </category>
+        <category name="Body Movers">
+            <category name="BodyPosition">
+                <block type="bodyposition_set_p">
+                    <value name="NAME">
+                        <block type="math_number">
+                            <field name="NUM">10000</field>
+                        </block>
+                    </value>
+                </block>
+            </category>
+            <category name="BodyGyro">
+                <block type="part_get_cframe">
+                    <field name="PART">rot</field>
+                </block>
+                <block type="part_set_cframe">
+                    <field name="PART">rot</field>
+                </block>
+            </category>
+        </category>
+        <category name="Services">
+            <block type="get_service"></block>
+        </category>
+        <category name="Players">
+            <block type="players_player_added"></block>
+            <block type="get_local_player"></block>
+            <block type="player_character_added_wait"></block>
+            <block type="player_get_attribute"></block>
+            <block type="player_set_attribute"></block>
+        </category>
+        <category name="Tool">
+            <block type="tool_activated"></block>
+        </category>
+        <category name="Animation">
+            <block type="animator_load_animation"></block>
+            <block type="animation_track_play"></block>
+        </category>
+        <category name="Sound">
+            <block type="sound_play"></block>
+        </category>
+    </xml>
+    <script type="text/javascript">
+        const onResize = () => {
+            const div = document.getElementById("blocklyDiv")
+            div.style = `left: 300px; width: ${window.innerWidth - 310}px; height: ${window.innerHeight - 140}px;`
+        }
+        window.addEventListener("resize", onResize);
+        onResize()
+    </script>
+    <script>
+        var demoWorkspace = Blockly.inject('blocklyDiv', {
+            media: '../../media/',
+            toolbox: document.getElementById('toolbox')
+        });
+        demoWorkspace.setTheme(Blockly.Themes.Dark)
+            // Blockly.Xml.domToWorkspace(document.getElementById('startBlocks'),
+            //                            demoWorkspace);
+    </script>
+    <script src="blocks.js"></script>
+    <script src="sync.js"></script>
+    <script>
+        (function($) {
+            $("#browser").jstree({
+                core: {
+                    "themes": {
+                        "stripes": true
+                    },
+                    data: []
+                },
+            }).on("activate_node.jstree", function(evt, node) {
+                const nodeData = node.node.original
+                updateSelectedNode(nodeData)
+            })
+        }(jQuery))
+    </script>
+</body>
+
+</html>
