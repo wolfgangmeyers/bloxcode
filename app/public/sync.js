@@ -1,4 +1,4 @@
-const backendUrl = "https://7iokpqos42.execute-api.us-west-2.amazonaws.com/prod"
+const backendUrl = "http://localhost:13032"
 
 let connectionInfo;
 let selectedNode;

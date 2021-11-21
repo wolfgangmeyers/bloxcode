@@ -27,7 +27,8 @@
     "electron": "^16.0.0"
   },
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.0"
+    "electron-squirrel-startup": "^1.0.0",
+    "express": "^4.17.1"
   },
   "config": {
     "forge": {
