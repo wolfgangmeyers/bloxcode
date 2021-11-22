@@ -1,6 +1,5 @@
 const backendUrl = "http://localhost:13032"
 
-let connectionInfo;
 let selectedNode;
 const $ = jQuery
 
@@ -48,12 +47,9 @@ function showCode() {
 }
 
 async function sendMessage(message) {
-    await fetch(`${backendUrl}/messages/${connectionInfo.queues.studio}`, {
+    await fetch(`${backendUrl}/messages/studio`, {
         method: "POST",
-        body: JSON.stringify(message),
-        headers: {
-            authcode: connectionInfo.auth_code
-        }
+        body: JSON.stringify(message)
     })
 }
 
@@ -191,36 +187,12 @@ function onBloxScriptDeleted(event_data) {
     refresh()
 }
 
-async function getConnectionInfo(code) {
-    const resp = await fetch(backendUrl + "/codes/" + code)
-    return await resp.json()
-}
-
 function saveLastUpdate(lastUpdate) {
     localStorage.setItem("LAST_UPDATE", JSON.stringify(lastUpdate))
 }
 
 function loadLastUpdate() {
     const data = localStorage.getItem("LAST_UPDATE")
-    if (data) {
-        return JSON.parse(data)
-    }
-}
-
-function saveConnectionInfo(info) {
-    localStorage.setItem("CONNECTION_INFO", JSON.stringify(info))
-}
-
-function loadConnectionInfo() {
-    const lastUpdate = loadLastUpdate()
-    if (!lastUpdate) {
-        return
-    }
-    const now = new Date().getTime()
-    if (now - lastUpdate > 20 * 1000) {
-        return
-    }
-    let data = localStorage.getItem("CONNECTION_INFO")
     if (data) {
         return JSON.parse(data)
     }
@@ -291,31 +263,9 @@ function updateTreeview(data) {
         }(jQuery))
 }
 
-async function onConnect(info) {
-    $("#connect").prop("disabled", true)
-    if (info) {
-        connectionInfo = info
-    } else {
-        let btnConnect = document.getElementById("connect");
-        btnConnect.innerHTML = "connecting..."
-        btnConnect.enabled = false
-        let code = document.getElementById("code").value
-
-        try {
-            connectionInfo = await getConnectionInfo(code)
-            btnConnect.innerHTML = "Connect to Roblox Studio"
-            btnConnect.enabled = true
-        } catch (err) {
-            btnConnect.innerHTML = "Connect to Roblox Studio"
-            btnConnect.enabled = true
-            console.error(err)
-            return
-        }
-        saveConnectionInfo(connectionInfo)
-    }
+async function init() {
 
     document.getElementById("controls").style = "display: block";
-    document.getElementById("connect_container").style = "display: none"
     refresh()
 
     let i = 0
@@ -333,11 +283,7 @@ async function onConnect(info) {
                     event_type: "ping"
                 })
             }
-            let resp = await fetch(`${backendUrl}/messages/${connectionInfo.queues.blox}`, {
-                headers: {
-                    authcode: connectionInfo.auth_code
-                }
-            });
+            let resp = await fetch(`${backendUrl}/messages/bloxcode`);
             const result = await resp.json()
             console.log(result)
             if (result.messages.length > 0) {
@@ -370,9 +316,4 @@ async function onConnect(info) {
     }, 1000);
 }
 
-let info = loadConnectionInfo()
-if (info) {
-    onConnect(info)
-}
-
-document.getElementById("connect").addEventListener("click", () => onConnect())
+init()
