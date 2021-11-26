@@ -1,7 +1,12 @@
+if (require('electron-squirrel-startup')) {
+  // TODO: handle install stuff here, if needed
+
+  return;
+}
 // Modules to control application life and create native browser window
 const {app, BrowserWindow} = require('electron')
 const path = require('path')
-require("./server");
+const server = require("./server");
 
 function createWindow () {
   // Create the browser window.
@@ -26,6 +31,7 @@ function createWindow () {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+  server();
   createWindow()
 
   app.on('activate', function () {
