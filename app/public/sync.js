@@ -49,7 +49,10 @@ function showCode() {
 async function sendMessage(message) {
     await fetch(`${backendUrl}/messages/studio`, {
         method: "POST",
-        body: JSON.stringify(message)
+        body: JSON.stringify(message),
+        headers: {
+            "Content-Type": "application/json"
+        }
     })
 }
 
@@ -123,55 +126,61 @@ function onRefresh(event_data) {
     codefile_select.innerHTML = options
 }
 
-function newLocalScript() {
-    const scriptName = prompt("Enter a name for the new LocalScript")
-    if (scriptName) {
-        sendMessage({
-            event_type: "SaveLocalScript",
-            event_data: {
-                name: scriptName,
-                value: "",
-                path: selectedNode.path
-            }
-        })
-    }
+async function newLocalScript() {
+    var promptBox = simplePopup(2, 'Enter a name for the new LocalScript');
+    $.when(promptBox).then(function(scriptName) {
+        if (scriptName) {
+            sendMessage({
+                event_type: "SaveLocalScript",
+                event_data: {
+                    name: scriptName,
+                    value: "",
+                    path: selectedNode.path
+                }
+            })
+        }
+    });
 }
 
 function newScript() {
-    const scriptName = prompt("Enter a name for the new Script")
-    if (scriptName) {
-        sendMessage({
-            event_type: "SaveScript",
-            event_data: {
-                name: scriptName,
-                value: "",
-                path: selectedNode.path
-            }
-        })
-    }
+    var promptBox = simplePopup(2, 'Enter a name for the new Script');
+    $.when(promptBox).then(function(scriptName) {
+        if (scriptName) {
+            sendMessage({
+                event_type: "SaveScript",
+                event_data: {
+                    name: scriptName,
+                    value: "",
+                    path: selectedNode.path
+                }
+            })
+        }
+    });
 }
 
 function deleteScript() {
-    if (!confirm("Are you sure you want to delete this script?")) {
-        return
-    }
-    const { path, text } = selectedNode
-    sendMessage({
-        event_type: "DeleteBloxScript",
-        event_data: {
-            name: text + ".blox",
-            path: getParentPath(path)
+    const confirmBox = simplePopup(1, 'Are you sure you want to delete this script?');
+    $.when(confirmBox).then(function(res) {
+        if (res) {
+            const { path, text } = selectedNode
+            sendMessage({
+                event_type: "DeleteBloxScript",
+                event_data: {
+                    name: text + ".blox",
+                    path: getParentPath(path)
+                }
+            })
+            sendMessage({
+                event_type: "DeleteLuaScript",
+                event_data: {
+                    name: text,
+                    path: getParentPath(path)
+                }
+            })
+            demoWorkspace.clear()
+            updateSelectedNode(null)
         }
-    })
-    sendMessage({
-        event_type: "DeleteLuaScript",
-        event_data: {
-            name: text,
-            path: getParentPath(path)
-        }
-    })
-    demoWorkspace.clear()
-    updateSelectedNode(null)
+    });
 }
 
 function onBloxScriptCreated(event_data) {
@@ -255,12 +264,12 @@ function updateTreeIcons(items) {
 }
 
 function updateTreeview(data) {
-    updateTreeIcons(data.items)
-        (function ($) {
-            // $('#treeId').jstree(true).settings.core.data = newData;
-            $("#browser").jstree(true).settings.core.data = data.items
-            $("#browser").jstree("refresh")
-        }(jQuery))
+    updateTreeIcons(data.items);
+    (function ($) {
+        // $('#treeId').jstree(true).settings.core.data = newData;
+        $("#browser").jstree(true).settings.core.data = data.items
+        $("#browser").jstree("refresh")
+    }(jQuery))
 }
 
 async function init() {

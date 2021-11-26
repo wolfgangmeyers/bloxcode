@@ -27,7 +27,7 @@ app.post("/messages/bloxcode", async (req, res) => {
 app.get("/messages/bloxcode", async (req, res) => {
     // send messages then clear
     res.send({
-        messages: bloxcodeMessages.filter(m => m.expires > moment().valueOf())
+        messages: bloxcodeMessages.filter(m => m.expires > moment().valueOf()).map(m => ({...m, expires: undefined}))
     });
     bloxcodeMessages.length = 0;
 });
@@ -50,7 +50,7 @@ app.post("/messages/studio", async (req, res) => {
 app.get("/messages/studio", async (req, res) => {
     // send messages then clear
     res.send({
-        messages: studioMessages.filter(m => m.expires > moment().valueOf())
+        messages: studioMessages.filter(m => m.expires > moment().valueOf()).map(m => ({...m, expires: undefined}))
     });
     studioMessages.length = 0;
 });

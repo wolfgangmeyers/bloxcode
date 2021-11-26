@@ -1,5 +1,5 @@
 local HttpService = game:GetService("HttpService")
-local backend_url = "https://7iokpqos42.execute-api.us-west-2.amazonaws.com/prod"
+local backend_url = "http://localhost:13032"
 
 local function ends_with(str, ending)
 	print("Checking string ending")
@@ -146,7 +146,7 @@ function SaveLocalScript(name: string, value: string, path: string)
 		if not script then
 			script = Instance.new("LocalScript", container)
 			script.Name = name
-			SendMessage("blox", "LocalScriptCreated", {
+			SendMessage("bloxcode", "LocalScriptCreated", {
 				name=name,
 				path=path
 			})
@@ -154,7 +154,7 @@ function SaveLocalScript(name: string, value: string, path: string)
 			script:Destroy()
 			script = Instance.new("LocalScript", container)
 			script.Name = name
-			SendMessage("blox", "LocalScriptCreated", {
+			SendMessage("bloxcode", "LocalScriptCreated", {
 				name=name,
 				path=path
 			})
@@ -170,7 +170,7 @@ function SaveScript(name: string, value: string, path: string)
 		if not script then
 			script = Instance.new("Script", container)
 			script.Name = name
-			SendMessage("blox", "ScriptCreated", {
+			SendMessage("bloxcode", "ScriptCreated", {
 				name=name,
 				path=path
 			})
@@ -178,7 +178,7 @@ function SaveScript(name: string, value: string, path: string)
 			script:Destroy()
 			script = Instance.new("Script", container)
 			script.Name = name
-			SendMessage("blox", "ScriptCreated", {
+			SendMessage("bloxcode", "ScriptCreated", {
 				name=name,
 				path=path
 			})
@@ -210,7 +210,7 @@ function DeleteBloxScript(name: string, path: string)
 	local container = FindInstance(path)
 	local blox_script = container:FindFirstChild(name)
 	blox_script:Destroy()
-	SendMessage("blox", "BloxScriptDeleted", {name=name, path=path})
+	SendMessage("bloxcode", "BloxScriptDeleted", {name=name, path=path})
 end
 
 function DeleteLuaScript(name: string, path: string)
@@ -220,43 +220,32 @@ function DeleteLuaScript(name: string, path: string)
 	local container = FindInstance(path)
 	local lua_script = container:FindFirstChild(name)
 	lua_script:Destroy()
-	SendMessage("blox", "LuaScriptDeleted", {name=name, path=path})
+	SendMessage("bloxcode", "LuaScriptDeleted", {name=name, path=path})
 end
 
 function SendMessage(queueName: string, event_type: string, event_data: any)
-	local connectionInfo = GetConnectionInfo()
-	local queue = connectionInfo.queues[queueName]
-	local url = backend_url .. "/messages/" .. queue
+	local url = backend_url .. "/messages/" .. queueName
 	HttpService:PostAsync(url, HttpService:JSONEncode({
 		event_type=event_type,
 		event_data=event_data,
-	}), "ApplicationJson", false, {
-		authcode=connectionInfo.auth_code
-	})
+	}), "ApplicationJson", false)
 end
 
 function GetMessages(queueName: string)
-	local connectionInfo = GetConnectionInfo()
-	local queue = connectionInfo.queues[queueName]
-	local url = backend_url .. "/messages/" .. queue
-	local response = HttpService:GetAsync(url, false, {
-		authcode=connectionInfo.auth_code,
-	})
+	local url = backend_url .. "/messages/" .. queueName
+	local response = HttpService:GetAsync(url, false)
+	print("GetMessages: " .. response)
 	return HttpService:JSONDecode(response)
 end
 
 function killPreviousPlugin()
-	local connectionInfo = GetConnectionInfo()
 	local lastBloxUpdate = GetLastBloxUpdate()
-	if connectionInfo == nil or os.time() - lastBloxUpdate > 50 then
+	if os.time() - lastBloxUpdate > 50 then
 		return true
 	end
 	local success = false
 	pcall(function ()
 		SendMessage("studio","kill")
-		-- HttpService:PostAsync("http://localhost:9080/messages/studio", HttpService:JSONEncode({
-		-- 	event_type="kill",
-		-- }))
 		success = true
 	end)
 	if not success then
@@ -265,31 +254,9 @@ function killPreviousPlugin()
 
 	wait(5)
 	-- drain the queue if no previous plugin was running
-	-- local resp = HttpService:GetAsync("http://localhost:9080/messages/studio")
 	local resp = GetMessages("studio")
 	print(resp)
 	return success
-end
-
-
-
-function GetConnectionInfo()
-	local serverStorage = game:GetService("ReplicatedStorage")
-	local connectionString: StringValue = serverStorage:FindFirstChild("connection.info")
-	if connectionString == nil then
-		return nil
-	end
-	return HttpService:JSONDecode(connectionString.Value)
-end
-
-function SaveConnectionInfo(connectionInfo)
-	local serverStorage = game:GetService("ReplicatedStorage")
-	local connectionString: StringValue = serverStorage:FindFirstChild("connection.info")
-	if connectionString == nil then
-		connectionString = Instance.new("StringValue", serverStorage)
-		connectionString.Name = "connection.info"
-	end
-	connectionString.Value = HttpService:JSONEncode(connectionInfo)
 end
 
 function GetLastBloxUpdate()
@@ -301,51 +268,28 @@ function GetLastBloxUpdate()
 	return lastUpdateValue.Value
 end
 
-function SaveLastBloxUpdate()
-	local serverStorage = game:GetService("ReplicatedStorage")
-	local lastUpdateValue: NumberValue = serverStorage:FindFirstChild("lastBloxUpdate")
+-- accepts optional number
+function SaveLastBloxUpdate(time: number)
+	local replicatedStorage = game:GetService("ReplicatedStorage")
+	local lastUpdateValue: NumberValue = replicatedStorage:FindFirstChild("lastBloxUpdate")
 	if lastUpdateValue == nil then
-		lastUpdateValue = Instance.new("NumberValue", serverStorage)
+		lastUpdateValue = Instance.new("NumberValue", replicatedStorage)
 		lastUpdateValue.Name = "lastBloxUpdate"
 	end
-	lastUpdateValue.Value = os.time()
+	if time == nil then
+		time = os.time()
+	end
+	lastUpdateValue.Value = time
 end
 
 function ClearLastBloxUpdate()
-	local serverStorage = game:GetService("ReplicatedStorage")
-	local lastUpdateValue: NumberValue = serverStorage:FindFirstChild("lastBloxUpdate")
+	local replicatedStorage = game:GetService("ReplicatedStorage")
+	local lastUpdateValue: NumberValue = replicatedStorage:FindFirstChild("lastBloxUpdate")
 	if lastUpdateValue == nil then
-		lastUpdateValue = Instance.new("NumberValue", serverStorage)
+		lastUpdateValue = Instance.new("NumberValue", replicatedStorage)
 		lastUpdateValue.Name = "lastBloxUpdate"
 	end
 	lastUpdateValue.Value = 0
-end
-
-function CreateConnectionInfo()
-	local response = HttpService:PostAsync(
-		"https://7iokpqos42.execute-api.us-west-2.amazonaws.com/prod/codes",
-		HttpService:JSONEncode({
-			queueNames={"blox", "studio"}
-		})
-	)
-	return HttpService:JSONDecode(response)
-end
-
-function RenewConnectionInfo()
-	local connectionInfo = GetConnectionInfo()
-	local success = pcall(function()
-		HttpService:RequestAsync({
-			Url=backend_url .. "/codes/" .. connectionInfo.code,
-			Method="PUT"
-		})
-	end)
-	if not success then
-		local newInfo = CreateConnectionInfo()
-		SaveConnectionInfo(newInfo)
-		ClearLastBloxUpdate()
-		return newInfo
-	end
-	return connectionInfo
 end
 
 function SetupGui()
@@ -359,26 +303,32 @@ function SetupGui()
 	local label = Instance.new("TextLabel", screen)
 	label.Name = "prompt"
 	label.Text = ""
-	label.Visible = false
-	label.Position = UDim2.new(0.2, 0, 0.25, 0)
-	label.Size = UDim2.new(0.6, 0, 0.5, 0)
+	label.Visible = true
+	label.Position = UDim2.new(0.8, 0, 0.85, 0)
+	label.Size = UDim2.new(0.1, 0, 0.1, 0)
+	label.BackgroundTransparency = 1
+	label.TextColor3 = Color3.new(1, 1, 1)
+	label.TextSize = 14
 
 	-- Show prompt when connection info is present and last update is 0
 	local replicatedStorage = game:GetService("ReplicatedStorage")
-	local lastUpdate: NumberValue = replicatedStorage:WaitForChild("lastBloxUpdate")
-	local connectionInfo: StringValue = replicatedStorage:WaitForChild("connection.info")
+	local lastUpdateValue: NumberValue = replicatedStorage:FindFirstChild("lastBloxUpdate")
+	if lastUpdateValue == nil then
+		lastUpdateValue = Instance.new("NumberValue", replicatedStorage)
+		lastUpdateValue.Name = "lastBloxUpdate"
+	end
 
-	function UpdatePrompt()
-		label.Visible = lastUpdate.Value == 0
-		if label.Visible then
-			local info = HttpService:JSONDecode(connectionInfo.Value)
-			label.Text = "BloxCode\nPlease navigate to www.bloxcode.studio and enter this code:\n" .. info.code
+	local function UpdatePrompt()
+		print("Updating connected state")
+		if os.time() - lastUpdateValue.Value > 10 then
+			label.Text = "Bloxcode Disconnected"
+		else
+			label.Text = "Bloxcode Connected"
 		end
 	end
 	UpdatePrompt()
 
-	lastUpdate.Changed:Connect(UpdatePrompt)
-	connectionInfo.Changed:Connect(UpdatePrompt)
+	lastUpdateValue.Changed:Connect(UpdatePrompt)
 
 	print("GUI updated")
 end
@@ -390,17 +340,8 @@ function Sync()
 	-- we can reuse the connection info. Check last update time from
 	-- bloxcode studio to see if a new connection should be made.
 	print("Get connection info")
-	local connectionInfo = GetConnectionInfo()
-	print(connectionInfo)
 	local lastBloxUpdate = GetLastBloxUpdate()
 	print(lastBloxUpdate)
-	if connectionInfo == nil or os.time() - lastBloxUpdate > 20 then
-		ClearLastBloxUpdate()
-		connectionInfo = CreateConnectionInfo()
-		print("Created connection info:")
-		print(connectionInfo)
-		SaveConnectionInfo(connectionInfo)
-	end
 
 	local running = 1
 	while running
@@ -408,33 +349,22 @@ function Sync()
 		-- local response
 		local data
 		local success, err = pcall(function ()
-
-			-- renew connection if client hasn't connected yet
-			lastBloxUpdate = GetLastBloxUpdate()
-			if lastBloxUpdate == 0 then
-				connectionInfo = RenewConnectionInfo()
-			elseif os.time() - lastBloxUpdate > 20 then
-				print("Client disconnected")
-				connectionInfo = CreateConnectionInfo()
-				SaveConnectionInfo(connectionInfo)
-				ClearLastBloxUpdate()
-			end
 			data = GetMessages("studio")
 			for _, message in ipairs(data.messages) do
-				SaveLastBloxUpdate()
+				SaveLastBloxUpdate(os.time())
 				local success, err = pcall(function()
 					-- print(start_time)
 					print(message.event_type)
 					if message.event_type == "ping" then
 						-- print("Responding to ping")
-						SendMessage("blox", "pong", nil)
+						SendMessage("bloxcode", "pong", nil)
 					elseif message.event_type == "kill" then
 						print("Sync script shutting down")
 						running = 0
 					elseif message.event_type == "GetBloxScript" then
 						if message.event_data and message.event_data.name and message.event_data.path then
 							local resp = GetBloxScript(message.event_data.name, message.event_data.path)
-							SendMessage("blox", "BloxScriptResult", resp)
+							SendMessage("bloxcode", "BloxScriptResult", resp)
 						end
 					elseif message.event_type == "SaveBloxScript" then
 						print(message)
@@ -459,7 +389,7 @@ function Sync()
 						end
 					elseif message.event_type == "ListEverything" then
 						local result = ListEverything()
-						SendMessage("blox", "ListEverythingResult", result)
+						SendMessage("bloxcode", "ListEverythingResult", result)
 					end
 				end)
 				if not success then
@@ -469,6 +399,7 @@ function Sync()
 		end)
 		if not success then
 			print(err)
+			SaveLastBloxUpdate(0)
 		end
 		wait(1)
 	end

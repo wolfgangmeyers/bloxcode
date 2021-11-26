@@ -12,19 +12,13 @@ implement roblox scripts, I didn't really find anything, although others had gon
 for the same thing before me.
 
 ## How does it work?
-Bloxcode is made up of three components:
+Bloxcode is made up of two components:
 
 * A Roblox Studio plugin that manages scripts
-* A web site that exposes a Blockly interface where a user can write scripts
-* A backend service that allows the other two components to communicate
+* A desktop application that exposes a visual programming interface
 
-### Roblox studio plugin
-
-The [Sync.lua](./Sync.lua) script, once installed as a plugin, will prompt the user
-to open up www.bloxcode.studio and enter a code. Once the code is entered into the website
-and it establishes communication with the plugin, the popup will disappear and scripts
-can be managed from the Bloxcode UI. If the connection fails for some reason, the plugin
-will prompt the user again with a new code to connect.
+Once the plugin is installed in Roblox Studio, if both Bloxcode and
+Roblox studio are started, they will remain in sync.
 
 Installation:
 
@@ -35,8 +29,8 @@ the plugin into Roblox Studio manually:
 * Paste the contents of [Sync.lua](./docs/Sync.lua) into the script
 * Right click the script and select Save Local Plugin
 
-Once the plugin is active, you should be prompted to navigate to www.bloxcode.studio with
-a code to enter in the website.
+Once the plugin is active, it will display a notice indicating if
+it is connected to Bloxcode or not.
 
 Removal:
 
@@ -44,15 +38,15 @@ Navigate to the Plugins tab in Roblox Studio and click on the Plugins Folder. De
 script that was saved earlier and restart Roblox Studio.
 
 
-### Bloxcode website
+### Bloxcode desktop application
 
-The Bloxcode website hosted at https://www.bloxcode.studio provides a Blockly interface
+Bloxcode provides a Blockly interface
 for editing scripts. Currently the website has a **very basic** interface that will be
 updated to be more user-friendly in the future.
 
 ## Creating a new script
 
-From the [Bloxcode website](https://www.bloxcode.studio) click on "New Blox Script", then
+From the Bloxcode desktop application, click on "New Blox Script", then
 enter the name of the script in the prompt. This will create two children in the ServerScriptService:
 * A bloxcode source file with a `.blox` extension. This is where the blocks are saved
 * A lua server script. This is generated whenever the bloxcode file is saved from the website.
@@ -64,8 +58,6 @@ After a second or two the Bloxcode script should load.
 
 ## Limitations
 
-* Only server scripts are supported, no local scripts
-* All scripts are saved in ServerStorageService
 * Only a tiny subset of the roblox api is currently implemented
 
 ## Can I help make Bloxcode better?

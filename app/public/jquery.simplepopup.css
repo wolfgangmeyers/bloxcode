@@ -1,0 +1,131 @@
+.disable-scrollbar {
+  position: fixed; 
+  overflow-y: scroll;
+  width: 100%;
+}
+
+#popup-overlay {
+  opacity: 0;
+  height: 0px;
+  overflow: hidden;
+  text-align: center;
+  background-color: rgba(0,0,0,0.3);
+}
+
+#popup-overlay.show-popup {
+  opacity: 1;
+  position: fixed;
+  height: auto;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+}
+
+.simple-popup {
+  position: relative;
+  display: inline-block;
+  margin-top: 200px;
+  max-width: 600px;
+  min-width: 400px;
+  overflow: hidden;
+  background-color: #fff;
+  text-align: center;
+}
+
+.popup-icon {
+  position: absolute;
+  display: block;
+  font-family: Arial;
+  border: 5px solid #fff;
+  border-radius: 59px;
+  top: -20px;
+  right: -20px;
+  width: 118px;
+  height: 118px;
+  line-height: 118px;
+  font-size: 100px;
+  color: #fff;
+  transition: text-shadow 0.3s ease, box-shadow 0.3s ease;
+  -moz-transition: text-shadow 0.3s ease, box-shadow 0.3s ease;
+  -webkit-transition: text-shadow 0.3s ease, box-shadow 0.3s ease;
+  -o-transition: text-shadow 0.3s ease, box-shadow 0.3s ease;
+}
+
+#popup-overlay.show-popup .popup-icon {
+  text-shadow: 0 1px 0 #ccc,
+               0 2px 0 #c9c9c9,
+               0 3px 0 #bbb,
+               0 4px 0 #b9b9b9,
+               0 5px 0 #aaa,
+               0 6px 1px rgba(0,0,0,.1),
+               0 0 5px rgba(0,0,0,.1),
+               0 1px 3px rgba(0,0,0,.3),
+               0 3px 5px rgba(0,0,0,.2),
+               0 5px 10px rgba(0,0,0,.25),
+               0 10px 10px rgba(0,0,0,.2),
+               0 20px 20px rgba(0,0,0,.15);
+  box-shadow: 0 1px 0 #ccc,
+              0 2px 0 #c9c9c9,
+              0 3px 0 #bbb,
+              0 4px 0 #b9b9b9,
+              0 5px 0 #aaa,
+              0 6px 1px rgba(0,0,0,.1),
+              0 0 5px rgba(0,0,0,.1),
+              0 1px 3px rgba(0,0,0,.3),
+              0 3px 5px rgba(0,0,0,.2),
+              0 5px 10px rgba(0,0,0,.25),
+              0 10px 10px rgba(0,0,0,.2),
+              0 20px 20px rgba(0,0,0,.15);
+}
+
+#popup-overlay .prompt-box .popup-icon {
+  font-size: 80px;
+  line-height: 108px;
+}
+
+.popup-message {
+  position: relative;
+  padding: 20px 100px 20px 15px;
+  font-weight: bold;
+  color: #666;
+  text-align: left;
+}
+
+.popup-input {
+  margin-bottom: 30px;
+}
+
+.popup-buttons {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.popup-buttons button {
+  display: inline-block;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  margin-left: 10px;
+  color: #333;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-image: none;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.popup-buttons button:hover, button:focus {
+  box-shadow: 0 0 6px #aaa;
+}
