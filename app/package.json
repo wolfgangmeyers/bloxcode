@@ -33,12 +33,15 @@
   },
   "config": {
     "forge": {
-      "packagerConfig": {},
+      "packagerConfig": {
+        "icon": "public/favicon.ico"
+      },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "electron_quick_start"
+            "name": "electron_quick_start",
+            "iconUrl": "https://raw.githubusercontent.com/wolfgangmeyers/bloxcode/development/app/public/favicon.ico"
           }
         }
       ]
