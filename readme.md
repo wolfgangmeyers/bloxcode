@@ -26,7 +26,7 @@ Eventually this will be published as an official plugin. Until then, you can ins
 the plugin into Roblox Studio manually:
 
 * Create a new server Script in ServerStorage
-* Paste the contents of [Sync.lua](./docs/Sync.lua) into the script
+* Paste the contents of [Sync.lua](./Sync.lua) into the script
 * Right click the script and select Save Local Plugin
 
 Once the plugin is active, it will display a notice indicating if

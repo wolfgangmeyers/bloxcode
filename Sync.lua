@@ -2,8 +2,6 @@ local HttpService = game:GetService("HttpService")
 local backend_url = "http://localhost:13032"
 
 local function ends_with(str, ending)
-	print("Checking string ending")
-	print(str .. ", " .. str:sub(-#ending))
 	return ending == "" or str:sub(-#ending) == ending
 end
 
@@ -124,7 +122,6 @@ function FindInstance(path: string): Instance
 end
 
 function SaveBloxScript(name: string, value: string, path: string)
-	print("SaveBloxScript: " .. name .. ", " .. value .. ", " .. path)
 	if is_blox_script(name) then
 		local container = FindInstance(path)
 		local script = container:FindFirstChild(name)
@@ -234,7 +231,6 @@ end
 function GetMessages(queueName: string)
 	local url = backend_url .. "/messages/" .. queueName
 	local response = HttpService:GetAsync(url, false)
-	print("GetMessages: " .. response)
 	return HttpService:JSONDecode(response)
 end
 
@@ -255,7 +251,6 @@ function killPreviousPlugin()
 	wait(5)
 	-- drain the queue if no previous plugin was running
 	local resp = GetMessages("studio")
-	print(resp)
 	return success
 end
 
@@ -292,57 +287,13 @@ function ClearLastBloxUpdate()
 	lastUpdateValue.Value = 0
 end
 
-function SetupGui()
-	local starterGui = game:GetService("StarterGui")
-	local screen = starterGui:FindFirstChild("screen")
-	if screen ~= nil then
-		screen:Destroy()
-	end
-	screen = Instance.new("ScreenGui", starterGui)
-	screen.Name = "screen"
-	local label = Instance.new("TextLabel", screen)
-	label.Name = "prompt"
-	label.Text = ""
-	label.Visible = true
-	label.Position = UDim2.new(0.8, 0, 0.85, 0)
-	label.Size = UDim2.new(0.1, 0, 0.1, 0)
-	label.BackgroundTransparency = 1
-	label.TextColor3 = Color3.new(1, 1, 1)
-	label.TextSize = 14
-
-	-- Show prompt when connection info is present and last update is 0
-	local replicatedStorage = game:GetService("ReplicatedStorage")
-	local lastUpdateValue: NumberValue = replicatedStorage:FindFirstChild("lastBloxUpdate")
-	if lastUpdateValue == nil then
-		lastUpdateValue = Instance.new("NumberValue", replicatedStorage)
-		lastUpdateValue.Name = "lastBloxUpdate"
-	end
-
-	local function UpdatePrompt()
-		print("Updating connected state")
-		if os.time() - lastUpdateValue.Value > 10 then
-			label.Text = "Bloxcode Disconnected"
-		else
-			label.Text = "Bloxcode Connected"
-		end
-	end
-	UpdatePrompt()
-
-	lastUpdateValue.Changed:Connect(UpdatePrompt)
-
-	print("GUI updated")
-end
-
 function Sync()
-	print("Sync script starting up")
+	print("Bloxcode sync script starting up")
 
 	-- If we are starting back up after starting or stopping test,
 	-- we can reuse the connection info. Check last update time from
 	-- bloxcode studio to see if a new connection should be made.
-	print("Get connection info")
 	local lastBloxUpdate = GetLastBloxUpdate()
-	print(lastBloxUpdate)
-
 	local running = 1
 	while running
 	do
@@ -351,15 +302,17 @@ function Sync()
 		local success, err = pcall(function ()
 			data = GetMessages("studio")
 			for _, message in ipairs(data.messages) do
-				SaveLastBloxUpdate(os.time())
+				if lastBloxUpdate == 0 then
+					print("Bloxcode connected")
+				end
+				lastBloxUpdate = os.time()
+				SaveLastBloxUpdate(lastBloxUpdate)
 				local success, err = pcall(function()
-					-- print(start_time)
-					print(message.event_type)
+					print("Received " .. message.event_type)
 					if message.event_type == "ping" then
-						-- print("Responding to ping")
 						SendMessage("bloxcode", "pong", nil)
 					elseif message.event_type == "kill" then
-						print("Sync script shutting down")
+						print("Bloxcode sync script shutting down")
 						running = 0
 					elseif message.event_type == "GetBloxScript" then
 						if message.event_data and message.event_data.name and message.event_data.path then
@@ -367,7 +320,6 @@ function Sync()
 							SendMessage("bloxcode", "BloxScriptResult", resp)
 						end
 					elseif message.event_type == "SaveBloxScript" then
-						print(message)
 						if message.event_data and message.event_data.name and message.event_data.value and message.event_data.path then
 							SaveBloxScript(message.event_data.name, message.event_data.value, message.event_data.path)
 						end
@@ -398,8 +350,11 @@ function Sync()
 			end
 		end)
 		if not success then
-			print(err)
-			SaveLastBloxUpdate(0)
+			if lastBloxUpdate ~= 0 then
+				print("Bloxcode disconnected")
+				lastBloxUpdate = 0
+			end
+			SaveLastBloxUpdate(lastBloxUpdate)
 		end
 		wait(1)
 	end
@@ -407,5 +362,4 @@ end
 
 if killPreviousPlugin() then
 	spawn(Sync)
-	SetupGui()
 end
