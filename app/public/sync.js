@@ -43,7 +43,7 @@ function showCode() {
     // Generate Lua code and display it.
     Blockly.Lua.INFINITE_LOOP_TRAP = null;
     var code = Blockly.Lua.workspaceToCode(demoWorkspace);
-    alert(code);
+    console.log(code);
 }
 
 async function sendMessage(message) {

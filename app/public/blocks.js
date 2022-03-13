@@ -1095,17 +1095,6 @@ Blockly.Blocks['datastorage_svc_get'] = {
     }
 };
 
-// print((function()
-// 	local success, result = pcall(function()
-// 		return experienceStore:GetAsync("User_1234")
-// 	end)
-// 	if not success then
-// 		print(result)
-// 		return nil
-// 	end
-// 	return result
-// end)())
-
 // wrapper function for simpler usage
 Blockly.Lua['datastorage_svc_get'] = function (block) {
     var value_name = Blockly.Lua.valueToCode(block, 'NAME', Blockly.Lua.ORDER_ATOMIC);
@@ -1147,13 +1136,6 @@ Blockly.Blocks['datastorage_svc_set'] = {
         this.setHelpUrl("");
     }
 };
-
-// local success, errorMessage = pcall(function()
-// 	experienceStore:SetAsync("User_1234", 50)
-// end)
-// if not success then
-// 	print(errorMessage)
-// end
 
 Blockly.Lua['datastorage_svc_set'] = function (block) {
     var value_name = Blockly.Lua.valueToCode(block, 'NAME', Blockly.Lua.ORDER_ATOMIC);
