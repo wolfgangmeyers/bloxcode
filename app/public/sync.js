@@ -272,6 +272,15 @@ function updateTreeview(data) {
     }(jQuery))
 }
 
+// custom prompt function for blockly
+// needed for electron
+Blockly.prompt = function(message, defaultValue, callback) {
+    var promptBox = simplePopup(2, message, defaultValue);
+    $.when(promptBox).then(function(scriptName) {
+        callback(scriptName);
+    });
+};
+
 async function init() {
 
     document.getElementById("controls").style = "display: block";
