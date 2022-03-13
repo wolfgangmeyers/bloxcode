@@ -19,12 +19,12 @@
             color: #fff;
             font-family: sans-serif;
         }
-        
+
         h1 {
             font-weight: normal;
             font-size: 140%;
         }
-        
+
         button,
         .btn {
             background-color: #2B4764;
@@ -33,20 +33,20 @@
             padding: 5px;
             border-radius: 5px;
         }
-        
+
         button:hover,
         .btn:hover {
             background-color: #35587c;
         }
-        
+
         button:disabled {
             background-color: #5f85aa;
         }
-        
+
         #blocklyDiv {
             position: absolute;
         }
-        
+
         #browser {
             position: absolute;
         }
@@ -54,7 +54,8 @@
 </head>
 
 <body>
-    <img src="bloxcode-logo-truncated.png" style="margin-bottom: 30px; display: block; margin-left: auto; margin-right: auto" />
+    <img src="bloxcode-logo-truncated.png"
+        style="margin-bottom: 30px; display: block; margin-left: auto; margin-right: auto" />
 
     <div id="controls" style="display: none">
         <button id="save-script-button" style="display: none" onclick="saveScript()">Save</button>
@@ -260,6 +261,25 @@
                     </block>
                 </value>
             </block>
+            <block type="datastorage_svc_get">
+                <value name="NAME">
+                    <block type="text">
+                        <field name="TEXT">key</field>
+                    </block>
+                </value>
+            </block>
+            <block type="datastorage_svc_set">
+                <value name="NAME">
+                    <block type="text">
+                        <field name="TEXT">key</field>
+                    </block>
+                </value>
+                <value name="VALUE">
+                    <block type="text">
+                        <field name="TEXT">value</field>
+                    </block>
+                </value>
+            </block>
         </category>
     </xml>
     <script type="text/javascript">
@@ -275,26 +295,43 @@
             media: '../../media/',
             toolbox: document.getElementById('toolbox')
         });
-        demoWorkspace.setTheme(Blockly.Themes.Dark)
+        var theme = Blockly.Theme.defineTheme('dark', {
+            'base': Blockly.Themes.Classic,
+            'componentStyles': {
+                'workspaceBackgroundColour': '#1e1e1e',
+                'toolboxBackgroundColour': 'blackBackground',
+                'toolboxForegroundColour': '#fff',
+                'flyoutBackgroundColour': '#252526',
+                'flyoutForegroundColour': '#ccc',
+                'flyoutOpacity': 1,
+                'scrollbarColour': '#797979',
+                'insertionMarkerColour': '#fff',
+                'insertionMarkerOpacity': 0.3,
+                'scrollbarOpacity': 0.4,
+                'cursorColour': '#d0d0d0',
+                'blackBackground': '#333',
+            },
+        });
+        demoWorkspace.setTheme(theme)
             // Blockly.Xml.domToWorkspace(document.getElementById('startBlocks'),
             //                            demoWorkspace);
     </script>
     <script src="blocks.js"></script>
     <script src="sync.js"></script>
     <script>
-        (function($) {
-            $("#browser").jstree({
-                core: {
-                    "themes": {
-                        "stripes": true
+            (function ($) {
+                $("#browser").jstree({
+                    core: {
+                        "themes": {
+                            "stripes": true
+                        },
+                        data: []
                     },
-                    data: []
-                },
-            }).on("activate_node.jstree", function(evt, node) {
-                const nodeData = node.node.original
-                updateSelectedNode(nodeData)
-            })
-        }(jQuery))
+                }).on("activate_node.jstree", function (evt, node) {
+                    const nodeData = node.node.original
+                    updateSelectedNode(nodeData)
+                })
+            }(jQuery))
     </script>
 </body>
 

@@ -14,7 +14,7 @@ Blockly.Blocks['instance_find_first_child'] = {
 };
 
 Blockly.Lua['instance_find_first_child'] = function (block) {
-    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
+    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.CATEGORY_NAME);
     var value_name = Blockly.Lua.valueToCode(block, 'NAME', Blockly.Lua.ORDER_ATOMIC);
     var code = `${variable_instance}:FindFirstChild(${value_name})`;
     return [code, Blockly.Lua.ORDER_ATOMIC];
@@ -38,7 +38,7 @@ Blockly.Blocks['instance_is_a'] = {
 };
 
 Blockly.Lua['instance_is_a'] = function (block) {
-    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
+    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.CATEGORY_NAME);
     var dropdown_type = block.getFieldValue('TYPE');
     var code = `${variable_instance}:isA("${dropdown_type}")`;
     return [code, Blockly.Lua.ORDER_ATOMIC];
@@ -86,7 +86,7 @@ Blockly.Blocks['instance_new_with_parent'] = {
 
 Blockly.Lua['instance_new_with_parent'] = function (block) {
     var dropdown_type = block.getFieldValue('TYPE');
-    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
+    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.CATEGORY_NAME);
     var code = `Instance.new("${dropdown_type}", ${variable_instance})`;
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
@@ -136,7 +136,7 @@ Blockly.Blocks['part_set_attribute'] = {
 
 Blockly.Lua['part_set_attribute'] = function (block) {
     var dropdown_attribute = block.getFieldValue('ATTRIBUTE');
-    var variable_part = Blockly.Lua.variableDB_.getName(block.getFieldValue('PART'), Blockly.Variables.NAME_TYPE);
+    var variable_part = Blockly.Lua.variableDB_.getName(block.getFieldValue('PART'), Blockly.Variables.CATEGORY_NAME);
     var value_value = Blockly.Lua.valueToCode(block, 'VALUE', Blockly.Lua.ORDER_ATOMIC);
     var code = `${variable_part}.${dropdown_attribute} = ${value_value}\n`;
     return code;
@@ -162,8 +162,8 @@ Blockly.Blocks['part_on_touched'] = {
 };
 
 Blockly.Lua['part_on_touched'] = function (block) {
-    var variable_part = Blockly.Lua.variableDB_.getName(block.getFieldValue('PART'), Blockly.Variables.NAME_TYPE);
-    var variable_other_part = Blockly.Lua.variableDB_.getName(block.getFieldValue('OTHER_PART'), Blockly.Variables.NAME_TYPE);
+    var variable_part = Blockly.Lua.variableDB_.getName(block.getFieldValue('PART'), Blockly.Variables.CATEGORY_NAME);
+    var variable_other_part = Blockly.Lua.variableDB_.getName(block.getFieldValue('OTHER_PART'), Blockly.Variables.CATEGORY_NAME);
     var statements_name = Blockly.Lua.statementToCode(block, 'NAME');
     var code = `${variable_part}.Touched:Connect(function(${variable_other_part})
     ${statements_name}
@@ -190,8 +190,8 @@ Blockly.Blocks['part_on_touch_ended'] = {
 };
 
 Blockly.Lua['part_on_touch_ended'] = function (block) {
-    var variable_part = Blockly.Lua.variableDB_.getName(block.getFieldValue('PART'), Blockly.Variables.NAME_TYPE);
-    var variable_other_part = Blockly.Lua.variableDB_.getName(block.getFieldValue('OTHER_PART'), Blockly.Variables.NAME_TYPE);
+    var variable_part = Blockly.Lua.variableDB_.getName(block.getFieldValue('PART'), Blockly.Variables.CATEGORY_NAME);
+    var variable_other_part = Blockly.Lua.variableDB_.getName(block.getFieldValue('OTHER_PART'), Blockly.Variables.CATEGORY_NAME);
     var statements_name = Blockly.Lua.statementToCode(block, 'NAME');
     var code = `${variable_part}.TouchEnded:Connect(function(${variable_other_part})
     ${statements_name}
@@ -216,7 +216,7 @@ Blockly.Blocks['bodyposition_set_p'] = {
 };
 
 Blockly.Lua['bodyposition_set_p'] = function (block) {
-    var variable_pos = Blockly.Lua.variableDB_.getName(block.getFieldValue('POS'), Blockly.Variables.NAME_TYPE);
+    var variable_pos = Blockly.Lua.variableDB_.getName(block.getFieldValue('POS'), Blockly.Variables.CATEGORY_NAME);
     var value_name = Blockly.Lua.valueToCode(block, 'NAME', Blockly.Lua.ORDER_ATOMIC);
     var code = `${variable_pos}.P = ${value_name}\n`;
     return code;
@@ -278,7 +278,7 @@ Blockly.Blocks['instance_destroy'] = {
 };
 
 Blockly.Lua['instance_destroy'] = function (block) {
-    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
+    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.CATEGORY_NAME);
     var code = `${variable_instance}:Destroy()\n`
     return code;
 };
@@ -302,7 +302,7 @@ Blockly.Blocks['instance_wait_for_child'] = {
 };
 
 Blockly.Lua['instance_wait_for_child'] = function (block) {
-    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
+    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.CATEGORY_NAME);
     var value_name = Blockly.Lua.valueToCode(block, 'NAME', Blockly.Lua.ORDER_ATOMIC);
     var number_timeout = block.getFieldValue('TIMEOUT');
     var code = `${variable_instance}:WaitForChild(${value_name}, ${number_timeout})`;
@@ -330,7 +330,7 @@ Blockly.Blocks['instance_get_attribute'] = {
 
 Blockly.Lua['instance_get_attribute'] = function (block) {
     var dropdown_attribute = block.getFieldValue('ATTRIBUTE');
-    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
+    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.CATEGORY_NAME);
     var code = `${variable_instance}.${dropdown_attribute}`;
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
@@ -358,7 +358,7 @@ Blockly.Blocks['instance_set_attribute'] = {
 
 Blockly.Lua['instance_set_attribute'] = function (block) {
     var dropdown_attribute = block.getFieldValue('ATTRIBUTE');
-    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
+    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.CATEGORY_NAME);
     var value_value = Blockly.Lua.valueToCode(block, 'VALUE', Blockly.Lua.ORDER_ATOMIC);
     var code = `${variable_instance}.${dropdown_attribute} = ${value_value}\n`;
     return code;
@@ -377,7 +377,7 @@ Blockly.Blocks['instance_clone'] = {
 };
 
 Blockly.Lua['instance_clone'] = function (block) {
-    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
+    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.CATEGORY_NAME);
     var code = `${variable_instance}:Clone()`;
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
@@ -396,7 +396,7 @@ Blockly.Blocks['instance_get_archivable'] = {
 };
 
 Blockly.Lua['instance_get_archivable'] = function (block) {
-    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
+    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.CATEGORY_NAME);
     var code = `${variable_instance}.Archivable`;
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
@@ -419,7 +419,7 @@ Blockly.Blocks['instance_set_archivable'] = {
 };
 
 Blockly.Lua['instance_set_archivable'] = function (block) {
-    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
+    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.CATEGORY_NAME);
     var value_value = Blockly.Lua.valueToCode(block, 'VALUE', Blockly.Lua.ORDER_ATOMIC);
     var code = `${variable_instance}.Archivable = ${value_value}\n`;
     return code;
@@ -447,9 +447,9 @@ Blockly.Blocks['part_event_connect'] = {
 };
 
 Blockly.Lua['part_event_connect'] = function (block) {
-    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.NAME_TYPE);
+    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.CATEGORY_NAME);
     var dropdown_event = block.getFieldValue('EVENT');
-    var variable_arg = Blockly.Lua.variableDB_.getName(block.getFieldValue('ARG'), Blockly.Variables.NAME_TYPE);
+    var variable_arg = Blockly.Lua.variableDB_.getName(block.getFieldValue('ARG'), Blockly.Variables.CATEGORY_NAME);
     var statements_name = Blockly.Lua.statementToCode(block, 'NAME');
     var code = `${variable_instance}.${dropdown_event}:Connect(function(${variable_arg})
 ${statements_name}
@@ -473,7 +473,7 @@ Blockly.Blocks['set_local_variable'] = {
 };
 
 Blockly.Lua['set_local_variable'] = function (block) {
-    var variable_variable = Blockly.Lua.variableDB_.getName(block.getFieldValue('VARIABLE'), Blockly.Variables.NAME_TYPE);
+    var variable_variable = Blockly.Lua.variableDB_.getName(block.getFieldValue('VARIABLE'), Blockly.Variables.CATEGORY_NAME);
     var value_value = Blockly.Lua.valueToCode(block, 'VALUE', Blockly.Lua.ORDER_ATOMIC);
     var code = `local ${variable_variable} = ${value_value}\n`;
     return code;
@@ -504,7 +504,7 @@ Blockly.Blocks['humanoid_set_scale'] = {
 
 Blockly.Lua['humanoid_set_scale'] = function (block) {
     var dropdown_bodypart = block.getFieldValue('BODYPART');
-    var variable_humanoid = Blockly.Lua.variableDB_.getName(block.getFieldValue('HUMANOID'), Blockly.Variables.NAME_TYPE);
+    var variable_humanoid = Blockly.Lua.variableDB_.getName(block.getFieldValue('HUMANOID'), Blockly.Variables.CATEGORY_NAME);
     var value_name = Blockly.Lua.valueToCode(block, 'NAME', Blockly.Lua.ORDER_ATOMIC);
     var code = `${variable_humanoid}.${dropdown_bodypart}Scale.Value = ${value_name}\n`
     return code;
@@ -531,7 +531,7 @@ Blockly.Blocks['humanoid_get_scale'] = {
 
 Blockly.Lua['humanoid_get_scale'] = function (block) {
     var dropdown_bodypart = block.getFieldValue('BODYPART');
-    var variable_humanoid = Blockly.Lua.variableDB_.getName(block.getFieldValue('HUMANOID'), Blockly.Variables.NAME_TYPE);
+    var variable_humanoid = Blockly.Lua.variableDB_.getName(block.getFieldValue('HUMANOID'), Blockly.Variables.CATEGORY_NAME);
     var code = `${variable_humanoid}.${dropdown_bodypart}Scale.Value`;
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
@@ -586,7 +586,7 @@ Blockly.Blocks['humanoid_get_attribute'] = {
 
 Blockly.Lua['humanoid_get_attribute'] = function (block) {
     var dropdown_attribute = block.getFieldValue('ATTRIBUTE');
-    var variable_humanoid = Blockly.Lua.variableDB_.getName(block.getFieldValue('HUMANOID'), Blockly.Variables.NAME_TYPE);
+    var variable_humanoid = Blockly.Lua.variableDB_.getName(block.getFieldValue('HUMANOID'), Blockly.Variables.CATEGORY_NAME);
     var code = `${variable_humanoid}.${dropdown_attribute}`;
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
@@ -639,7 +639,7 @@ Blockly.Blocks['humanoid_set_attribute'] = {
 
 Blockly.Lua['humanoid_set_attribute'] = function (block) {
     var dropdown_attribute = block.getFieldValue('ATTRIBUTE');
-    var variable_humanoid = Blockly.Lua.variableDB_.getName(block.getFieldValue('HUMANOID'), Blockly.Variables.NAME_TYPE);
+    var variable_humanoid = Blockly.Lua.variableDB_.getName(block.getFieldValue('HUMANOID'), Blockly.Variables.CATEGORY_NAME);
     var value_name = Blockly.Lua.valueToCode(block, 'NAME', Blockly.Lua.ORDER_ATOMIC);
     var code = `${variable_humanoid}.${dropdown_attribute} = ${value_name}\n`
     return code;
@@ -693,7 +693,7 @@ Blockly.Blocks['players_player_added'] = {
 };
 
 Blockly.Lua['players_player_added'] = function (block) {
-    var variable_player = Blockly.Lua.variableDB_.getName(block.getFieldValue('PLAYER'), Blockly.Variables.NAME_TYPE);
+    var variable_player = Blockly.Lua.variableDB_.getName(block.getFieldValue('PLAYER'), Blockly.Variables.CATEGORY_NAME);
     var statements_handler = Blockly.Lua.statementToCode(block, 'HANDLER')
     var code = `game:GetService("Players").PlayerAdded:Connect(function(${variable_player})
         ${statements_handler}
@@ -716,7 +716,7 @@ Blockly.Blocks['player_character_added_wait'] = {
 };
 
 Blockly.Lua['player_character_added_wait'] = function (block) {
-    var variable_player = Blockly.Lua.variableDB_.getName(block.getFieldValue('PLAYER'), Blockly.Variables.NAME_TYPE);
+    var variable_player = Blockly.Lua.variableDB_.getName(block.getFieldValue('PLAYER'), Blockly.Variables.CATEGORY_NAME);
     var code = `${variable_player}.CharacterAdded:Wait()`;
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
@@ -739,7 +739,7 @@ Blockly.Blocks['player_get_attribute'] = {
 
 Blockly.Lua['player_get_attribute'] = function (block) {
     var dropdown_attribute = block.getFieldValue('ATTRIBUTE');
-    var variable_player = Blockly.Lua.variableDB_.getName(block.getFieldValue('PLAYER'), Blockly.Variables.NAME_TYPE);
+    var variable_player = Blockly.Lua.variableDB_.getName(block.getFieldValue('PLAYER'), Blockly.Variables.CATEGORY_NAME);
     var code = `${variable_player}.${dropdown_attribute}`;
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
@@ -765,7 +765,7 @@ Blockly.Blocks['player_set_attribute'] = {
 
 Blockly.Lua['player_set_attribute'] = function (block) {
     var dropdown_attribute = block.getFieldValue('ATTRIBUTE');
-    var variable_player = Blockly.Lua.variableDB_.getName(block.getFieldValue('PLAYER'), Blockly.Variables.NAME_TYPE);
+    var variable_player = Blockly.Lua.variableDB_.getName(block.getFieldValue('PLAYER'), Blockly.Variables.CATEGORY_NAME);
     var value_value = Blockly.Lua.valueToCode(block, 'VALUE', Blockly.Lua.ORDER_ATOMIC);
     var code = `${variable_player}.${dropdown_attribute} = ${value_value}\n`;
     return code;
@@ -949,7 +949,7 @@ Blockly.Blocks['tool_activated'] = {
 
 
 Blockly.Lua['tool_activated'] = function (block) {
-    var variable_tool = Blockly.Lua.variableDB_.getName(block.getFieldValue('TOOL'), Blockly.Variables.NAME_TYPE);
+    var variable_tool = Blockly.Lua.variableDB_.getName(block.getFieldValue('TOOL'), Blockly.Variables.CATEGORY_NAME);
     var argsList = getArgList(block)
     var statements_handler = Blockly.Lua.statementToCode(block, 'HANDLER');
     var code = (
@@ -1013,7 +1013,7 @@ Blockly.Blocks['animator_load_animation'] = {
 };
 
 Blockly.Lua['animator_load_animation'] = function (block) {
-    var variable_animator = Blockly.Lua.variableDB_.getName(block.getFieldValue('ANIMATOR'), Blockly.Variables.NAME_TYPE);
+    var variable_animator = Blockly.Lua.variableDB_.getName(block.getFieldValue('ANIMATOR'), Blockly.Variables.CATEGORY_NAME);
     var value_animation = Blockly.Lua.valueToCode(block, 'ANIMATION', Blockly.Lua.ORDER_ATOMIC);
     var code = `${variable_animator}:LoadAnimation(${value_animation})`;
     return [code, Blockly.Lua.ORDER_ATOMIC];
@@ -1033,7 +1033,7 @@ Blockly.Blocks['animation_track_play'] = {
 };
 
 Blockly.Lua['animation_track_play'] = function (block) {
-    var variable_animation_track = Blockly.Lua.variableDB_.getName(block.getFieldValue('ANIMATION_TRACK'), Blockly.Variables.NAME_TYPE);
+    var variable_animation_track = Blockly.Lua.variableDB_.getName(block.getFieldValue('ANIMATION_TRACK'), Blockly.Variables.CATEGORY_NAME);
     var code = `${variable_animation_track}:Play()\n`;
     return code;
 };
@@ -1052,7 +1052,7 @@ Blockly.Blocks['sound_play'] = {
 };
 
 Blockly.Lua['sound_play'] = function (block) {
-    var variable_sound = Blockly.Lua.variableDB_.getName(block.getFieldValue('SOUND'), Blockly.Variables.NAME_TYPE);
+    var variable_sound = Blockly.Lua.variableDB_.getName(block.getFieldValue('SOUND'), Blockly.Variables.CATEGORY_NAME);
     var code = `${variable_sound}:Play()\n`;
     return code;
 };
@@ -1076,4 +1076,95 @@ Blockly.Lua['datastorage_svc_get_datastore'] = function (block) {
     var value_name = Blockly.Lua.valueToCode(block, 'NAME', Blockly.Lua.ORDER_ATOMIC);
     var code = `game:GetService("DataStoreService"):GetDataStore(${value_name})`;
     return [code, Blockly.Lua.ORDER_ATOMIC];
+};
+
+Blockly.Blocks['datastorage_svc_get'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("get data ");
+        this.appendValueInput("NAME")
+            .setCheck(null);
+        this.appendDummyInput()
+            .appendField("from datastore ")
+            .appendField(new Blockly.FieldVariable("datastore"), "DATASTORE");
+        this.setInputsInline(true);
+        this.setOutput(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+// print((function()
+// 	local success, result = pcall(function()
+// 		return experienceStore:GetAsync("User_1234")
+// 	end)
+// 	if not success then
+// 		print(result)
+// 		return nil
+// 	end
+// 	return result
+// end)())
+
+// wrapper function for simpler usage
+Blockly.Lua['datastorage_svc_get'] = function (block) {
+    var value_name = Blockly.Lua.valueToCode(block, 'NAME', Blockly.Lua.ORDER_ATOMIC);
+    var variable_datastore = Blockly.Lua.variableDB_.getName(block.getFieldValue('DATASTORE'), Blockly.Variables.CATEGORY_NAME);
+    // TODO: Assemble Lua into code variable.
+    var code = `(function()
+    local success, result = pcall(function()
+        return ${variable_datastore}:GetAsync(${value_name})
+    end)
+    if not success then
+        print(result)
+        return nil
+    end
+    return result
+end)()
+`;
+    // TODO: Change ORDER_NONE to the correct strength.
+    return [code, Blockly.Lua.ORDER_NONE];
+};
+
+Blockly.Blocks['datastorage_svc_set'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("set data ");
+        this.appendValueInput("NAME")
+            .setCheck(null);
+        this.appendDummyInput()
+            .appendField("in datastore ")
+            .appendField(new Blockly.FieldVariable("datastore"), "DATASTORE");
+        this.appendDummyInput()
+            .appendField("to");
+        this.appendValueInput("VALUE")
+            .setCheck(null);
+        this.setInputsInline(true);
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+// local success, errorMessage = pcall(function()
+// 	experienceStore:SetAsync("User_1234", 50)
+// end)
+// if not success then
+// 	print(errorMessage)
+// end
+
+Blockly.Lua['datastorage_svc_set'] = function (block) {
+    var value_name = Blockly.Lua.valueToCode(block, 'NAME', Blockly.Lua.ORDER_ATOMIC);
+    var variable_datastore = Blockly.Lua.nameDB_.getName(block.getFieldValue('DATASTORE'), Blockly.Variables.CATEGORY_NAME);
+    var value_value = Blockly.Lua.valueToCode(block, 'VALUE', Blockly.Lua.ORDER_ATOMIC);
+    var code = `local success, errorMessage = pcall(function()
+    ${variable_datastore}:SetAsync(${value_name}, ${value_value})
+end)
+if not success then
+    print(errorMessage)
+end
+`;
+    return code;
 };
