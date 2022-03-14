@@ -56,6 +56,10 @@ enter the name of the script in the prompt. This will create two children in the
 Once connected to roblox studio, select existing scripts from the dropdown to the left.
 After a second or two the Bloxcode script should load.
 
+## YouTube
+
+[Bloxcode Tutorial Videos](https://www.youtube.com/playlist?list=PLaxb5VT_ctnHpWGIu3r1sRnmA8WzjT-Ei)
+
 ## Limitations
 
 * Only a tiny subset of the roblox api is currently implemented

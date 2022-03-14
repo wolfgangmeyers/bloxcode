@@ -1404,7 +1404,11 @@ Blockly.Blocks['remote_event_fire_server'] = {
 
 Blockly.Lua['remote_event_fire_server'] = function (block) {
     var variable_remote_event = Blockly.Lua.nameDB_.getName(block.getFieldValue('REMOTE_EVENT'), Blockly.Variables.CATEGORY_NAME);
-    // TODO: Assemble Lua into code variable.
+    // TODO: dynamic args
     var code = '...\n';
     return code;
 };
+
+// TODO: remote event fire client
+// TODO: on remote event server
+// TODO: on remote event client
