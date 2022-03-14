@@ -547,6 +547,16 @@ var bloxcode_toolbox = {
                     "type": "sound_play",
                 }
             ]
+        },
+        {
+            "kind": "category",
+            "name": "Remote Events",
+            "contents": [
+                {
+                    "kind": "block",
+                    "type": "remote_event_fire_server",
+                }
+            ]
         }
     ]
 }

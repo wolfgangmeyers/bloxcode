@@ -1316,3 +1316,95 @@ Blockly.Lua['text_concat'] = function (block) {
     var code = `${value_value1}..${value_value2}`;
     return [code, Blockly.Lua.ORDER_NONE];
 };
+
+/*
+// These are the serialization hooks for the lists_create_with block.
+saveExtraState: function() {
+  return {
+    'itemCount': this.itemCount_,
+  };
+},
+
+loadExtraState: function(state) {
+  this.itemCount_ = state['itemCount'];
+  // This is a helper function which adds or removes inputs from the block.
+  this.updateShape_();
+},
+*/
+
+// mutator UI for argument count
+Blockly.Blocks['arg_count'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("arg count:")
+            .appendField(new Blockly.FieldNumber(0, 0, 10), "ARG_COUNT");
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+// remote events
+Blockly.Blocks['remote_event_fire_server'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("send")
+            .appendField(new Blockly.FieldVariable("remote event"), "REMOTE_EVENT")
+            .appendField("to the server");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+        this.setMutator(new Blockly.Mutator([]))
+
+        this.argCount_ = [];
+    },
+    saveExtraState: function () {
+        return {
+            "argCount": this.argCount_,
+        };
+    },
+    loadExtraState: function (state) {
+        this.argCount_ = state["argCount"] || 0;
+        this.updateShape_();
+    },
+    updateShape_: function () {
+        // remote TXT_WITH_ARGS field
+        if (this.inputList[0].fieldRow.length == 4) {
+            if (this.argCount_ == 0) {
+                this.inputList[0].removeField("TXT_WITH_ARGS");
+            }
+        } else {
+            if (this.argCount_ > 0) {
+                this.inputList[0]
+                    .appendField(new Blockly.FieldLabelSerializable("with args"), "TXT_WITH_ARGS")
+            }
+        }
+        // synchronize value inputs with argCount_
+        while (this.argCount_ < this.inputList.length - 1) {
+            this.removeInput("ARG" + (this.inputList.length - 2));
+        }
+        while (this.argCount_ > this.inputList.length - 1) {
+            this.appendValueInput("ARG" + (this.inputList.length - 1))
+                .setCheck(null)
+        }
+    },
+    decompose: function (workspace) {
+        const topBlock = workspace.newBlock('arg_count');
+        topBlock.setFieldValue(this.argCount_, 'ARG_COUNT');
+        topBlock.initSvg()
+        return topBlock;
+    },
+    compose: function (topBlock) {
+        this.argCount_ = parseInt(topBlock.getFieldValue('ARG_COUNT'));
+        this.updateShape_();
+    }
+}
+
+Blockly.Lua['remote_event_fire_server'] = function (block) {
+    var variable_remote_event = Blockly.Lua.nameDB_.getName(block.getFieldValue('REMOTE_EVENT'), Blockly.Variables.CATEGORY_NAME);
+    // TODO: Assemble Lua into code variable.
+    var code = '...\n';
+    return code;
+};
