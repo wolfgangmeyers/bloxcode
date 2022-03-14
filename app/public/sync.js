@@ -107,7 +107,6 @@ function onBloxScriptResult(event_data) {
             },
             "variables": [],
         }, demoWorkspace)
-        codefileDom = Blockly.Xml.textToDom(`<xml xmlns="https://developers.google.com/blockly/xml"></xml>`)
     } else {
         if (codefile.startsWith("<xml")) {
             let codefileDom;
@@ -118,9 +117,7 @@ function onBloxScriptResult(event_data) {
             codefileJson = JSON.parse(codefile)
             Blockly.serialization.workspaces.load(codefileJson, demoWorkspace)
         }
-        
     }
-    
 }
 
 async function refresh() {
