@@ -13,6 +13,7 @@
     <script src="./lua_compressed.js"></script>
     <script src="./jquery.simplepopup.js"></script>
     <script src="./en.js"></script>
+    <script src="./toolbox.js"></script>
     <style>
         body {
             background-color: #181818;
@@ -76,212 +77,6 @@
     </div>
     <div id="blocklyDiv" style="left: 200px; height: 480px; width: 600px;"></div>
 
-    <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
-        <category name="Logic" colour="%{BKY_LOGIC_HUE}">
-            <block type="controls_if"></block>
-            <block type="logic_compare"></block>
-            <block type="logic_operation"></block>
-            <block type="logic_negate"></block>
-            <block type="logic_boolean"></block>
-        </category>
-        <category name="Loops" colour="%{BKY_LOOPS_HUE}">
-            <block type="controls_repeat_ext">
-                <value name="TIMES">
-                    <block type="math_number">
-                        <field name="NUM">10</field>
-                    </block>
-                </value>
-            </block>
-            <block type="controls_whileUntil"></block>
-        </category>
-        <category name="Math" colour="%{BKY_MATH_HUE}">
-            <block type="math_number">
-                <field name="NUM">123</field>
-            </block>
-            <block type="math_arithmetic"></block>
-            <block type="math_single"></block>
-            <block type="math_trig"></block>
-            <block type="math_constant"></block>
-            <block type="math_number_property"></block>
-            <block type="math_round"></block>
-            <block type="math_on_list"></block>
-            <block type="math_modulo"></block>
-            <block type="math_constrain">
-                <value name="LOW">
-                    <block type="math_number">
-                        <field name="NUM">1</field>
-                    </block>
-                </value>
-                <value name="HIGH">
-                    <block type="math_number">
-                        <field name="NUM">100</field>
-                    </block>
-                </value>
-            </block>
-            <block type="math_random_int">
-                <value name="FROM">
-                    <block type="math_number">
-                        <field name="NUM">1</field>
-                    </block>
-                </value>
-                <value name="TO">
-                    <block type="math_number">
-                        <field name="NUM">100</field>
-                    </block>
-                </value>
-            </block>
-            <block type="math_random_float"></block>
-            <block type="math_atan2"></block>
-        </category>
-        <category name="Text" colour="%{BKY_TEXTS_HUE}">
-            <block type="text"></block>
-            <block type="text_length"></block>
-            <block type="text_print"></block>
-        </category>
-        <category name="Variables" custom="VARIABLE" colour="%{BKY_VARIABLES_HUE}">
-
-        </category>
-        <category name="Local Variables">
-            <block type="set_local_variable"></block>
-        </category>
-        <category name="Functions" custom="PROCEDURE" colour="%{BKY_PROCEDURES_HUE}">
-        </category>
-        <category name="Control">
-            <block type="wait"></block>
-            <block type="spawn_thread"></block>
-        </category>
-        <category name="Data">
-            <block type="math_number">
-                <field name="NUM">123</field>
-            </block>
-            <block type="vector3_new">
-                <value name="X">
-                    <block type="math_number">
-                        <field name="NUM">0</field>
-                    </block>
-                </value>
-                <value name="Y">
-                    <block type="math_number">
-                        <field name="NUM">0</field>
-                    </block>
-                </value>
-                <value name="Z">
-                    <block type="math_number">
-                        <field name="NUM">0</field>
-                    </block>
-                </value>
-            </block>
-        </category>
-        <category name="Instance">
-            <block type="instance_new"></block>
-            <block type="instance_new_with_parent"></block>
-            <block type="instance_find_first_child">
-                <value name="NAME">
-                    <block type="text">
-                        <field name="TEXT">Child</field>
-                    </block>
-                </value>
-            </block>
-            <block type="instance_wait_for_child">
-                <value name="NAME">
-                    <block type="text">
-                        <field name="TEXT">Child</field>
-                    </block>
-                </value>
-            </block>
-            <block type="instance_destroy"></block>
-            <block type="instance_is_a"></block>
-            <block type="instance_get_attribute"></block>
-            <block type="instance_set_attribute"></block>
-            <block type="instance_clone"></block>
-            <block type="script_get_parent"></block>
-        </category>
-        <category name="Part">
-            <block type="part_on_touched"></block>
-            <block type="part_get_attribute"></block>
-            <block type="part_set_attribute"></block>
-        </category>
-        <category name="Humanoid">
-            <block type="humanoid_set_scale">
-                <value name="NAME">
-                    <block type="math_number">
-                        <field name="NUM">1.0</field>
-                    </block>
-                </value>
-
-            </block>
-            <block type="humanoid_get_scale"></block>
-            <block type="humanoid_get_attribute"></block>
-            <block type="humanoid_set_attribute"></block>
-        </category>
-        <category name="Body Movers">
-            <category name="BodyPosition">
-                <block type="bodyposition_set_p">
-                    <value name="NAME">
-                        <block type="math_number">
-                            <field name="NUM">10000</field>
-                        </block>
-                    </value>
-                </block>
-            </category>
-            <category name="BodyGyro">
-                <block type="part_get_cframe">
-                    <field name="PART">rot</field>
-                </block>
-                <block type="part_set_cframe">
-                    <field name="PART">rot</field>
-                </block>
-            </category>
-        </category>
-        <category name="Services">
-            <block type="get_service"></block>
-        </category>
-        <category name="Players">
-            <block type="players_player_added"></block>
-            <block type="get_local_player"></block>
-            <block type="player_character_added_wait"></block>
-            <block type="player_get_attribute"></block>
-            <block type="player_set_attribute"></block>
-        </category>
-        <category name="Tool">
-            <block type="tool_activated"></block>
-        </category>
-        <category name="Animation">
-            <block type="animator_load_animation"></block>
-            <block type="animation_track_play"></block>
-        </category>
-        <category name="Sound">
-            <block type="sound_play"></block>
-        </category>
-        <category name="Data Storage">
-            <block type="datastorage_svc_get_datastore">
-                <value name="NAME">
-                    <block type="text">
-                        <field name="TEXT">DataStore</field>
-                    </block>
-                </value>
-            </block>
-            <block type="datastorage_svc_get">
-                <value name="NAME">
-                    <block type="text">
-                        <field name="TEXT">key</field>
-                    </block>
-                </value>
-            </block>
-            <block type="datastorage_svc_set">
-                <value name="NAME">
-                    <block type="text">
-                        <field name="TEXT">key</field>
-                    </block>
-                </value>
-                <value name="VALUE">
-                    <block type="text">
-                        <field name="TEXT">value</field>
-                    </block>
-                </value>
-            </block>
-        </category>
-    </xml>
     <script type="text/javascript">
         const onResize = () => {
             const div = document.getElementById("blocklyDiv")
@@ -293,7 +88,7 @@
     <script>
         var demoWorkspace = Blockly.inject('blocklyDiv', {
             media: '../../media/',
-            toolbox: document.getElementById('toolbox')
+            toolbox: bloxcode_toolbox,
         });
         var theme = Blockly.Theme.defineTheme('dark', {
             'base': Blockly.Themes.Classic,
@@ -313,8 +108,6 @@
             },
         });
         demoWorkspace.setTheme(theme)
-            // Blockly.Xml.domToWorkspace(document.getElementById('startBlocks'),
-            //                            demoWorkspace);
     </script>
     <script src="blocks.js"></script>
     <script src="sync.js"></script>

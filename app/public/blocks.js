@@ -726,7 +726,10 @@ Blockly.Blocks['player_get_attribute'] = {
         this.appendDummyInput()
             .appendField("get")
             .appendField(new Blockly.FieldDropdown([
-                ["Character", "Character"]
+                ["Character", "Character"],
+                ["DisplayName", "DisplayName"],
+                ["Name", "Name"],
+                ["UserId", "UserId"],
             ]), "ATTRIBUTE")
             .appendField("of")
             .appendField(new Blockly.FieldVariable("player"), "PLAYER");
@@ -750,7 +753,10 @@ Blockly.Blocks['player_set_attribute'] = {
             .setCheck(null)
             .appendField("set")
             .appendField(new Blockly.FieldDropdown([
-                ["Character", "Character"]
+                ["Character", "Character"],
+                ["DisplayName", "DisplayName"],
+                ["Name", "Name"],
+                ["UserId", "UserId"],
             ]), "ATTRIBUTE")
             .appendField("of")
             .appendField(new Blockly.FieldVariable("player"), "PLAYER")
@@ -769,6 +775,24 @@ Blockly.Lua['player_set_attribute'] = function (block) {
     var value_value = Blockly.Lua.valueToCode(block, 'VALUE', Blockly.Lua.ORDER_ATOMIC);
     var code = `${variable_player}.${dropdown_attribute} = ${value_value}\n`;
     return code;
+};
+
+Blockly.Blocks['get_players'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("get players");
+        this.setOutput(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['get_players'] = function (block) {
+    // TODO: Assemble Lua into code variable.
+    var code = `game:GetService("Players"):GetPlayers()`;
+    // TODO: Change ORDER_NONE to the correct strength.
+    return [code, Blockly.Lua.ORDER_ATOMIC];
 };
 
 Blockly.Blocks['script_get_parent'] = {
@@ -995,7 +1019,7 @@ Blockly.Blocks['get_service'] = {
 Blockly.Lua['get_service'] = function (block) {
     var dropdown_service = block.getFieldValue('SERVICE');
     var code = `game:GetService("${dropdown_service}")`;
-    return code;
+    return [code, Blockly.Lua.ORDER_ATOMIC];
 };
 
 Blockly.Blocks['animator_load_animation'] = {
@@ -1149,4 +1173,146 @@ if not success then
 end
 `;
     return code;
+};
+
+// marketplace
+Blockly.Blocks['marketplace_game_pass_purchased'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("when a gamepass with")
+            .appendField(new Blockly.FieldVariable("id"), "GAMEPASS")
+            .appendField("is purchased by")
+            .appendField(new Blockly.FieldVariable("player"), "PLAYER");
+        this.appendStatementInput("HANDLER")
+            .setCheck(null);
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['marketplace_game_pass_purchased'] = function (block) {
+    var variable_gamepass = Blockly.Lua.nameDB_.getName(block.getFieldValue('GAMEPASS'), Blockly.Variables.CATEGORY_NAME);
+    var variable_player = Blockly.Lua.nameDB_.getName(block.getFieldValue('PLAYER'), Blockly.Variables.CATEGORY_NAME);
+    var statements_handler = Blockly.Lua.statementToCode(block, 'HANDLER');
+    var code = `game:GetService("MarketplaceService"):PromptGamePassPurchaseFinished:Connect(function(${variable_player}, ${variable_gamepass}, purchaseSuccess)
+    if purchaseSuccess == true then
+        ${statements_handler}
+    end
+end)`;
+    return code;
+};
+
+Blockly.Blocks['marketplace_player_owns_gamepass'] = {
+    init: function () {
+        this.appendValueInput("NAME")
+            .setCheck(null)
+            .appendField(new Blockly.FieldVariable("player"), "PLAYER")
+            .appendField("owns gamepass with id");
+        this.setOutput(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['marketplace_player_owns_gamepass'] = function (block) {
+    var variable_player = Blockly.Lua.nameDB_.getName(block.getFieldValue('PLAYER'), Blockly.Variables.CATEGORY_NAME);
+    var value_name = Blockly.Lua.valueToCode(block, 'NAME', Blockly.Lua.ORDER_ATOMIC);
+    var code = `(function()
+    local hasPass = false
+    local success, message = pcall(function()
+        hasPass = MarketplaceService:UserOwnsGamePassAsync(${variable_player}.UserId, ${value_name})
+    end)
+    if not success then
+        warn("Error while checking if player has pass: " .. tostring(message))
+        return false
+    end
+    return hasPass
+end)()`;
+
+    return [code, Blockly.Lua.ORDER_ATOMIC];
+};
+
+Blockly.Blocks['marketplace_prompt_gamepass_purchase'] = {
+    init: function () {
+        this.appendValueInput("NAME")
+            .setCheck(null)
+            .appendField("prompt")
+            .appendField(new Blockly.FieldVariable("player"), "PLAYER")
+            .appendField("to purchase gamepass with id");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+// local MarketplaceService = game:GetService("MarketplaceService")
+// MarketplaceService:PromptGamePassPurchase(player, gamePassID)
+
+Blockly.Lua['marketplace_prompt_gamepass_purchase'] = function (block) {
+    var variable_player = Blockly.Lua.nameDB_.getName(block.getFieldValue('PLAYER'), Blockly.Variables.CATEGORY_NAME);
+    var value_name = Blockly.Lua.valueToCode(block, 'NAME', Blockly.Lua.ORDER_ATOMIC);
+    var code = `game:GetService("MarketplaceService"):PromptGamePassPurchase(${variable_player}, ${value_name})\n`;
+    return code;
+};
+
+// table loops
+Blockly.Blocks['table_pairs_foreach'] = {
+    init: function () {
+        this.appendValueInput("NAME")
+            .setCheck(null)
+            .appendField("for each")
+            .appendField(new Blockly.FieldVariable("item"), "ITEM")
+            .appendField("in");
+        this.appendDummyInput()
+            .appendField("do");
+        this.appendStatementInput("HANDLER")
+            .setCheck(null);
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['table_pairs_foreach'] = function (block) {
+    var variable_item = Blockly.Lua.nameDB_.getName(block.getFieldValue('ITEM'), Blockly.Variables.CATEGORY_NAME);
+    var value_name = Blockly.Lua.valueToCode(block, 'NAME', Blockly.Lua.ORDER_ATOMIC);
+    var statements_handler = Blockly.Lua.statementToCode(block, 'HANDLER');
+
+    var code = `for i, ${variable_item} in pairs(${value_name}) do
+${statements_handler}
+end
+`;
+    return code;
+};
+
+// text blocks
+Blockly.Blocks['text_concat'] = {
+    init: function () {
+        this.appendValueInput("VALUE1")
+            .setCheck(null)
+            .appendField("concat");
+        this.appendValueInput("VALUE2")
+            .setCheck(null)
+            .appendField("and");
+        this.setInputsInline(true);
+        this.setOutput(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['text_concat'] = function (block) {
+    var value_value1 = Blockly.Lua.valueToCode(block, 'VALUE1', Blockly.Lua.ORDER_ATOMIC);
+    var value_value2 = Blockly.Lua.valueToCode(block, 'VALUE2', Blockly.Lua.ORDER_ATOMIC);
+    var code = `${value_value1}..${value_value2}`;
+    return [code, Blockly.Lua.ORDER_NONE];
 };
