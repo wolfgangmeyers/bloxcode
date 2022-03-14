@@ -58,12 +58,11 @@ async function sendMessage(message) {
 
 async function saveScript() {
     // save blox source
-    // const codefile_select = document.getElementById("codefile")
-    // const codefile = codefile_select.value
     const { path, text } = selectedNode
     const parentPath = getParentPath(path)
-    const bloxCodeDom = Blockly.Xml.workspaceToDom(demoWorkspace)
-    const bloxCode = Blockly.Xml.domToText(bloxCodeDom)
+    const bloxcodeJson = Blockly.serialization.workspaces.save(demoWorkspace);
+    const bloxCode = JSON.stringify(bloxcodeJson)
+
     await sendMessage({
         event_type: "SaveBloxScript",
         event_data: {
@@ -98,16 +97,30 @@ async function loadBloxScript() {
 }
 
 function onBloxScriptResult(event_data) {
-    const codefileXml = event_data.result
+    const codefile = event_data.result
     demoWorkspace.clear()
-    let codefileDom;
-    if (codefileXml == "") {
+    
+    if (codefile == "") {
+        Blockly.serialization.workspaces.load({
+            "blocks": {
+                "blocks": [],
+            },
+            "variables": [],
+        }, demoWorkspace)
         codefileDom = Blockly.Xml.textToDom(`<xml xmlns="https://developers.google.com/blockly/xml"></xml>`)
     } else {
-        codefileDom = Blockly.Xml.textToDom(codefileXml)
+        if (codefile.startsWith("<xml")) {
+            let codefileDom;
+            codefileDom = Blockly.Xml.textToDom(codefile)
+            Blockly.Xml.domToWorkspace(codefileDom,
+                demoWorkspace);
+        } else {
+            codefileJson = JSON.parse(codefile)
+            Blockly.serialization.workspaces.load(codefileJson, demoWorkspace)
+        }
+        
     }
-    Blockly.Xml.domToWorkspace(codefileDom,
-        demoWorkspace);
+    
 }
 
 async function refresh() {
