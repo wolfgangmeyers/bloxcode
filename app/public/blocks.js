@@ -1317,21 +1317,6 @@ Blockly.Lua['text_concat'] = function (block) {
     return [code, Blockly.Lua.ORDER_NONE];
 };
 
-/*
-// These are the serialization hooks for the lists_create_with block.
-saveExtraState: function() {
-  return {
-    'itemCount': this.itemCount_,
-  };
-},
-
-loadExtraState: function(state) {
-  this.itemCount_ = state['itemCount'];
-  // This is a helper function which adds or removes inputs from the block.
-  this.updateShape_();
-},
-*/
-
 // mutator UI for argument count
 Blockly.Blocks['arg_count'] = {
     init: function () {
@@ -1341,6 +1326,28 @@ Blockly.Blocks['arg_count'] = {
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
+    }
+};
+
+const argCountMutatorMixin = {
+    saveExtraState: function () {
+        return {
+            "argCount": this.argCount_,
+        };
+    },
+    loadExtraState: function (state) {
+        this.argCount_ = state["argCount"] || 0;
+        this.updateShape_();
+    },
+    decompose: function (workspace) {
+        const topBlock = workspace.newBlock('arg_count');
+        topBlock.setFieldValue(this.argCount_, 'ARG_COUNT');
+        topBlock.initSvg()
+        return topBlock;
+    },
+    compose: function (topBlock) {
+        this.argCount_ = parseInt(topBlock.getFieldValue('ARG_COUNT'));
+        this.updateShape_();
     }
 };
 
@@ -1360,17 +1367,9 @@ Blockly.Blocks['remote_event_fire_server'] = {
 
         this.argCount_ = [];
     },
-    saveExtraState: function () {
-        return {
-            "argCount": this.argCount_,
-        };
-    },
-    loadExtraState: function (state) {
-        this.argCount_ = state["argCount"] || 0;
-        this.updateShape_();
-    },
+
     updateShape_: function () {
-        // remote TXT_WITH_ARGS field
+        // remove TXT_WITH_ARGS field
         if (this.inputList[0].fieldRow.length == 4) {
             if (this.argCount_ == 0) {
                 this.inputList[0].removeField("TXT_WITH_ARGS");
@@ -1390,25 +1389,171 @@ Blockly.Blocks['remote_event_fire_server'] = {
                 .setCheck(null)
         }
     },
-    decompose: function (workspace) {
-        const topBlock = workspace.newBlock('arg_count');
-        topBlock.setFieldValue(this.argCount_, 'ARG_COUNT');
-        topBlock.initSvg()
-        return topBlock;
-    },
-    compose: function (topBlock) {
-        this.argCount_ = parseInt(topBlock.getFieldValue('ARG_COUNT'));
-        this.updateShape_();
-    }
+    ...argCountMutatorMixin,
 }
 
 Blockly.Lua['remote_event_fire_server'] = function (block) {
     var variable_remote_event = Blockly.Lua.nameDB_.getName(block.getFieldValue('REMOTE_EVENT'), Blockly.Variables.CATEGORY_NAME);
-    // TODO: dynamic args
-    var code = '...\n';
+    let values = [];
+    for (let i = 0; i < block.argCount_; i++) {
+        values.push(Blockly.Lua.valueToCode(block, 'ARG' + i, Blockly.Lua.ORDER_ATOMIC));
+    }
+    let code = `${variable_remote_event}:FireServer(${values.join(', ')})\n`;
     return code;
 };
 
-// TODO: remote event fire client
-// TODO: on remote event server
-// TODO: on remote event client
+Blockly.Blocks['remote_event_on_server_event'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("when")
+            .appendField(new Blockly.FieldVariable("remote_event"), "REMOTE_EVENT")
+            .appendField("from ")
+            .appendField(new Blockly.FieldVariable("player"), "PLAYER")
+            .appendField("is received on the server");
+        this.appendDummyInput("ARGS")
+            .appendField("with")
+            .setVisible(false);
+        this.appendStatementInput("ACTION")
+            .setCheck(null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setMutator(new Blockly.Mutator([]))
+
+        this.argCount_ = [];
+    },
+    ...argCountMutatorMixin,
+    updateShape_: function () {
+        let argsInput = this.getInput("ARGS");
+        if (this.argCount_ == 0) {
+            argsInput.setVisible(false);
+        } else {
+            argsInput.setVisible(true);
+            while (this.argCount_ < argsInput.fieldRow.length - 1) {
+                argsInput.removeField("ARG" + (argsInput.fieldRow.length - 2));
+            }
+            while (this.argCount_ > argsInput.fieldRow.length - 1) {
+                argsInput.appendField(new Blockly.FieldVariable("arg" + (argsInput.fieldRow.length - 1)), "ARG" + (argsInput.fieldRow.length - 1));
+            }
+        }
+    },
+};
+
+Blockly.Lua['remote_event_on_server_event'] = function (block) {
+    var variable_remote_event = Blockly.Lua.nameDB_.getName(block.getFieldValue('REMOTE_EVENT'), Blockly.Variables.CATEGORY_NAME);
+    var variable_player = Blockly.Lua.nameDB_.getName(block.getFieldValue('PLAYER'), Blockly.Variables.CATEGORY_NAME);
+    var statements_action = Blockly.Lua.statementToCode(block, 'ACTION');
+    let args = [variable_player];
+    for (let i = 0; i < block.argCount_; i++) {
+        let arg = Blockly.Lua.nameDB_.getName(block.getFieldValue('ARG' + i), Blockly.Variables.CATEGORY_NAME);
+        args.push(arg);
+    }
+    var code = `${variable_remote_event}.OnServerEvent:Connect(function(${args.join(', ')})
+    ${statements_action}
+end)
+`;
+    return code;
+};
+
+Blockly.Blocks['remote_event_fire_client'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("send")
+            .appendField(new Blockly.FieldVariable("remote event"), "REMOTE_EVENT")
+            .appendField("to the client for")
+            .appendField(new Blockly.FieldVariable("player"), "PLAYER");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+        this.setMutator(new Blockly.Mutator([]))
+        this.argCount_ = [];
+    },
+    ...argCountMutatorMixin,
+    updateShape_: function () {
+        // remove TXT_WITH_ARGS field
+        if (this.inputList[0].fieldRow.length == 5) {
+            if (this.argCount_ == 0) {
+                this.inputList[0].removeField("TXT_WITH_ARGS");
+            }
+        } else {
+            if (this.argCount_ > 0) {
+                this.inputList[0]
+                    .appendField(new Blockly.FieldLabelSerializable("with args"), "TXT_WITH_ARGS")
+            }
+        }
+        // synchronize value inputs with argCount_
+        while (this.argCount_ < this.inputList.length - 1) {
+            this.removeInput("ARG" + (this.inputList.length - 2));
+        }
+        while (this.argCount_ > this.inputList.length - 1) {
+            this.appendValueInput("ARG" + (this.inputList.length - 1))
+                .setCheck(null)
+        }
+    },
+};
+
+Blockly.Lua['remote_event_fire_client'] = function (block) {
+    var variable_remote_event = Blockly.Lua.nameDB_.getName(block.getFieldValue('REMOTE_EVENT'), Blockly.Variables.CATEGORY_NAME);
+    var variable_player = Blockly.Lua.nameDB_.getName(block.getFieldValue('PLAYER'), Blockly.Variables.CATEGORY_NAME);
+    let values = [variable_player];
+    for (let i = 0; i < block.argCount_; i++) {
+        values.push(Blockly.Lua.valueToCode(block, 'ARG' + i, Blockly.Lua.ORDER_ATOMIC));
+    }
+    var code = `${variable_remote_event}:FireClient(${values.join(', ')})\n`;
+    return code;
+};
+
+Blockly.Blocks['remote_event_on_client_event'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("when")
+            .appendField(new Blockly.FieldVariable("remote_event"), "REMOTE_EVENT")
+            .appendField("is received on the client");
+        this.appendDummyInput("ARGS")
+            .appendField("with")
+            .setVisible(false);
+        this.appendStatementInput("ACTION")
+            .setCheck(null);
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+        this.setMutator(new Blockly.Mutator([]));
+        this.argCount_ = [];
+    },
+    ...argCountMutatorMixin,
+    updateShape_: function () {
+        let argsInput = this.getInput("ARGS");
+        if (this.argCount_ == 0) {
+            argsInput.setVisible(false);
+        } else {
+            argsInput.setVisible(true);
+            while (this.argCount_ < argsInput.fieldRow.length - 1) {
+                argsInput.removeField("ARG" + (argsInput.fieldRow.length - 2));
+            }
+            while (this.argCount_ > argsInput.fieldRow.length - 1) {
+                argsInput.appendField(new Blockly.FieldVariable("arg" + (argsInput.fieldRow.length - 1)), "ARG" + (argsInput.fieldRow.length - 1));
+            }
+        }
+    },
+};
+
+Blockly.Lua['remote_event_on_client_event'] = function (block) {
+    var variable_remote_event = Blockly.Lua.nameDB_.getName(block.getFieldValue('REMOTE_EVENT'), Blockly.Variables.CATEGORY_NAME);
+    var statements_action = Blockly.Lua.statementToCode(block, 'ACTION');
+    let args = [];
+    for (let i = 0; i < block.argCount_; i++) {
+        let arg = Blockly.Lua.nameDB_.getName(block.getFieldValue('ARG' + i), Blockly.Variables.CATEGORY_NAME);
+        args.push(arg);
+    }
+    var code = `${variable_remote_event}.OnClientEvent:Connect(function(${args.join(', ')})
+    ${statements_action}
+end)
+`;
+    return code;
+};

@@ -555,7 +555,19 @@ var bloxcode_toolbox = {
                 {
                     "kind": "block",
                     "type": "remote_event_fire_server",
-                }
+                },
+                {
+                    "kind": "block",
+                    "type": "remote_event_on_server_event",
+                },
+                {
+                    "kind": "block",
+                    "type": "remote_event_fire_client",
+                },
+                {
+                    "kind": "block",
+                    "type": "remote_event_on_client_event",
+                },
             ]
         }
     ]
