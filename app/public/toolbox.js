@@ -569,6 +569,24 @@ var bloxcode_toolbox = {
                     "type": "remote_event_on_client_event",
                 },
             ]
+        },
+        {
+            "kind": "category",
+            "name": "GUI",
+            "contents": [
+                {
+                    "kind": "block",
+                    "type": "gui_button_mouse1_click",
+                },
+                {
+                    "kind": "block",
+                    "type": "gui_object_get_attribute",
+                },
+                {
+                    "kind": "block",
+                    "type": "gui_object_set_attribute",
+                }
+            ]
         }
     ]
 }

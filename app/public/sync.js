@@ -263,6 +263,9 @@ function updateTreeIcons(items) {
             case "Terrain":
                 item.icon = "icons/terrain.png"
                 break
+            case "StarterGui":
+                item.icon = "icons/startergui.png"
+                break
             default:
                 item.icon = "/icons/model.png"
                 break

@@ -9,7 +9,7 @@ local function is_blox_script(filename)
 	return ends_with(filename, ".blox")
 end
 
-local max_depth = 2
+local max_depth = 3
 
 function RecursiveListEverything(children: Array, instance: Instance, depth: number, path: string)
 	if depth > max_depth then
@@ -85,6 +85,16 @@ function ListEverything()
 		type=server_script_service.ClassName,
 		children=server_script_service_children,
 		path="ServerScriptService"
+	})
+
+	local starter_gui = game:GetService("StarterGui")
+	local starter_gui_children = {}
+	RecursiveListEverything(starter_gui_children, starter_gui, 1, "StarterGui")
+	table.insert(everything, {
+		text="StarterGui",
+		type=starter_gui.ClassName,
+		children=starter_gui_children,
+		path="StarterGui"
 	})
 
 	return {
@@ -356,10 +366,10 @@ function Sync()
 			end
 			SaveLastBloxUpdate(lastBloxUpdate)
 		end
-		wait(1)
+		task.wait(1)
 	end
 end
 
 if killPreviousPlugin() then
-	spawn(Sync)
+	task.spawn(Sync)
 end
