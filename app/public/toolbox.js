@@ -233,6 +233,24 @@ var bloxcode_toolbox = {
                 },
                 {
                     "kind": "block",
+                    "type": "nil",
+                },
+                {
+                    "kind": "block",
+                    "type": "logic_boolean",
+                    "fields": {
+                        "BOOL": "TRUE"
+                    }
+                },
+                {
+                    "kind": "block",
+                    "type": "text",
+                    "fields": {
+                        "TEXT": "Hello",
+                    }
+                },
+                {
+                    "kind": "block",
                     "type": "vector3_new",
                     "inputs": {
                         "X": {
@@ -260,6 +278,46 @@ var bloxcode_toolbox = {
                             },
                         },
                     }
+                },
+                {
+                    "kind": "block",
+                    "type": "table_new",
+                },
+                {
+                    "kind": "block",
+                    "type": "table_get_attribute",
+                    "inputs": {
+                        "ATTRIBUTE": {
+                            "block": {
+                                "type": "text",
+                                "fields": {
+                                    "TEXT": "attribute",
+                                },
+                            },
+                        },
+                    },
+                },
+                {
+                    "kind": "block",
+                    "type": "table_set_attribute",
+                    "inputs": {
+                        "ATTRIBUTE": {
+                            "block": {
+                                "type": "text",
+                                "fields": {
+                                    "TEXT": "attribute",
+                                },
+                            },
+                        },
+                        "VALUE": {
+                            "block": {
+                                "type": "text",
+                                "fields": {
+                                    "TEXT": "value",
+                                },
+                            },
+                        },
+                    },
                 },
             ]
         },

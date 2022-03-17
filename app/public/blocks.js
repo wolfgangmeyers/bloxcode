@@ -645,6 +645,7 @@ Blockly.Lua['humanoid_set_attribute'] = function (block) {
     return code;
 };
 
+// data
 Blockly.Blocks['vector3_new'] = {
     init: function () {
         this.appendDummyInput()
@@ -675,6 +676,90 @@ Blockly.Lua['vector3_new'] = function (block) {
     // TODO: Change ORDER_ATOMIC to the correct strength.
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
+
+Blockly.Blocks['nil'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("nil");
+        this.setOutput(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['nil'] = function (block) {
+    var code = 'nil';
+    return [code, Blockly.Lua.ORDER_NONE];
+};
+
+Blockly.Blocks['table_new'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("new table");
+        this.setOutput(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['table_new'] = function (block) {
+    var code = '{}';
+    return [code, Blockly.Lua.ORDER_ATOMIC];
+};
+
+Blockly.Blocks['table_get_attribute'] = {
+    init: function () {
+        this.appendValueInput("ATTRIBUTE")
+            .setCheck(null)
+            .appendField("get");
+        this.appendDummyInput()
+            .appendField("of")
+            .appendField(new Blockly.FieldVariable("table"), "TABLE");
+        this.setInputsInline(true);
+        this.setOutput(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['table_get_attribute'] = function (block) {
+    var value_attribute = Blockly.Lua.valueToCode(block, 'ATTRIBUTE', Blockly.Lua.ORDER_ATOMIC);
+    var variable_table = Blockly.Lua.nameDB_.getName(block.getFieldValue('TABLE'), Blockly.Variables.CATEGORY_NAME);
+    var code = `${variable_table}[${value_attribute}]`;
+    return [code, Blockly.Lua.ORDER_NONE];
+};
+
+Blockly.Blocks['table_set_attribute'] = {
+    init: function () {
+        this.appendValueInput("ATTRIBUTE")
+            .setCheck(null)
+            .appendField("set");
+        this.appendValueInput("VALUE")
+            .setCheck(null)
+            .appendField("of")
+            .appendField(new Blockly.FieldVariable("table"), "TABLE")
+            .appendField("to");
+        this.setInputsInline(true);
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['table_set_attribute'] = function (block) {
+    var value_attribute = Blockly.Lua.valueToCode(block, 'ATTRIBUTE', Blockly.Lua.ORDER_ATOMIC);
+    var variable_table = Blockly.Lua.nameDB_.getName(block.getFieldValue('TABLE'), Blockly.Variables.CATEGORY_NAME);
+    var value_value = Blockly.Lua.valueToCode(block, 'VALUE', Blockly.Lua.ORDER_ATOMIC);
+    var code = `${variable_table}[${value_attribute}] = ${value_value}\n`;
+    return code;
+};
+
+// players
 
 Blockly.Blocks['players_player_added'] = {
     init: function () {
@@ -1197,7 +1282,7 @@ Blockly.Lua['marketplace_game_pass_purchased'] = function (block) {
     var variable_gamepass = Blockly.Lua.nameDB_.getName(block.getFieldValue('GAMEPASS'), Blockly.Variables.CATEGORY_NAME);
     var variable_player = Blockly.Lua.nameDB_.getName(block.getFieldValue('PLAYER'), Blockly.Variables.CATEGORY_NAME);
     var statements_handler = Blockly.Lua.statementToCode(block, 'HANDLER');
-    var code = `game:GetService("MarketplaceService"):PromptGamePassPurchaseFinished:Connect(function(${variable_player}, ${variable_gamepass}, purchaseSuccess)
+    var code = `game:GetService("MarketplaceService").PromptGamePassPurchaseFinished:Connect(function(${variable_player}, ${variable_gamepass}, purchaseSuccess)
     if purchaseSuccess == true then
         ${statements_handler}
     end
@@ -1224,7 +1309,7 @@ Blockly.Lua['marketplace_player_owns_gamepass'] = function (block) {
     var code = `(function()
     local hasPass = false
     local success, message = pcall(function()
-        hasPass = MarketplaceService:UserOwnsGamePassAsync(${variable_player}.UserId, ${value_name})
+        hasPass = game:GetService("MarketplaceService"):UserOwnsGamePassAsync(${variable_player}.UserId, ${value_name})
     end)
     if not success then
         warn("Error while checking if player has pass: " .. tostring(message))
