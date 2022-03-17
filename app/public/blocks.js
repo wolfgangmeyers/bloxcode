@@ -238,7 +238,7 @@ Blockly.Blocks['wait'] = {
 
 Blockly.Lua['wait'] = function (block) {
     var number_amount = block.getFieldValue('AMOUNT');
-    var code = `wait(${number_amount})\n`;
+    var code = `task.wait(${number_amount})\n`;
     return code;
 };
 
@@ -258,7 +258,7 @@ Blockly.Blocks['spawn_thread'] = {
 
 Blockly.Lua['spawn_thread'] = function (block) {
     var statements_function = Blockly.Lua.statementToCode(block, 'FUNCTION');
-    var code = `spawn(function()
+    var code = `task.spawn(function()
     ${statements_function}
     end)\n`;
     return code;
