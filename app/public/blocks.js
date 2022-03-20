@@ -1,4 +1,7 @@
 // instance blocks
+
+// Instance FindFirstChild ( string name , bool recursive )
+// Returns the first child of the Instance found with the given name.
 Blockly.Blocks['instance_find_first_child'] = {
     init: function () {
         this.appendValueInput("NAME")
@@ -20,6 +23,8 @@ Blockly.Lua['instance_find_first_child'] = function (block) {
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
 
+// bool IsA ( string className )
+// Returns true if an Instance’s class matches or inherits from a given class
 Blockly.Blocks['instance_is_a'] = {
     init: function () {
         this.appendDummyInput()
@@ -44,6 +49,7 @@ Blockly.Lua['instance_is_a'] = function (block) {
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
 
+// Instance has a special function called Instance.new which is used to create objects via code. This function takes the name of the class as a parameter and returns the created object. Abstract classes and services cannot be created with the Instance.new function.
 Blockly.Blocks['instance_new'] = {
     init: function () {
         this.appendDummyInput()
@@ -66,6 +72,7 @@ Blockly.Lua['instance_new'] = function (block) {
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
 
+// same as Instance.new with a parent instance as the second argument
 Blockly.Blocks['instance_new_with_parent'] = {
     init: function () {
         this.appendDummyInput()
@@ -93,6 +100,9 @@ Blockly.Lua['instance_new_with_parent'] = function (block) {
 
 
 // part blocks
+
+// get various attributes of a part
+// CanCollide, CFrame, Position, BrickColor
 Blockly.Blocks['part_get_attribute'] = {
     init: function () {
         this.appendDummyInput()
@@ -112,6 +122,15 @@ Blockly.Blocks['part_get_attribute'] = {
     }
 };
 
+Blockly.Lua['part_get_attribute'] = function (block) {
+    var variable_part = Blockly.Lua.variableDB_.getName(block.getFieldValue('PART'), Blockly.Variables.CATEGORY_NAME);
+    var dropdown_attribute = block.getFieldValue('ATTRIBUTE');
+    var code = `${variable_part}["${dropdown_attribute}"]`;
+    return [code, Blockly.Lua.ORDER_ATOMIC];
+}
+
+// set various attributes of a part
+// CanCollide, CFrame, Position, BrickColor
 Blockly.Blocks['part_set_attribute'] = {
     init: function () {
         this.appendValueInput("VALUE")
@@ -142,7 +161,8 @@ Blockly.Lua['part_set_attribute'] = function (block) {
     return code;
 };
 
-
+// RBXScriptSignal Touched ( BasePart otherPart )
+// Fired when a part comes in contact with another part
 Blockly.Blocks['part_on_touched'] = {
     init: function () {
         this.appendDummyInput()
@@ -171,6 +191,8 @@ end)\n`;
     return code;
 };
 
+// RBXScriptSignal TouchEnded ( BasePart otherPart )
+// Fired when a part stops touching another part.
 Blockly.Blocks['part_on_touch_ended'] = {
     init: function () {
         this.appendDummyInput()
@@ -200,6 +222,9 @@ end)\n`;
 };
 
 // bodyposition blocks
+
+// float P
+// Determines how aggressive of a force is applied in reaching the goal position
 Blockly.Blocks['bodyposition_set_p'] = {
     init: function () {
         this.appendValueInput("NAME")
@@ -223,6 +248,9 @@ Blockly.Lua['bodyposition_set_p'] = function (block) {
 };
 
 // control blocks
+
+// number task.wait ( number duration = 0 )
+// Yields the current thread until the given duration (in seconds) has elapsed, then resumes the thread on the next Heartbeat step. The actual amount of time elapsed is returned.
 Blockly.Blocks['wait'] = {
     init: function () {
         this.appendDummyInput()
@@ -242,6 +270,8 @@ Blockly.Lua['wait'] = function (block) {
     return code;
 };
 
+// void task.spawn ( function functionOrThread, Variant ... )
+// Accepts a function or a thread (as returned by coroutine.create) and calls/resumes it immediately through the engine’s scheduler. Arguments after the first are sent to the function/thread.
 Blockly.Blocks['spawn_thread'] = {
     init: function () {
         this.appendDummyInput()
@@ -264,6 +294,8 @@ Blockly.Lua['spawn_thread'] = function (block) {
     return code;
 };
 
+// void Destroy ( )
+// Sets the Instance.Parent property to nil, locks the Instance.Parent property, disconnects all connections, and calls Destroy on all children.
 Blockly.Blocks['instance_destroy'] = {
     init: function () {
         this.appendDummyInput()
@@ -283,6 +315,8 @@ Blockly.Lua['instance_destroy'] = function (block) {
     return code;
 };
 
+// Instance WaitForChild ( string childName , double timeOut )
+// Returns the child of the Instance with the given name. If the child does not exist, it will yield the current thread until it does.
 Blockly.Blocks['instance_wait_for_child'] = {
     init: function () {
         this.appendDummyInput()
@@ -309,6 +343,8 @@ Blockly.Lua['instance_wait_for_child'] = function (block) {
     return [code, Blockly.Lua.ORDER_NONE];
 };
 
+// get various attributes of an instance
+// Parent, Name, Archivable, ClassName
 Blockly.Blocks['instance_get_attribute'] = {
     init: function () {
         this.appendDummyInput()
@@ -335,6 +371,8 @@ Blockly.Lua['instance_get_attribute'] = function (block) {
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
 
+// set various attributes of an instance
+// Parent, Name, Archivable
 Blockly.Blocks['instance_set_attribute'] = {
     init: function () {
         this.appendValueInput("VALUE")
@@ -364,6 +402,8 @@ Blockly.Lua['instance_set_attribute'] = function (block) {
     return code;
 };
 
+// Instance Clone ( )
+// Create a copy of an object and all its descendants, ignoring objects that are not Archivable
 Blockly.Blocks['instance_clone'] = {
     init: function () {
         this.appendDummyInput()
@@ -382,49 +422,8 @@ Blockly.Lua['instance_clone'] = function (block) {
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
 
-Blockly.Blocks['instance_get_archivable'] = {
-    init: function () {
-        this.appendDummyInput()
-            .appendField("is")
-            .appendField(new Blockly.FieldVariable("instance"), "INSTANCE")
-            .appendField("archivable");
-        this.setOutput(true, "Boolean");
-        this.setColour(230);
-        this.setTooltip("");
-        this.setHelpUrl("");
-    }
-};
-
-Blockly.Lua['instance_get_archivable'] = function (block) {
-    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.CATEGORY_NAME);
-    var code = `${variable_instance}.Archivable`;
-    return [code, Blockly.Lua.ORDER_ATOMIC];
-};
-
-Blockly.Blocks['instance_set_archivable'] = {
-    init: function () {
-        this.appendDummyInput()
-            .appendField("set")
-            .appendField(new Blockly.FieldVariable("instance"), "INSTANCE")
-            .appendField("archivable to");
-        this.appendValueInput("VALUE")
-            .setCheck("Boolean");
-        this.setInputsInline(true);
-        this.setPreviousStatement(true, null);
-        this.setNextStatement(true, null);
-        this.setColour(230);
-        this.setTooltip("");
-        this.setHelpUrl("");
-    }
-};
-
-Blockly.Lua['instance_set_archivable'] = function (block) {
-    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.CATEGORY_NAME);
-    var value_value = Blockly.Lua.valueToCode(block, 'VALUE', Blockly.Lua.ORDER_ATOMIC);
-    var code = `${variable_instance}.Archivable = ${value_value}\n`;
-    return code;
-};
-
+// various events of a Part
+// Touched
 Blockly.Blocks['part_event_connect'] = {
     init: function () {
         this.appendDummyInput()
@@ -457,6 +456,8 @@ end)\n`;
     return code;
 };
 
+// sets the value of a local variable using
+// "local variable = value"
 Blockly.Blocks['set_local_variable'] = {
     init: function () {
         this.appendValueInput("VALUE")
@@ -479,6 +480,8 @@ Blockly.Lua['set_local_variable'] = function (block) {
     return code;
 };
 
+// Sets the scale of various humanoid attributes
+// Head, BodyWidth, BodyHeight, BodyDepth
 Blockly.Blocks['humanoid_set_scale'] = {
     init: function () {
         this.appendValueInput("NAME")
@@ -510,6 +513,8 @@ Blockly.Lua['humanoid_set_scale'] = function (block) {
     return code;
 };
 
+// Gets the scale of various humanoid attributes
+// Head, BodyWidth, BodyHeight, BodyDepth
 Blockly.Blocks['humanoid_get_scale'] = {
     init: function () {
         this.appendDummyInput()
@@ -536,7 +541,8 @@ Blockly.Lua['humanoid_get_scale'] = function (block) {
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
 
-
+// Gets various attributes of a Humanoid
+// AutoJumpEnabled, AutoRotate, AutomaticScalingEnabled, BreakJointsOnDeath, CameraOffset, CollisionType, DisplayDistanceType, DisplayName, FloorMaterial, Health, HealthDisplayDistance, HealthDisplayType, HipHeight, Jump, JumpHeight, JumpPower, MaxHealth, MaxSlopeAngle, MoveDirection, NameDisplayDistance, NameOcclusion, PlatformStand, RequiresNeck, RigType, RootPart, SeatPart, Sit, TargetPoint, UseJumpPower, WalkSpeed, WalkToPoint
 Blockly.Blocks['humanoid_get_attribute'] = {
     init: function () {
         this.appendDummyInput()
@@ -591,6 +597,8 @@ Blockly.Lua['humanoid_get_attribute'] = function (block) {
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
 
+// Sets various attributes of a Humanoid
+// AutoJumpEnabled, AutoRotate, AutomaticScalingEnabled, BreakJointsOnDeath, CameraOffset, CollisionType, DisplayDistanceType, DisplayName, FloorMaterial, Health, HealthDisplayDistance, HealthDisplayType, HipHeight, Jump, JumpHeight, JumpPower, MaxHealth, MaxSlopeAngle, MoveDirection, NameDisplayDistance, NameOcclusion, PlatformStand, RequiresNeck, RigType, RootPart, SeatPart, Sit, TargetPoint, UseJumpPower, WalkSpeed, WalkToPoint
 Blockly.Blocks['humanoid_set_attribute'] = {
     init: function () {
         this.appendValueInput("NAME")
@@ -646,6 +654,8 @@ Blockly.Lua['humanoid_set_attribute'] = function (block) {
 };
 
 // data
+
+// Create a new Vector3 with number arguments X, Y, Z
 Blockly.Blocks['vector3_new'] = {
     init: function () {
         this.appendDummyInput()
@@ -677,6 +687,7 @@ Blockly.Lua['vector3_new'] = function (block) {
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
 
+// Lua nil value
 Blockly.Blocks['nil'] = {
     init: function () {
         this.appendDummyInput()
@@ -693,6 +704,7 @@ Blockly.Lua['nil'] = function (block) {
     return [code, Blockly.Lua.ORDER_NONE];
 };
 
+// Create a new lua table
 Blockly.Blocks['table_new'] = {
     init: function () {
         this.appendDummyInput()
@@ -704,11 +716,34 @@ Blockly.Blocks['table_new'] = {
     }
 };
 
+// Declare local variables. Uses declareLocalVariablesMutator mixin.
+Blockly.Blocks['declare_local_variables'] = {
+    init: function () {
+        this.appendDummyInput("DUMMY")
+            .appendField("declare local variables", "DECLARE_LABEL");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+        this.setMutator(new Blockly.Mutator(["anon_fn_arg"]))
+        this.mixin(declareLocalVariablesMutator);
+    }
+}
+
+Blockly.Lua['declare_local_variables'] = function (block) {
+    var argsList = getArgList(block)
+    var code = `local ${argsList}\n`;
+    return code;
+};
+
+
 Blockly.Lua['table_new'] = function (block) {
     var code = '{}';
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
 
+// Get an attribute of a table
 Blockly.Blocks['table_get_attribute'] = {
     init: function () {
         this.appendValueInput("ATTRIBUTE")
@@ -732,6 +767,7 @@ Blockly.Lua['table_get_attribute'] = function (block) {
     return [code, Blockly.Lua.ORDER_NONE];
 };
 
+// Set an attribute of a table
 Blockly.Blocks['table_set_attribute'] = {
     init: function () {
         this.appendValueInput("ATTRIBUTE")
@@ -761,6 +797,8 @@ Blockly.Lua['table_set_attribute'] = function (block) {
 
 // players
 
+// PlayerService player added event
+// RBXScriptSignal PlayerAdded ( Player player )
 Blockly.Blocks['players_player_added'] = {
     init: function () {
         this.appendDummyInput()
@@ -786,7 +824,8 @@ Blockly.Lua['players_player_added'] = function (block) {
     return code;
 };
 
-
+// PlayerService player added event wait
+// RBXScriptSignal PlayerAdded ( Player player )
 Blockly.Blocks['player_character_added_wait'] = {
     init: function () {
         this.appendDummyInput()
@@ -806,6 +845,8 @@ Blockly.Lua['player_character_added_wait'] = function (block) {
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
 
+// Get various attributes of a Player
+// Character, DisplayName, Name, UserId
 Blockly.Blocks['player_get_attribute'] = {
     init: function () {
         this.appendDummyInput()
@@ -832,6 +873,8 @@ Blockly.Lua['player_get_attribute'] = function (block) {
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
 
+// Set various attributes of a Player
+// Character, DisplayName, Name, UserId
 Blockly.Blocks['player_set_attribute'] = {
     init: function () {
         this.appendValueInput("VALUE")
@@ -862,6 +905,9 @@ Blockly.Lua['player_set_attribute'] = function (block) {
     return code;
 };
 
+// PlayerService get players function
+// Objects GetPlayers ( )
+// Returns a table of all presently connected Player objects
 Blockly.Blocks['get_players'] = {
     init: function () {
         this.appendDummyInput()
@@ -874,12 +920,11 @@ Blockly.Blocks['get_players'] = {
 };
 
 Blockly.Lua['get_players'] = function (block) {
-    // TODO: Assemble Lua into code variable.
     var code = `game:GetService("Players"):GetPlayers()`;
-    // TODO: Change ORDER_NONE to the correct strength.
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
 
+// Gets the parent attribute of the current script
 Blockly.Blocks['script_get_parent'] = {
     init: function () {
         this.appendDummyInput()
@@ -921,6 +966,17 @@ const anonFnArgsMutator = {
      */
     domToMutation: function (xmlElement) {
         this.args = xmlElement.getAttribute("args").split(",").filter(s => s.length > 0)
+        this.updateArgs_()
+    },
+
+    saveExtraState: function () {
+        return {
+            args: this.args || []
+        }
+    },
+
+    loadExtraState: function(state) {
+        this.args = state.args
         this.updateArgs_()
     },
 
@@ -1002,6 +1058,36 @@ const anonFnArgsMutator = {
     }
 }
 
+const declareLocalVariablesMutator = {
+    ...anonFnArgsMutator,
+
+    updateArgs_: function() {
+
+        // .appendField(new Blockly.FieldVariable("table"), "TABLE");
+        
+        // remove any FieldVariables that aren't in the args list
+        const input = this.getInput("DUMMY")
+        while (input.fieldRow.length > this.args.length + 1) {
+            const field = input.fieldRow[input.fieldRow.length - 1]
+            console.log(`removing ${field.name}`)
+            input.removeField(field.name)
+        }
+        for (let i = 0; i < this.args.length; i++) {
+            const [argName, argId] = this.args[i].split(":")
+            if (i >= input.fieldRow.length - 1) {
+                console.log(`adding ${argName} as VAR${i}`)
+                const field = new Blockly.FieldVariable(argName)
+                input.appendField(field, "VAR" + i);
+            } else {
+                const field = input.fieldRow[i + 1]
+                console.log(`updating ${field.name} to ${argName}`)
+                input.removeField(field.name)
+                input.insertFieldAt(i + 1, new Blockly.FieldVariable(argName), "VAR" + i)
+            }
+        }
+    }
+}
+
 Blockly.Blocks['anon_fn_args_container'] = {
     init: function () {
         this.appendDummyInput()
@@ -1054,9 +1140,6 @@ Blockly.Blocks['tool_activated'] = {
     },
 };
 
-
-
-
 Blockly.Lua['tool_activated'] = function (block) {
     var variable_tool = Blockly.Lua.variableDB_.getName(block.getFieldValue('TOOL'), Blockly.Variables.CATEGORY_NAME);
     var argsList = getArgList(block)
@@ -1068,6 +1151,7 @@ end)\n`);
     return code;
 };
 
+// PlayerService gets the LocalPlayer attribute
 Blockly.Blocks['get_local_player'] = {
     init: function () {
         this.appendDummyInput()
@@ -1084,6 +1168,7 @@ Blockly.Lua['get_local_player'] = function (block) {
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
 
+// Gets a service by name
 Blockly.Blocks['get_service'] = {
     init: function () {
         this.appendDummyInput()
@@ -1107,6 +1192,9 @@ Blockly.Lua['get_service'] = function (block) {
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
 
+// Animator loads an animation
+// AnimationTrack LoadAnimation ( Animation animation )
+// Loads an Animation onto an Animator, returning an AnimationTrack
 Blockly.Blocks['animator_load_animation'] = {
     init: function () {
         this.appendValueInput("ANIMATION")
@@ -1128,6 +1216,8 @@ Blockly.Lua['animator_load_animation'] = function (block) {
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
 
+// void Play ()
+// Plays the AnimationTrack
 Blockly.Blocks['animation_track_play'] = {
     init: function () {
         this.appendDummyInput()
@@ -1147,6 +1237,7 @@ Blockly.Lua['animation_track_play'] = function (block) {
     return code;
 };
 
+// Sound:Play() function
 Blockly.Blocks['sound_play'] = {
     init: function () {
         this.appendDummyInput()
@@ -1167,6 +1258,9 @@ Blockly.Lua['sound_play'] = function (block) {
 };
 
 // datastore
+
+// Get DataStore from the DataStoreService by name
+// GlobalDataStore GetDataStore ( string name )
 Blockly.Blocks['datastorage_svc_get_datastore'] = {
     init: function () {
         this.appendDummyInput()
@@ -1187,6 +1281,7 @@ Blockly.Lua['datastorage_svc_get_datastore'] = function (block) {
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
 
+// Get an item from a Datastore
 Blockly.Blocks['datastorage_svc_get'] = {
     init: function () {
         this.appendDummyInput()
@@ -1224,6 +1319,7 @@ end)()
     return [code, Blockly.Lua.ORDER_NONE];
 };
 
+// Set an item in a Datastore
 Blockly.Blocks['datastorage_svc_set'] = {
     init: function () {
         this.appendDummyInput()
@@ -1260,7 +1356,9 @@ end
     return code;
 };
 
-// marketplace
+// marketplace PromptGamePassPurchaseFinished event
+// RBXScriptSignal 
+// PromptGamePassPurchaseFinished ( Instance player , int64 gamePassId , bool wasPurchased )
 Blockly.Blocks['marketplace_game_pass_purchased'] = {
     init: function () {
         this.appendDummyInput()
@@ -1290,6 +1388,7 @@ end)`;
     return code;
 };
 
+// checks if player owns gamepass
 Blockly.Blocks['marketplace_player_owns_gamepass'] = {
     init: function () {
         this.appendValueInput("NAME")
@@ -1321,6 +1420,8 @@ end)()`;
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
 
+// void PromptGamePassPurchase ( Instance player , int64 gamePassId )
+// Used to prompt a user to purchase a game pass with the given assetId.
 Blockly.Blocks['marketplace_prompt_gamepass_purchase'] = {
     init: function () {
         this.appendValueInput("NAME")
@@ -1336,9 +1437,6 @@ Blockly.Blocks['marketplace_prompt_gamepass_purchase'] = {
     }
 };
 
-// local MarketplaceService = game:GetService("MarketplaceService")
-// MarketplaceService:PromptGamePassPurchase(player, gamePassID)
-
 Blockly.Lua['marketplace_prompt_gamepass_purchase'] = function (block) {
     var variable_player = Blockly.Lua.nameDB_.getName(block.getFieldValue('PLAYER'), Blockly.Variables.CATEGORY_NAME);
     var value_name = Blockly.Lua.valueToCode(block, 'NAME', Blockly.Lua.ORDER_ATOMIC);
@@ -1347,6 +1445,8 @@ Blockly.Lua['marketplace_prompt_gamepass_purchase'] = function (block) {
 };
 
 // table loops
+
+// Iterates through a table using the pairs function
 Blockly.Blocks['table_pairs_foreach'] = {
     init: function () {
         this.appendValueInput("NAME")
@@ -1379,6 +1479,8 @@ end
 };
 
 // text blocks
+
+// Concat two strings
 Blockly.Blocks['text_concat'] = {
     init: function () {
         this.appendValueInput("VALUE1")
@@ -1414,6 +1516,7 @@ Blockly.Blocks['arg_count'] = {
     }
 };
 
+// argument count mutator mixin
 const argCountMutatorMixin = {
     saveExtraState: function () {
         return {
@@ -1436,7 +1539,9 @@ const argCountMutatorMixin = {
     }
 };
 
-// remote events
+// RemoteEvent
+// void FireServer ( Tuple arguments )
+// Fires the RemoteEvent.OnServerEvent event on the server using the arguments specified with an additional player argument at the beginning.
 Blockly.Blocks['remote_event_fire_server'] = {
     init: function () {
         this.appendDummyInput()
@@ -1487,6 +1592,9 @@ Blockly.Lua['remote_event_fire_server'] = function (block) {
     return code;
 };
 
+// RemoteEvent
+// RBXScriptSignal OnServerEvent ( Player player , Tuple arguments )
+// Fires listening functions in Script when RemoteEvent:FireServer is called from a LocalScript.
 Blockly.Blocks['remote_event_on_server_event'] = {
     init: function () {
         this.appendDummyInput()
@@ -1542,6 +1650,9 @@ end)
     return code;
 };
 
+// RemoteEvent
+// void FireClient ( Player player , Tuple arguments )
+// Fires RemoteEvent.OnClientEvent for the specified player.
 Blockly.Blocks['remote_event_fire_client'] = {
     init: function () {
         this.appendDummyInput()
@@ -1592,6 +1703,8 @@ Blockly.Lua['remote_event_fire_client'] = function (block) {
     return code;
 };
 
+// RemoteEvent
+// RBXScriptSignal OnClientEvent ( Tuple arguments )
 Blockly.Blocks['remote_event_on_client_event'] = {
     init: function () {
         this.appendDummyInput()
@@ -1644,6 +1757,10 @@ end)
 };
 
 // gui
+
+// GuiButton
+// RBXScriptSignal MouseButton1Click ( )
+// Fired when the mouse has fully left clicked the GUI button
 Blockly.Blocks['gui_button_mouse1_click'] = {
     init: function () {
         this.appendDummyInput()
@@ -1660,7 +1777,6 @@ Blockly.Blocks['gui_button_mouse1_click'] = {
     }
 };
 
-// button.MouseButton1Click:Connect
 Blockly.Lua['gui_button_mouse1_click'] = function (block) {
     var variable_button = Blockly.Lua.nameDB_.getName(block.getFieldValue('BUTTON'), Blockly.Variables.CATEGORY_NAME);
     var statements_action = Blockly.Lua.statementToCode(block, 'ACTION');
@@ -1671,6 +1787,8 @@ end)
     return code;
 }
 
+// get various attributes of GuiObject
+// Visible
 Blockly.Blocks['gui_object_get_attribute'] = {
     init: function () {
         this.appendDummyInput()
@@ -1692,6 +1810,8 @@ Blockly.Lua['gui_object_get_attribute'] = function (block) {
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
 
+// Set various attributes of GuiObject
+// Visible
 Blockly.Blocks['gui_object_set_attribute'] = {
     init: function () {
         this.appendValueInput("VALUE")

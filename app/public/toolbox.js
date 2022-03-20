@@ -197,8 +197,8 @@ var bloxcode_toolbox = {
             "contents": [
                 {
                     "kind": "block",
-                    "type": "set_local_variable",
-                },
+                    "type": "declare_local_variables",
+                }
             ],
         },
         {
