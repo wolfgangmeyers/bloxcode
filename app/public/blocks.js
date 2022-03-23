@@ -98,6 +98,25 @@ Blockly.Lua['instance_new_with_parent'] = function (block) {
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
 
+// Instance:GetChildren()
+// Returns a table of all the children of an Instance.
+Blockly.Blocks['instance_get_children'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("get children of")
+            .appendField(new Blockly.FieldVariable("instance"), "INSTANCE");
+        this.setOutput(true, "Table");
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['instance_get_children'] = function (block) {
+    var variable_instance = Blockly.Lua.variableDB_.getName(block.getFieldValue('INSTANCE'), Blockly.Variables.CATEGORY_NAME);
+    var code = `${variable_instance}:GetChildren()`;
+    return [code, Blockly.Lua.ORDER_ATOMIC];
+};
 
 // part blocks
 
@@ -716,28 +735,6 @@ Blockly.Blocks['table_new'] = {
     }
 };
 
-// Declare local variables. Uses declareLocalVariablesMutator mixin.
-Blockly.Blocks['declare_local_variables'] = {
-    init: function () {
-        this.appendDummyInput("DUMMY")
-            .appendField("declare local variables", "DECLARE_LABEL");
-        this.setPreviousStatement(true, null);
-        this.setNextStatement(true, null);
-        this.setColour(230);
-        this.setTooltip("");
-        this.setHelpUrl("");
-        this.setMutator(new Blockly.Mutator(["anon_fn_arg"]))
-        this.mixin(declareLocalVariablesMutator);
-    }
-}
-
-Blockly.Lua['declare_local_variables'] = function (block) {
-    var argsList = getArgList(block)
-    var code = `local ${argsList}\n`;
-    return code;
-};
-
-
 Blockly.Lua['table_new'] = function (block) {
     var code = '{}';
     return [code, Blockly.Lua.ORDER_ATOMIC];
@@ -764,7 +761,7 @@ Blockly.Lua['table_get_attribute'] = function (block) {
     var value_attribute = Blockly.Lua.valueToCode(block, 'ATTRIBUTE', Blockly.Lua.ORDER_ATOMIC);
     var variable_table = Blockly.Lua.nameDB_.getName(block.getFieldValue('TABLE'), Blockly.Variables.CATEGORY_NAME);
     var code = `${variable_table}[${value_attribute}]`;
-    return [code, Blockly.Lua.ORDER_NONE];
+    return [code, Blockly.Lua.ORDER_ATOMIC];
 };
 
 // Set an attribute of a table
@@ -794,6 +791,74 @@ Blockly.Lua['table_set_attribute'] = function (block) {
     var code = `${variable_table}[${value_attribute}] = ${value_value}\n`;
     return code;
 };
+
+// StringValue.Value attribute
+// Get a value of a string
+Blockly.Blocks['stringvalue_get_value'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("get value of")
+            .appendField(new Blockly.FieldVariable("stringvalue"), "STRINGVALUE");
+        this.setInputsInline(true);
+        this.setOutput(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['stringvalue_get_value'] = function (block) {
+    var variable_stringvalue = Blockly.Lua.nameDB_.getName(block.getFieldValue('STRINGVALUE'), Blockly.Variables.CATEGORY_NAME);
+    var code = `${variable_stringvalue}.Value`;
+    return [code, Blockly.Lua.ORDER_ATOMIC];
+};
+
+// Set StringValue.Value attribute
+Blockly.Blocks['stringvalue_set_value'] = {
+    init: function () {
+        this.appendValueInput("VALUE")
+            .setCheck(null)
+            .appendField("set value of")
+            .appendField(new Blockly.FieldVariable("stringvalue"), "STRINGVALUE")
+            .appendField("to");
+        this.setInputsInline(true);
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['stringvalue_set_value'] = function (block) {
+    var variable_stringvalue = Blockly.Lua.nameDB_.getName(block.getFieldValue('STRINGVALUE'), Blockly.Variables.CATEGORY_NAME);
+    var value_value = Blockly.Lua.valueToCode(block, 'VALUE', Blockly.Lua.ORDER_ATOMIC);
+    var code = `${variable_stringvalue}.Value = ${value_value}\n`;
+    return code;
+};
+
+
+// Declare local variables. Uses declareLocalVariablesMutator mixin.
+Blockly.Blocks['declare_local_variables'] = {
+    init: function () {
+        this.appendDummyInput("DUMMY")
+            .appendField("declare local variables", "DECLARE_LABEL");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+        this.setMutator(new Blockly.Mutator(["anon_fn_arg"]))
+        this.mixin(declareLocalVariablesMutator);
+    }
+}
+
+Blockly.Lua['declare_local_variables'] = function (block) {
+    var argsList = getArgList(block)
+    var code = `local ${argsList}\n`;
+    return code;
+};
+
 
 // players
 

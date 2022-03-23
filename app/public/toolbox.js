@@ -319,6 +319,14 @@ var bloxcode_toolbox = {
                         },
                     },
                 },
+                {
+                    "kind": "block",
+                    "type": "stringvalue_get_value",
+                },
+                {
+                    "kind": "block",
+                    "type": "stringvalue_set_value",
+                }
             ]
         },
         {
@@ -384,7 +392,11 @@ var bloxcode_toolbox = {
                 {
                     "kind": "block",
                     "type": "script_get_parent",
-                }
+                },
+                {
+                    "kind": "block",
+                    "type": "instance_get_children",
+                },
             ]
         },
         {
