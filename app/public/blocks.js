@@ -723,7 +723,7 @@ Blockly.Lua['nil'] = function (block) {
     return [code, Blockly.Lua.ORDER_NONE];
 };
 
-// Create a new lua table
+// Create a new lua table with args
 Blockly.Blocks['table_new'] = {
     init: function () {
         this.appendDummyInput()
@@ -732,11 +732,22 @@ Blockly.Blocks['table_new'] = {
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
-    }
-};
+        this.setMutator(new Blockly.Mutator(["anon_fn_arg"]))
+        this.mixin(tableArgsMutator)
+    },
+}
 
 Blockly.Lua['table_new'] = function (block) {
-    var code = '{}';
+    var code = '{\n';
+    var args = block.args;
+    for (var i = 0; i < args.length; i++) {
+        var argParts = args[i].split(':');
+        var argName = argParts[0];
+        // get value input for ARG + i
+        var argValue = Blockly.Lua.valueToCode(block, 'ARG' + i, Blockly.Lua.ORDER_ATOMIC);
+        code += `  ${argName} = ${argValue},\n`;
+    }
+    code += '}';
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
 
@@ -1007,6 +1018,215 @@ Blockly.Lua['script_get_parent'] = function (block) {
 };
 
 
+// TweenService
+
+// new tween info (just the time)
+Blockly.Blocks['tween_info_new'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("new tween info")
+        this.appendValueInput("TIME")
+            .setCheck("Number")
+            .setAlign(Blockly.ALIGN_RIGHT)
+            .appendField("time");
+        this.setOutput(true, "TweenInfo");
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['tween_info_new'] = function (block) {
+    var value_time = Blockly.Lua.valueToCode(block, 'TIME', Blockly.Lua.ORDER_ATOMIC);
+    var code = `TweenInfo.new(${value_time})`;
+    return [code, Blockly.Lua.ORDER_ATOMIC];
+};
+
+// new tween info (all the info)
+Blockly.Blocks['tween_info_new_all'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("new tween info")
+        this.appendValueInput("TIME")
+            .setCheck("Number")
+            .setAlign(Blockly.ALIGN_RIGHT)
+            .appendField("time");
+        // easing style dropdown - Back, Quad, Sine, Cubic, Quart
+        this.appendDummyInput()
+            .setAlign(Blockly.ALIGN_RIGHT)
+            .appendField("easing style")
+            .appendField(new Blockly.FieldDropdown([
+                ["Back", "Enum.EasingStyle.Back"],
+                ["Quad", "Enum.EasingStyle.Quad"],
+                ["Sine", "Enum.EasingStyle.Sine"],
+                ["Cubic", "Enum.EasingStyle.Cubic"],
+                ["Quart", "Enum.EasingStyle.Quart"],
+            ]), "EASING_STYLE");
+        // easing direction dropdown - In, Out, InOut
+        this.appendDummyInput()
+            .setAlign(Blockly.ALIGN_RIGHT)
+            .appendField("easing direction")
+            .appendField(new Blockly.FieldDropdown([
+                ["In", "Enum.EasingDirection.In"],
+                ["Out", "Enum.EasingDirection.Out"],
+                ["InOut", "Enum.EasingDirection.InOut"],
+            ]), "EASING_DIRECTION");
+        // repeat count
+        this.appendValueInput("REPEAT_COUNT")
+            .setCheck("Number")
+            .setAlign(Blockly.ALIGN_RIGHT)
+            .appendField("repeat count");
+        // reverse
+        this.appendDummyInput()
+            .setAlign(Blockly.ALIGN_RIGHT)
+            .appendField("reverse")
+            .appendField(new Blockly.FieldCheckbox("FALSE"), "REVERSE");
+        // delay time
+        this.appendValueInput("DELAY_TIME")
+            .setCheck("Number")
+            .setAlign(Blockly.ALIGN_RIGHT)
+            .appendField("delay time");
+        this.setOutput(true, "TweenInfo");
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['tween_info_new_all'] = function (block) {
+    var dropdown_easing_style = block.getFieldValue('EASING_STYLE');
+    var dropdown_easing_direction = block.getFieldValue('EASING_DIRECTION');
+    var value_time = Blockly.Lua.valueToCode(block, 'TIME', Blockly.Lua.ORDER_ATOMIC);
+    var value_repeat_count = Blockly.Lua.valueToCode(block, 'REPEAT_COUNT', Blockly.Lua.ORDER_ATOMIC);
+    var dropdown_reverse = block.getFieldValue('REVERSE');
+    var value_delay_time = Blockly.Lua.valueToCode(block, 'DELAY_TIME', Blockly.Lua.ORDER_ATOMIC);
+    var code = `TweenInfo.new(${value_time}, ${dropdown_easing_style}, ${dropdown_easing_direction}, ${value_repeat_count}, ${dropdown_reverse}, ${value_delay_time})`;
+    return [code, Blockly.Lua.ORDER_ATOMIC];
+};
+
+
+
+// Example 1:
+/*
+local TweenService = game:GetService("TweenService")
+ 
+local part = Instance.new("Part")
+part.Position = Vector3.new(0, 10, 0)
+part.Anchored = true
+part.Parent = game.Workspace
+ 
+local tweenInfo = TweenInfo.new(
+	2, -- Time
+	Enum.EasingStyle.Linear, -- EasingStyle
+	Enum.EasingDirection.Out, -- EasingDirection
+	-1, -- RepeatCount (when less than zero the tween will loop indefinitely)
+	true, -- Reverses (tween will reverse once reaching it's goal)
+	0 -- DelayTime
+)
+ 
+local tween = TweenService:Create(part, tweenInfo, {Position = Vector3.new(0, 30, 0)})
+ 
+tween:Play()
+wait(10)
+tween:Cancel() -- cancel the animation after 10 seconds
+*/
+
+// Example 2:
+/*
+local TweenService = game:GetService("TweenService")
+ 
+local part = Instance.new("Part")
+part.Position = Vector3.new(0, 10, 0)
+part.Color = Color3.new(1, 0, 0)
+part.Anchored = true
+part.Parent = game.Workspace
+ 
+local goal = {}
+goal.Position = Vector3.new(10, 10, 0)
+goal.Color = Color3.new(0, 1, 0)
+ 
+local tweenInfo = TweenInfo.new(5)
+ 
+local tween = TweenService:Create(part, tweenInfo, goal)
+ 
+tween:Play()
+*/
+
+// create tween
+// value inputs with right-aligned labels: instance, tween info, goal
+Blockly.Blocks['tween_create'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("create tween")
+        this.appendValueInput("INSTANCE")
+            .setAlign(Blockly.ALIGN_RIGHT)
+            .appendField("instance");
+        this.appendValueInput("TWEEN_INFO")
+            .setAlign(Blockly.ALIGN_RIGHT)
+            .appendField("tween info");
+        this.appendValueInput("GOAL")
+            .setAlign(Blockly.ALIGN_RIGHT)
+            .appendField("goal");
+        this.setPreviousStatement(false, null);
+        this.setNextStatement(false, null);
+        this.setOutput(true, "Tween");
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['tween_create'] = function (block) {
+    var value_instance = Blockly.Lua.valueToCode(block, 'INSTANCE', Blockly.Lua.ORDER_ATOMIC);
+    var value_tween_info = Blockly.Lua.valueToCode(block, 'TWEEN_INFO', Blockly.Lua.ORDER_ATOMIC);
+    var value_goal = Blockly.Lua.valueToCode(block, 'GOAL', Blockly.Lua.ORDER_ATOMIC);
+    // game:GetService("TweenService")
+    var code = `game:GetService("TweenService"):Create(${value_instance}, ${value_tween_info}, ${value_goal})`;
+    return [code, Blockly.Lua.ORDER_ATOMIC];
+};
+
+// play tween
+// tween is a variable input
+Blockly.Blocks['tween_play'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("play tween")
+            .appendField(new Blockly.FieldVariable("tween"), "TWEEN");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['tween_play'] = function (block) {
+    var variable_tween = Blockly.Lua.variableDB_.getName(block.getFieldValue('TWEEN'), Blockly.Variables.CATEGORY_NAME);
+    var code = `${variable_tween}:Play()\n`;
+    return code;
+};
+
+// cancel tween
+// tween is a variable input
+Blockly.Blocks['tween_cancel'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("cancel tween")
+            .appendField(new Blockly.FieldVariable("tween"), "TWEEN");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['tween_cancel'] = function (block) {
+    var variable_tween = Blockly.Lua.variableDB_.getName(block.getFieldValue('TWEEN'), Blockly.Variables.CATEGORY_NAME);
+    var code = `${variable_tween}:Cancel()\n`;
+    return code;
+};
+
 // Begin anonymous function mutator blocks
 
 const anonFnArgsMutator = {
@@ -1088,24 +1308,29 @@ const anonFnArgsMutator = {
             argBlock = argBlock.nextConnection && argBlock.nextConnection.targetBlock()
         }
         this.args = args
-        for (let arg of this.args) {
-            const [argName, argId] = arg.split(":")
-            let v = this.workspace.getVariableById(argId)
-            if (v) {
-                if (v.name != argName) {
-                    // renamed variable
-                    this.workspace.renameVariableById(argId, argName)
-                }
-            } else {
-                v = this.workspace.getVariable(argName)
-                if (!v) {
-                    // new variable
-                    this.workspace.createVariable(argName, null, argId)
+        if (this.manageVariables) {
+            for (let arg of this.args) {
+                const [argName, argId] = arg.split(":")
+                let v = this.workspace.getVariableById(argId)
+                if (v) {
+                    if (v.name != argName) {
+                        // renamed variable
+                        this.workspace.renameVariableById(argId, argName)
+                    }
+                } else {
+                    v = this.workspace.getVariable(argName)
+                    if (!v) {
+                        // new variable
+                        this.workspace.createVariable(argName, null, argId)
+                    }
                 }
             }
         }
+        
         this.updateArgs_()
     },
+
+    manageVariables: true,
 
     updateArgs_: function () {
         if (this.args.length > 0) {
@@ -1151,6 +1376,35 @@ const declareLocalVariablesMutator = {
             }
         }
     }
+}
+
+// A value input for each arg
+const tableArgsMutator = {
+    ...anonFnArgsMutator,
+    manageVariables: false,
+
+    updateArgs_: function() {
+        while (this.inputList.length < this.args.length + 1) {
+            this.appendValueInput("ARG" + (this.inputList.length - 1))
+                .setAlign(Blockly.ALIGN_RIGHT)
+        }
+        while (this.inputList.length > this.args.length + 1) {
+            this.removeInput("ARG" + (this.inputList.length - 2))
+        }
+        for (let i = 0; i < this.args.length; i++) {
+            const [argName, argId] = this.args[i].split(":")
+            const input = this.getInput("ARG" + i)
+            if (input.fieldRow.length > 0) {
+                const field = input.fieldRow[0]
+                if (field.name != argName) {
+                    input.removeField(field.name)
+                    input.appendField(argName, "ARG" + i)
+                }
+            } else {
+                input.appendField(argName, "ARG" + i)
+            }
+        }
+    },
 }
 
 Blockly.Blocks['anon_fn_args_container'] = {
@@ -1300,6 +1554,54 @@ Blockly.Lua['animation_track_play'] = function (block) {
     var variable_animation_track = Blockly.Lua.variableDB_.getName(block.getFieldValue('ANIMATION_TRACK'), Blockly.Variables.CATEGORY_NAME);
     var code = `${variable_animation_track}:Play()\n`;
     return code;
+};
+
+// sounds
+
+// SoundService:PlayLocalSound(sound)
+// Plays a sound locally
+// sound is a variable
+Blockly.Blocks['sound_service_play_local_sound'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("play local sound")
+            .appendField(new Blockly.FieldVariable("sound"), "SOUND")
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['sound_service_play_local_sound'] = function (block) {
+    var variable_sound = Blockly.Lua.variableDB_.getName(block.getFieldValue('SOUND'), Blockly.Variables.CATEGORY_NAME);
+    var code = `game:GetService("SoundService"):PlayLocalSound(${variable_sound})\n`;
+    return code;
+};
+
+// new sound
+Blockly.Blocks['sound_new'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("new sound with id")
+            .appendField(new Blockly.FieldTextInput("0123456789"), "SOUND_ID");
+        this.setOutput(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+// lua function creates sound in wrapper function and returns it.
+Blockly.Lua['sound_new'] = function (block) {
+    var text_sound_id = block.getFieldValue('SOUND_ID');
+    var code = `(function()
+    local sound = Instance.new("Sound")
+    sound.SoundId = "rbxassetid://${text_sound_id}"
+    return sound
+end)()`;
+    return [code, Blockly.Lua.ORDER_ATOMIC];
 };
 
 // Sound:Play() function
@@ -1901,3 +2203,59 @@ Blockly.Lua['gui_object_set_attribute'] = function (block) {
     var code = `${variable_gui_object}.${dropdown_attribute} = ${value_value}\n`;
     return code;
 };
+
+// TextLabel get various attributes
+// Text, TextTransparency
+Blockly.Blocks['gui_text_label_get_attribute'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("get")
+            .appendField(new Blockly.FieldDropdown([
+                ["Text", "Text"],
+                ["TextTransparency", "TextTransparency"]
+            ]), "ATTRIBUTE")
+            .appendField("of")
+            .appendField(new Blockly.FieldVariable("gui_text_label"), "GUI_TEXT_LABEL");
+        this.setOutput(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    },
+};
+
+Blockly.Lua['gui_text_label_get_attribute'] = function (block) {
+    var dropdown_attribute = block.getFieldValue('ATTRIBUTE');
+    var variable_gui_text_label = Blockly.Lua.nameDB_.getName(block.getFieldValue('GUI_TEXT_LABEL'), Blockly.Variables.CATEGORY_NAME);
+    var code = `${variable_gui_text_label}.${dropdown_attribute}`;
+    return [code, Blockly.Lua.ORDER_ATOMIC];
+}
+
+// TextLabel set various attributes
+// Text, TextTransparency
+Blockly.Blocks['gui_text_label_set_attribute'] = {
+    init: function () {
+        this.appendValueInput("VALUE")
+            .setCheck(null)
+            .appendField("set")
+            .appendField(new Blockly.FieldDropdown([
+                ["Text", "Text"],
+                ["TextTransparency", "TextTransparency"]
+            ]), "ATTRIBUTE")
+            .appendField("of")
+            .appendField(new Blockly.FieldVariable("gui_text_label"), "GUI_TEXT_LABEL")
+            .appendField("to");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['gui_text_label_set_attribute'] = function (block) {
+    var dropdown_attribute = block.getFieldValue('ATTRIBUTE');
+    var variable_gui_text_label = Blockly.Lua.nameDB_.getName(block.getFieldValue('GUI_TEXT_LABEL'), Blockly.Variables.CATEGORY_NAME);
+    var value_value = Blockly.Lua.valueToCode(block, 'VALUE', Blockly.Lua.ORDER_ATOMIC);
+    var code = `${variable_gui_text_label}.${dropdown_attribute} = ${value_value}\n`;
+    return code;
+}

@@ -581,6 +581,70 @@ var bloxcode_toolbox = {
                             },
                         }
                     ]
+                },
+                {
+                    "kind": "category",
+                    "name": "Tweens",
+                    "contents": [
+                        {
+                            "kind": "block",
+                            "type": "tween_info_new",
+                            // time number input (1)
+                            "inputs": {
+                                "TIME": {
+                                    "block": {
+                                        "type": "math_number",
+                                        "fields": {
+                                            "NUM": 1,
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                        {
+                            "kind": "block",
+                            "type": "tween_info_new_all",
+                            // time number input (1), delay number input (0), repeat count number input (0)
+                            "inputs": {
+                                "TIME": {
+                                    "block": {
+                                        "type": "math_number",
+                                        "fields": {
+                                            "NUM": 1,
+                                        },
+                                    },
+                                },
+                                "DELAY_TIME": {
+                                    "block": {
+                                        "type": "math_number",
+                                        "fields": {
+                                            "NUM": 0,
+                                        },
+                                    },
+                                },
+                                "REPEAT_COUNT": {
+                                    "block": {
+                                        "type": "math_number",
+                                        "fields": {
+                                            "NUM": 0,
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                        {
+                            "kind": "block",
+                            "type": "tween_create",
+                        },
+                        {
+                            "kind": "block",
+                            "type": "tween_play",
+                        },
+                        {
+                            "kind": "block",
+                            "type": "tween_cancel",
+                        },
+                    ],
                 }
             ]
         },
@@ -615,7 +679,15 @@ var bloxcode_toolbox = {
                 {
                     "kind": "block",
                     "type": "sound_play",
-                }
+                },
+                {
+                    "kind": "block",
+                    "type": "sound_new",
+                },
+                {
+                    "kind": "block",
+                    "type": "sound_service_play_local_sound",
+                },
             ]
         },
         {
@@ -655,6 +727,14 @@ var bloxcode_toolbox = {
                 {
                     "kind": "block",
                     "type": "gui_object_set_attribute",
+                },
+                {
+                    "kind": "block",
+                    "type": "gui_text_label_get_attribute",
+                },
+                {
+                    "kind": "block",
+                    "type": "gui_text_label_set_attribute",
                 }
             ]
         }
