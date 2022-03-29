@@ -1104,54 +1104,6 @@ Blockly.Lua['tween_info_new_all'] = function (block) {
     return [code, Blockly.Lua.ORDER_ATOMIC];
 };
 
-
-
-// Example 1:
-/*
-local TweenService = game:GetService("TweenService")
- 
-local part = Instance.new("Part")
-part.Position = Vector3.new(0, 10, 0)
-part.Anchored = true
-part.Parent = game.Workspace
- 
-local tweenInfo = TweenInfo.new(
-	2, -- Time
-	Enum.EasingStyle.Linear, -- EasingStyle
-	Enum.EasingDirection.Out, -- EasingDirection
-	-1, -- RepeatCount (when less than zero the tween will loop indefinitely)
-	true, -- Reverses (tween will reverse once reaching it's goal)
-	0 -- DelayTime
-)
- 
-local tween = TweenService:Create(part, tweenInfo, {Position = Vector3.new(0, 30, 0)})
- 
-tween:Play()
-wait(10)
-tween:Cancel() -- cancel the animation after 10 seconds
-*/
-
-// Example 2:
-/*
-local TweenService = game:GetService("TweenService")
- 
-local part = Instance.new("Part")
-part.Position = Vector3.new(0, 10, 0)
-part.Color = Color3.new(1, 0, 0)
-part.Anchored = true
-part.Parent = game.Workspace
- 
-local goal = {}
-goal.Position = Vector3.new(10, 10, 0)
-goal.Color = Color3.new(0, 1, 0)
- 
-local tweenInfo = TweenInfo.new(5)
- 
-local tween = TweenService:Create(part, tweenInfo, goal)
- 
-tween:Play()
-*/
-
 // create tween
 // value inputs with right-aligned labels: instance, tween info, goal
 Blockly.Blocks['tween_create'] = {
