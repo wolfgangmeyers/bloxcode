@@ -2,6 +2,8 @@
 
 Welcome to Bloxcode!
 
+Join the [Discord server](https://discord.gg/QHSfv3X8Pk) to get help, ask questions, and get updates.
+
 This project aims to enable people to implement roblox scripts using
 visual programming blocks provided by [Blockly](https://developers.google.com/blockly).
 
@@ -56,7 +58,7 @@ enter the name of the script in the prompt. This will create two children in the
 Once connected to roblox studio, select existing scripts from the dropdown to the left.
 After a second or two the Bloxcode script should load.
 
-## YouTube
+## HowTo
 
 [Bloxcode Tutorial Videos](https://www.youtube.com/playlist?list=PLaxb5VT_ctnHpWGIu3r1sRnmA8WzjT-Ei)
 
