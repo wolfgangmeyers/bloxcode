@@ -5,4 +5,4 @@ Based on [this question](https://www.reddit.com/r/ROBLOXStudio/comments/tkb74y/h
 The following script will add lava behavior to all child blocks in the parent folder "LavaBlocks".
 All source code is saved in the roblox studio file in this folder.
 
-![](script-source.png)  
+![](script-source.png)
