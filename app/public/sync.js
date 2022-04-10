@@ -294,6 +294,134 @@ Blockly.prompt = function(message, defaultValue, callback) {
     });
 };
 
+// BEGIN code for snippets
+
+function snippets() {
+    $("#btnInsertSnippet").attr("disabled", true);
+    $("#btnDeleteSnippet").attr("disabled", true);
+    $("#btnExportSnippet").attr("disabled", true);
+    // refresh snippet list
+    const savedSnippets = JSON.parse(localStorage.getItem("bloxcode_snippets") || "[]");
+    let selectorHtml = `<option value="">Select a snippet</option>\n`;
+    for (let snippet of savedSnippets) {
+        selectorHtml += `<option value="${snippet.id}">${snippet.name}</option>\n`;
+    }
+    $("#snippetSelector").html(selectorHtml);
+    // clear snippetWorkspace
+    snippetWorkspace.clear();
+
+    $("#snippetsModal").modal("show")
+    // Seems like this is needed to make the workspace display properly
+    $("#snippetDisplay").find("svg").css("width", "100%")
+    $("#snippetDisplay").find("svg").css("height", "100%")
+    // saveFile();
+}
+
+function deleteSnippet() {
+    const selectedSnippet = $("#snippetSelector").val();
+    const savedSnippets = JSON.parse(localStorage.getItem("bloxcode_snippets") || "[]");
+    const newSnippets = savedSnippets.filter(snippet => snippet.id !== selectedSnippet);
+    localStorage.setItem("bloxcode_snippets", JSON.stringify(newSnippets));
+    snippets();
+}
+
+function insertSnippet() {
+    const selectedSnippet = $("#snippetSelector").val();
+    const savedSnippets = JSON.parse(localStorage.getItem("bloxcode_snippets") || "[]");
+    const selectedSnippetObject = savedSnippets.find(snippet => snippet.id === selectedSnippet);
+    if (selectedSnippetObject) {
+        const blocks = Blockly.serialization.blocks.append(selectedSnippetObject.source, demoWorkspace);
+    }
+}
+
+$("#snippetSelector").on("change", function() {
+    const selectedSnippet = $(this).val();
+    $("#btnInsertSnippet").attr("disabled", !selectedSnippet);
+    $("#btnDeleteSnippet").attr("disabled", !selectedSnippet);
+    $("#btnExportSnippet").attr("disabled", !selectedSnippet);
+    if (selectedSnippet) {
+        const savedSnippets = JSON.parse(localStorage.getItem("bloxcode_snippets") || "[]");
+        const snippet = savedSnippets.find(snippet => snippet.id === selectedSnippet);
+        if (snippet) {
+            // clear snippetWorkspace
+            snippetWorkspace.clear();
+            // load snippet
+            Blockly.serialization.blocks.append(snippet.source, snippetWorkspace);
+        }
+    }
+});
+
+// register save as snippet option
+Blockly.ContextMenuRegistry.registry.register({
+    displayText: function() {
+        return "Save as snippet";
+    },
+    preconditionFn: function(scope) {
+        const block = scope.block;
+        if (!block.isInFlyout && block.isDeletable() && block.isMovable()) {
+            return 'enabled';
+        }
+        return 'hidden';
+    },
+    callback: function(scope) {
+        if (scope.block) {
+        // prompt user for name
+            var promptBox = simplePopup(2, 'Enter a name for the new snippet');
+            $.when(promptBox).then(function(name) {
+                if (name) {
+                    // save snippet
+                    const id = Blockly.utils.idGenerator.getNextUniqueId();
+                    const savedSnippets = JSON.parse(localStorage.getItem("bloxcode_snippets") || "[]");
+                    const newSnippet = {
+                        id: id,
+                        name: name,
+                        source: Blockly.serialization.blocks.save(scope.block),
+                    };
+                    savedSnippets.push(newSnippet);
+                    localStorage.setItem("bloxcode_snippets", JSON.stringify(savedSnippets));
+                }
+            });
+        }
+    },
+    scopeType: Blockly.ContextMenuRegistry.ScopeType.BLOCK,
+    id: 'blockSaveAsSnippet',
+    weight: 1,
+});
+
+$("#snippetFile").on("change", function() {
+    const file = $(this).prop("files")[0];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const data = e.target.result;
+        const savedSnippets = JSON.parse(localStorage.getItem("bloxcode_snippets") || "[]");
+        const importedSnippet = JSON.parse(data);
+        savedSnippets.push({
+            ...importedSnippet,
+            id: Blockly.utils.idGenerator.getNextUniqueId(),
+        });
+        localStorage.setItem("bloxcode_snippets", JSON.stringify(savedSnippets));
+        snippets();
+    }
+    reader.readAsText(file);
+});
+
+// https://stackoverflow.com/questions/32979630/how-can-i-display-a-save-as-dialog-in-an-electron-app
+function exportSnippet() {
+    const selectedSnippet = $("#snippetSelector").val();
+    const savedSnippets = JSON.parse(localStorage.getItem("bloxcode_snippets") || "[]");
+    const selectedSnippetObject = savedSnippets.find(snippet => snippet.id === selectedSnippet);
+    if (selectedSnippetObject) {
+        const content = JSON.stringify(selectedSnippetObject);
+        const element = document.createElement("a");
+        const file = new Blob([content], {type: "text/plain"});
+        element.href = URL.createObjectURL(file);
+        element.download = `${selectedSnippetObject.name}.blox`;
+        element.click();
+    }
+}
+
+// END code for snippets
+
 async function init() {
 
     document.getElementById("controls").style = "display: block";

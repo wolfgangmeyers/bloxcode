@@ -6,7 +6,9 @@
     <title>Roblox Block Coding Prototype</title>
     <link rel="stylesheet" href="./dark-filetree/style.css" />
     <link rel="stylesheet" href="./jquery.simplepopup.css" />
+    <link rel="stylesheet" href="./bootstrap.min.css" />
     <script src="./jquery-3.5.1.min.js"></script>
+    <script src="./bootstrap.min.js"></script>
     <script src="./jstree.min.js"></script>
     <script src="./blockly_compressed.js"></script>
     <script src="./blocks_compressed.js"></script>
@@ -17,13 +19,17 @@
     <style>
         body {
             background-color: #181818;
-            color: #fff;
+            color: #fff !important;
             font-family: sans-serif;
         }
 
         h1 {
             font-weight: normal;
             font-size: 140%;
+        }
+
+        hr {
+            border: 1px solid white;
         }
 
         button,
@@ -56,19 +62,20 @@
 
 <body>
     <img src="bloxcode-logo-truncated.png"
-        style="margin-bottom: 30px; display: block; margin-left: auto; margin-right: auto" />
+        style="margin-bottom: 30px; margin-top: 10px; display: block; margin-left: auto; margin-right: auto" />
 
     <div id="controls" style="display: none">
-        <button id="save-script-button" style="display: none" onclick="saveScript()">Save</button>
-        <button id="delete-script-button" style="display: none" onclick="deleteScript()">Delete</button>
-        <button id="new-local-script-button" onclick="newLocalScript()" style="display: none">New LocalScript</button>
-        <button id="new-script-button" onclick="newScript()" style="display: none">New Script</button>
+        <button class="btn btn-sm" id="save-script-button" style="display: none" onclick="saveScript()">Save</button>
+        <button class="btn btn-sm" id="delete-script-button" style="display: none" onclick="deleteScript()">Delete</button>
+        <button class="btn btn-sm" id="new-local-script-button" onclick="newLocalScript()" style="display: none">New LocalScript</button>
+        <button class="btn btn-sm" id="new-script-button" onclick="newScript()" style="display: none">New Script</button>
 
-        <button onclick="refresh()">Refresh</button>
-        <button onclick="showCode()">Print Lua Code</button>
-        <a target="_blank" class="btn" href="https://github.com/wolfgangmeyers/roblox-blockly">
-            <button>Documentation</button>
+        <button class="btn btn-sm" onclick="refresh()">Refresh</button>
+        <button class="btn btn-sm" onclick="showCode()">Print Lua Code</button>
+        <a target="_blank" class="btn btn-sm" href="https://github.com/wolfgangmeyers/roblox-blockly">
+            Documentation
         </a>
+        <button class="btn btn-sm" onclick="snippets()">Snippets</button>
     </div>
     <hr />
 
@@ -76,6 +83,38 @@
 
     </div>
     <div id="blocklyDiv" style="left: 200px; height: 480px; width: 600px;"></div>
+
+    <!-- bootstrap Modal window with title Snippets -->
+    <div class="modal fade" id="snippetsModal" tabindex="-1" role="dialog" aria-labelledby="snippetsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="snippetsModalLabel">Snippets</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Snippet: <select id="snippetSelector">
+                        <option value="">Select a snippet</option>
+                    </select>
+                    <hr />
+                    <div id="snippetDisplay" style="height: 300px"></div>
+                </div>
+                <div class="modal-footer">
+                    <!-- bootstrap styled file input for import -->
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="snippetFile" accept=".blox">
+                        <label class="custom-file-label" for="snippetFile">Import Snippet</label>
+                    </div>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button id="btnInsertSnippet" type="button" class="btn btn-primary" onclick="insertSnippet()" disabled>Insert</button>
+                    <button id="btnDeleteSnippet" type="button" class="btn btn-primary" onclick="deleteSnippet()" disabled>Delete</button>
+                    <button id="btnExportSnippet" type="button" class="btn btn-primary" onclick="exportSnippet()" disabled>Export</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script type="text/javascript">
         const onResize = () => {
@@ -108,6 +147,12 @@
             },
         });
         demoWorkspace.setTheme(theme)
+
+        // snippetDisplay
+        var snippetWorkspace = Blockly.inject('snippetDisplay', {
+            media: '../../media/',
+        });
+        snippetWorkspace.setTheme(theme)
     </script>
     <script src="blocks.js"></script>
     <script src="sync.js"></script>
@@ -126,6 +171,7 @@
                 })
             }(jQuery))
     </script>
+    
 </body>
 
 </html>
