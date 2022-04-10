@@ -121,7 +121,7 @@ Blockly.Lua['instance_get_children'] = function (block) {
 // part blocks
 
 // get various attributes of a part
-// CanCollide, CFrame, Position, BrickColor
+// CanCollide, CFrame, Position, BrickColor, Transparency, CanTouch
 Blockly.Blocks['part_get_attribute'] = {
     init: function () {
         this.appendDummyInput()
@@ -130,7 +130,9 @@ Blockly.Blocks['part_get_attribute'] = {
                 ["CanCollide", "CanCollide"],
                 ["CFrame", "CFrame"],
                 ["Position", "Position"],
-                ["BrickColor", "BrickColor"]
+                ["BrickColor", "BrickColor"],
+                ["Transparency", "Transparency"],
+                ["CanTouch", "CanTouch"],
             ]), "ATTRIBUTE")
             .appendField("of")
             .appendField(new Blockly.FieldVariable("part"), "PART");
@@ -149,7 +151,7 @@ Blockly.Lua['part_get_attribute'] = function (block) {
 }
 
 // set various attributes of a part
-// CanCollide, CFrame, Position, BrickColor
+// CanCollide, CFrame, Position, BrickColor, Transparency, CanTouch
 Blockly.Blocks['part_set_attribute'] = {
     init: function () {
         this.appendValueInput("VALUE")
@@ -159,7 +161,9 @@ Blockly.Blocks['part_set_attribute'] = {
                 ["CanCollide", "CanCollide"],
                 ["CFrame", "CFrame"],
                 ["Position", "Position"],
-                ["BrickColor", "BrickColor"]
+                ["BrickColor", "BrickColor"],
+                ["Transparency", "Transparency"],
+                ["CanTouch", "CanTouch"]
             ]), "ATTRIBUTE")
             .appendField("of")
             .appendField(new Blockly.FieldVariable("part"), "PART")
