@@ -4,8 +4,9 @@ const moment = require("moment");
 module.exports = function() {
     // hello world express app
     const app = express();
-    // add json middleware
-    app.use(express.json());
+    // add json middleware with increased size limit for large Roblox workspaces
+    app.use(express.json({ limit: '50mb' }));
+    app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
     const bloxcodeMessages = [];
     const studioMessages = [];
