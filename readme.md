@@ -43,8 +43,36 @@ script that was saved earlier and restart Roblox Studio.
 ### Bloxcode desktop application
 
 Bloxcode provides a Blockly interface
-for editing scripts. Currently the website has a **very basic** interface that will be
+for editing scripts. Currently the app has a **very basic** interface that will be
 updated to be more user-friendly in the future.
+
+## Building the Desktop Application
+
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v14 or higher recommended)
+- npm (comes with Node.js)
+
+### Build Instructions
+
+1. **Install dependencies**
+   ```bash
+   cd app
+   npm install
+   ```
+
+2. **Run in development mode** (optional, to test before building)
+   ```bash
+   npm start
+   ```
+
+3. **Build the executable**
+   ```bash
+   npm run make
+   ```
+
+The installer will be located at `app/out/make/squirrel.windows/x64/bloxcode-1.0.0 Setup.exe`.
+
+**Note:** This creates a Windows installer using Squirrel. Run the Setup.exe to install Bloxcode on your system.
 
 ## Creating a new script
 
