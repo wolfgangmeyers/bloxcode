@@ -74,17 +74,17 @@ The installer will be located at `app/out/make/squirrel.windows/x64/bloxcode-1.0
 
 **Note:** This creates a Windows installer using Squirrel. Run the Setup.exe to install Bloxcode on your system.
 
-## Creating a new script
+## Creating and editing scripts
 
-From the Bloxcode desktop application, click on "New Blox Script", then
-enter the name of the script in the prompt. This will create two children in the ServerScriptService:
-* A bloxcode source file with a `.blox` extension. This is where the blocks are saved
-* A lua server script. This is generated whenever the bloxcode file is saved from the website.
+1. **Select a container**: In the tree view on the left, select a container object (like Workspace, ServerScriptService, or any Folder) where you want to create a script.
 
-## Edit an existing script
+2. **Create a new script**: Click "New Script" or "New LocalScript" button that appears when a container is selected. The new script will automatically open in the editor.
 
-Once connected to roblox studio, select existing scripts from the dropdown to the left.
-After a second or two the Bloxcode script should load.
+3. **Edit existing scripts**: Click on any Script or LocalScript in the tree to open it in the Blockly editor.
+
+Each script consists of:
+* A `.blox` source file containing the visual blocks
+* A Lua script generated from those blocks when you save
 
 ## HowTo
 

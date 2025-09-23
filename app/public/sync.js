@@ -1,6 +1,7 @@
 const backendUrl = "http://localhost:13032"
 
 let selectedNode;
+let pendingSelection = null;
 const $ = jQuery
 
 function getParentPath(path) {
@@ -18,6 +19,8 @@ function updateSelectedNode(node) {
         $("#new-script-button").hide()
         $("delete-script-button").hide()
         $("save-script-button").hide()
+        $("#blocklyDiv").hide()
+        $("#noScriptMessage").show()
         return
     }
     if (node.type == "Script" || node.type == "LocalScript") {
@@ -26,6 +29,8 @@ function updateSelectedNode(node) {
 
         $("#delete-script-button").show()
         $("#save-script-button").show()
+        $("#blocklyDiv").show()
+        $("#noScriptMessage").hide()
 
         loadBloxScript()
     } else {
@@ -34,6 +39,8 @@ function updateSelectedNode(node) {
 
         $("#delete-script-button").hide()
         $("#save-script-button").hide()
+        $("#blocklyDiv").hide()
+        $("#noScriptMessage").show()
 
         demoWorkspace.clear()
     }
@@ -206,6 +213,14 @@ function onBloxScriptDeleted(event_data) {
     refresh()
 }
 
+function onScriptCreated(event_data) {
+    const scriptPath = event_data.path + "/" + event_data.name
+    console.log("onScriptCreated called with path:", scriptPath)
+    console.log("event_data:", event_data)
+    pendingSelection = scriptPath
+    refresh()
+}
+
 function saveLastUpdate(lastUpdate) {
     localStorage.setItem("LAST_UPDATE", JSON.stringify(lastUpdate))
 }
@@ -282,6 +297,37 @@ function updateTreeview(data) {
         // $('#treeId').jstree(true).settings.core.data = newData;
         $("#browser").jstree(true).settings.core.data = data.items
         $("#browser").jstree("refresh")
+
+        if (pendingSelection) {
+            const scriptPath = pendingSelection
+            console.log("updateTreeview: pendingSelection found:", scriptPath)
+            pendingSelection = null
+            setTimeout(() => {
+                const tree = $("#browser").jstree(true)
+                tree.deselect_all()
+
+                // Use a different approach - search through actual node data
+                let targetNodeId = null
+                tree._model.data['#'].children_d.forEach(nodeId => {
+                    const node = tree.get_node(nodeId)
+                    if (node && node.original && node.original.path === scriptPath) {
+                        targetNodeId = nodeId
+                    }
+                })
+
+                console.log("Found targetNodeId:", targetNodeId)
+                if (targetNodeId) {
+                    tree.select_node(targetNodeId)
+                    console.log("Selected node:", targetNodeId)
+                    const node = tree.get_node(targetNodeId)
+                    if (node && node.original) {
+                        updateSelectedNode(node.original)
+                    }
+                } else {
+                    console.log("Could not find node with path:", scriptPath)
+                }
+            }, 100)
+        }
     }(jQuery))
 }
 
@@ -444,7 +490,6 @@ async function init() {
             }
             let resp = await fetch(`${backendUrl}/messages/bloxcode`);
             const result = await resp.json()
-            console.log(result)
             if (result.messages.length > 0) {
                 saveLastUpdate(new Date().getTime())
                 console.log("Got a message!", result)
@@ -463,7 +508,7 @@ async function init() {
                             break
                         case "LocalScriptCreated":
                         case "ScriptCreated":
-                            refresh()
+                            onScriptCreated(message.event_data)
                             break
                     }
                 }
