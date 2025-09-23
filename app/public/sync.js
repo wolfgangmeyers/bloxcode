@@ -20,6 +20,7 @@ function updateSelectedNode(node) {
         $("delete-script-button").hide()
         $("save-script-button").hide()
         $("#blocklyDiv").hide()
+        $("#breadcrumb").hide()
         $("#noScriptMessage").show()
         return
     }
@@ -30,7 +31,17 @@ function updateSelectedNode(node) {
         $("#delete-script-button").show()
         $("#save-script-button").show()
         $("#blocklyDiv").show()
+        $("#breadcrumb").show()
         $("#noScriptMessage").hide()
+
+        const pathParts = node.path.split("/").filter(p => p)
+        const breadcrumbHtml = pathParts.map((part, idx) => {
+            if (idx === pathParts.length - 1) {
+                return `<span class="type">${node.type}</span> <span class="name">${part}</span>`
+            }
+            return `<span>${part}</span>`
+        }).join('<span class="separator">/</span>')
+        $("#breadcrumb").html(breadcrumbHtml)
 
         loadBloxScript()
     } else {
@@ -40,6 +51,7 @@ function updateSelectedNode(node) {
         $("#delete-script-button").hide()
         $("#save-script-button").hide()
         $("#blocklyDiv").hide()
+        $("#breadcrumb").hide()
         $("#noScriptMessage").show()
 
         demoWorkspace.clear()
@@ -471,6 +483,7 @@ function exportSnippet() {
 async function init() {
 
     document.getElementById("controls").style = "display: block";
+    updateSelectedNode(null);
     refresh()
 
     let i = 0

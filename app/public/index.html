@@ -57,6 +57,33 @@
         #browser {
             position: absolute;
         }
+
+        #breadcrumb {
+            position: absolute;
+            left: 310px;
+            top: 145px;
+            background-color: #252526;
+            padding: 10px 16px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #ccc;
+            display: none;
+            margin-bottom: 8px;
+        }
+
+        #breadcrumb .separator {
+            margin: 0 8px;
+            color: #666;
+        }
+
+        #breadcrumb .type {
+            color: #4EC9B0;
+            font-weight: 500;
+        }
+
+        #breadcrumb .name {
+            color: #DCDCAA;
+        }
     </style>
 </head>
 
@@ -82,6 +109,7 @@
     <div id="browser" style="width: 200px; height: 480px;">
 
     </div>
+    <div id="breadcrumb"></div>
     <div id="blocklyDiv" style="left: 200px; height: 480px; width: 600px;"></div>
     <div id="noScriptMessage" style="display: none; position: absolute; left: 300px; top: 200px; text-align: center; width: calc(100% - 320px);">
         <h2 style="color: #888;">No Script Selected</h2>
@@ -123,7 +151,10 @@
     <script type="text/javascript">
         const onResize = () => {
             const div = document.getElementById("blocklyDiv")
-            div.style = `left: 300px; width: ${window.innerWidth - 310}px; height: ${window.innerHeight - 140}px;`
+            const breadcrumb = document.getElementById("breadcrumb")
+            const isVisible = div.style.display !== 'none'
+            div.style = `left: 310px; width: ${window.innerWidth - 320}px; height: ${window.innerHeight - 220}px; top: 185px; ${isVisible ? '' : 'display: none;'}`
+            breadcrumb.style.width = `${window.innerWidth - 330}px`
         }
         window.addEventListener("resize", onResize);
         onResize()
