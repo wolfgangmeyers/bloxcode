@@ -2215,3 +2215,171 @@ Blockly.Lua['gui_text_label_set_attribute'] = function (block) {
     var code = `${variable_gui_text_label}.${dropdown_attribute} = ${value_value}\n`;
     return code;
 }
+
+Blockly.Blocks['custom_lua_code'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("custom Lua code")
+            .appendField(new Blockly.FieldTextInput("print('Hello')"), "CODE");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(330);
+        this.setTooltip("Insert a custom line of Lua code");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['custom_lua_code'] = function (block) {
+    var text_code = block.getFieldValue('CODE');
+    var code = text_code + "\n";
+    return code;
+};
+
+Blockly.Blocks['proximity_prompt_new'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("create new ProximityPrompt with parent")
+            .appendField(new Blockly.FieldVariable("instance"), "PARENT");
+        this.setOutput(true, "ProximityPrompt");
+        this.setColour(160);
+        this.setTooltip("Create a new ProximityPrompt instance");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['proximity_prompt_new'] = function (block) {
+    var variable_parent = Blockly.Lua.variableDB_.getName(block.getFieldValue('PARENT'), Blockly.Variables.CATEGORY_NAME);
+    var code = `Instance.new("ProximityPrompt", ${variable_parent})`;
+    return [code, Blockly.Lua.ORDER_ATOMIC];
+};
+
+Blockly.Blocks['proximity_prompt_set_text'] = {
+    init: function () {
+        this.appendValueInput("ACTION_TEXT")
+            .setCheck("String")
+            .appendField("set")
+            .appendField(new Blockly.FieldVariable("prompt"), "PROMPT")
+            .appendField("action text to");
+        this.appendValueInput("OBJECT_TEXT")
+            .setCheck("String")
+            .appendField("object text to");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(160);
+        this.setTooltip("Set the action and object text for a ProximityPrompt");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['proximity_prompt_set_text'] = function (block) {
+    var variable_prompt = Blockly.Lua.variableDB_.getName(block.getFieldValue('PROMPT'), Blockly.Variables.CATEGORY_NAME);
+    var value_action_text = Blockly.Lua.valueToCode(block, 'ACTION_TEXT', Blockly.Lua.ORDER_ATOMIC);
+    var value_object_text = Blockly.Lua.valueToCode(block, 'OBJECT_TEXT', Blockly.Lua.ORDER_ATOMIC);
+    var code = `${variable_prompt}.ActionText = ${value_action_text}\n${variable_prompt}.ObjectText = ${value_object_text}\n`;
+    return code;
+};
+
+Blockly.Blocks['proximity_prompt_set_property'] = {
+    init: function () {
+        this.appendValueInput("VALUE")
+            .appendField("set")
+            .appendField(new Blockly.FieldDropdown([
+                ["MaxActivationDistance", "MaxActivationDistance"],
+                ["HoldDuration", "HoldDuration"],
+                ["Enabled", "Enabled"],
+                ["ActionText", "ActionText"],
+                ["ObjectText", "ObjectText"]
+            ]), "PROPERTY")
+            .appendField("of")
+            .appendField(new Blockly.FieldVariable("prompt"), "PROMPT")
+            .appendField("to");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(160);
+        this.setTooltip("Set a property of a ProximityPrompt");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['proximity_prompt_set_property'] = function (block) {
+    var dropdown_property = block.getFieldValue('PROPERTY');
+    var variable_prompt = Blockly.Lua.variableDB_.getName(block.getFieldValue('PROMPT'), Blockly.Variables.CATEGORY_NAME);
+    var value_value = Blockly.Lua.valueToCode(block, 'VALUE', Blockly.Lua.ORDER_ATOMIC);
+    var code = `${variable_prompt}.${dropdown_property} = ${value_value}\n`;
+    return code;
+};
+
+Blockly.Blocks['proximity_prompt_triggered'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("when")
+            .appendField(new Blockly.FieldVariable("prompt"), "PROMPT")
+            .appendField("is triggered");
+        this.appendDummyInput()
+            .appendField("player:")
+            .appendField(new Blockly.FieldVariable("player"), "PLAYER");
+        this.appendStatementInput("DO")
+            .setCheck(null);
+        this.setColour(160);
+        this.setTooltip("Run code when a ProximityPrompt is triggered");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['proximity_prompt_triggered'] = function (block) {
+    var variable_prompt = Blockly.Lua.variableDB_.getName(block.getFieldValue('PROMPT'), Blockly.Variables.CATEGORY_NAME);
+    var variable_player = Blockly.Lua.variableDB_.getName(block.getFieldValue('PLAYER'), Blockly.Variables.CATEGORY_NAME);
+    var statements_do = Blockly.Lua.statementToCode(block, 'DO');
+    var code = `${variable_prompt}.Triggered:Connect(function(${variable_player})\n${statements_do}end)\n`;
+    return code;
+};
+
+Blockly.Blocks['proximity_prompt_hold_began'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("when")
+            .appendField(new Blockly.FieldVariable("prompt"), "PROMPT")
+            .appendField("hold began");
+        this.appendDummyInput()
+            .appendField("player:")
+            .appendField(new Blockly.FieldVariable("player"), "PLAYER");
+        this.appendStatementInput("DO")
+            .setCheck(null);
+        this.setColour(160);
+        this.setTooltip("Run code when a player starts holding the prompt button");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['proximity_prompt_hold_began'] = function (block) {
+    var variable_prompt = Blockly.Lua.variableDB_.getName(block.getFieldValue('PROMPT'), Blockly.Variables.CATEGORY_NAME);
+    var variable_player = Blockly.Lua.variableDB_.getName(block.getFieldValue('PLAYER'), Blockly.Variables.CATEGORY_NAME);
+    var statements_do = Blockly.Lua.statementToCode(block, 'DO');
+    var code = `${variable_prompt}.PromptButtonHoldBegan:Connect(function(${variable_player})\n${statements_do}end)\n`;
+    return code;
+};
+
+Blockly.Blocks['proximity_prompt_hold_ended'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("when")
+            .appendField(new Blockly.FieldVariable("prompt"), "PROMPT")
+            .appendField("hold ended");
+        this.appendDummyInput()
+            .appendField("player:")
+            .appendField(new Blockly.FieldVariable("player"), "PLAYER");
+        this.appendStatementInput("DO")
+            .setCheck(null);
+        this.setColour(160);
+        this.setTooltip("Run code when a player stops holding the prompt button");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Lua['proximity_prompt_hold_ended'] = function (block) {
+    var variable_prompt = Blockly.Lua.variableDB_.getName(block.getFieldValue('PROMPT'), Blockly.Variables.CATEGORY_NAME);
+    var variable_player = Blockly.Lua.variableDB_.getName(block.getFieldValue('PLAYER'), Blockly.Variables.CATEGORY_NAME);
+    var statements_do = Blockly.Lua.statementToCode(block, 'DO');
+    var code = `${variable_prompt}.PromptButtonHoldEnded:Connect(function(${variable_player})\n${statements_do}end)\n`;
+    return code;
+};

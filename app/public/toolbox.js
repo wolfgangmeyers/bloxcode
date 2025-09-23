@@ -737,6 +737,74 @@ var bloxcode_toolbox = {
                     "type": "gui_text_label_set_attribute",
                 }
             ]
+        },
+        {
+            "kind": "category",
+            "name": "Proximity Prompts",
+            "contents": [
+                {
+                    "kind": "block",
+                    "type": "proximity_prompt_new",
+                },
+                {
+                    "kind": "block",
+                    "type": "proximity_prompt_set_text",
+                    "inputs": {
+                        "ACTION_TEXT": {
+                            "block": {
+                                "type": "text",
+                                "fields": {
+                                    "TEXT": "Open",
+                                },
+                            },
+                        },
+                        "OBJECT_TEXT": {
+                            "block": {
+                                "type": "text",
+                                "fields": {
+                                    "TEXT": "Door",
+                                },
+                            },
+                        },
+                    }
+                },
+                {
+                    "kind": "block",
+                    "type": "proximity_prompt_set_property",
+                    "inputs": {
+                        "VALUE": {
+                            "block": {
+                                "type": "math_number",
+                                "fields": {
+                                    "NUM": 10,
+                                },
+                            },
+                        },
+                    }
+                },
+                {
+                    "kind": "block",
+                    "type": "proximity_prompt_triggered",
+                },
+                {
+                    "kind": "block",
+                    "type": "proximity_prompt_hold_began",
+                },
+                {
+                    "kind": "block",
+                    "type": "proximity_prompt_hold_ended",
+                }
+            ]
+        },
+        {
+            "kind": "category",
+            "name": "Advanced",
+            "contents": [
+                {
+                    "kind": "block",
+                    "type": "custom_lua_code",
+                }
+            ]
         }
     ]
 }
